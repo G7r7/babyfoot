@@ -8,18 +8,17 @@ set(SOURCE_FILES main.cpp)
 
 set(LIBS_DIR C:/Dvlp/libs)
 
-set(GLAD_ROOT_DIR ${LIBS_DIR}/glad )
-set(GLFW_ROOT_DIR ${LIBS_DIR}/glfw-3.3.5 )
+set(GLAD_ROOT_DIR ${LIBS_DIR}/glad)
+set(GLFW_ROOT_DIR ${LIBS_DIR}/glfw-3.3.5)
 
 set(GLAD_INCLUDE_DIRS ${GLAD_ROOT_DIR}/include)
 set(GLFW_INCLUDE_DIRS ${GLFW_ROOT_DIR}/include)
 
-# set(GLAD_LIBRARY ${GLAD_ROOT_DIR}/lib/libglew32.a)
+add_library(glad ${GLAD_ROOT_DIR}/src/glad.c)
 set(GLFW_LIBRARY ${GLFW_ROOT_DIR}/build/src/libglfw3dll.a)
-
 
 include_directories(${GLAD_INCLUDE_DIRS} ${GLFW_INCLUDE_DIRS})
 
 add_executable(babyfoot ${SOURCE_FILES})
 
-target_link_libraries(babyfoot ${GLEW_LIBRARY} ${GLFW_LIBRARY})
+target_link_libraries(babyfoot glad ${GLFW_LIBRARY})
