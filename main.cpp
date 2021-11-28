@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <math.h>
 #include <iostream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -28,14 +29,17 @@ const char* vertexShaderSource = R"HERE(
 // fragment = pixel in OpenGL
 // fragment shader defines how our output (out) of type vec 4 and name FragColor
 // Because it is the only variable of output it corresponds by default to its color
+// ourColor is a variable of type vec4 that is global throughout the program and not allowed to change (uniform)
+// The uniform variable MUST be set before calling drawArrays() or drawElements()
 const char* fragmentShaderSource = R"HERE(
     #version 330 core
 
     out vec4 FragColor;
+    uniform vec4 ourColor;
 
     void main()
     {
-        FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);    
+        FragColor = ourColor;    
     }
 )HERE";
 
@@ -110,22 +114,14 @@ int main(int argc, char const *argv[])
     float vertices[] = {
         -0.5f, -0.5f,  0.0f, // bottom left
          0.5f, -0.5f,  0.0f, // bottom right
-        -0.5f,  0.5f,  0.0f, // top left
-         0.5f,  0.5f,  0.0f, // top right
-    };
-
-    // the two triangle composing a rectangle with indexes corresponding to index of vertices above
-    unsigned int indices[] = {
-        0, 1, 3, // first triangle
-        0, 2, 3, // second triangle
+         0.0f,  0.5f,  0.0f, // top
     };
 
     // VAO : Vertex Array Object, VBO : Vertex Buffer Object, EBO: Element Buffer Object
     // These are the GPU side representation in memory of the vertices
-    unsigned int VBO, VAO, EBO;
+    unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
     // bind the Vertex Array Object, then bind and set vertex buffer(s), and then configure attribute(s)
     glBindVertexArray(VAO);
 
@@ -144,10 +140,7 @@ int main(int argc, char const *argv[])
     glEnableVertexAttribArray(0);
 
     // we unbind the buffer
-    //glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // render loop
     while (!glfwWindowShouldClose(window)) {
@@ -158,12 +151,16 @@ int main(int argc, char const *argv[])
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        // Setting uniform variables
+        int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+        float timeValue = glfwGetTime();
+        float greenValue = sin(timeValue);
+        glUniform4f(vertexColorLocation, 1-greenValue, greenValue, 0.1f, 1.0f);
+
         // render triangle
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO); // bind
-        
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0); // unbind
 
         // glfw: swap buffers and poll IO events (keys, mouse, ...)
@@ -173,7 +170,6 @@ int main(int argc, char const *argv[])
 
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
 
     glfwTerminate();
     return 0;
