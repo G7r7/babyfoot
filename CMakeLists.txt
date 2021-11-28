@@ -3,8 +3,7 @@ project(Babyfoot)
 
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-# set(SOURCE_FILES main.cpp Shader.h Shader.cpp)
-set(SOURCE_FILES main.cpp)
+set(SOURCE_FILES src/main.cpp src/shader.hpp src/shader.cpp)
 
 set(LIBS_DIR C:/Dvlp/libs)
 
