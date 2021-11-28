@@ -10,7 +10,10 @@ const char* TITLE = "Babyfoot";
 const unsigned int SCREEN_WIDTH = 960;
 const unsigned int SCREEN_HEIGHT = 540;
 
-// Shaders codes
+// Vertex shader : role -> outuput a value for gl_position
+// Apos is the input variable (in) of type vec3 (3 float values)
+// It is the first element (index 0) of the VAO.
+// main : We need to make it a vec4
 const char* vertexShaderSource = R"HERE(
     #version 330 core
 
@@ -22,6 +25,9 @@ const char* vertexShaderSource = R"HERE(
     }
 )HERE";
 
+// fragment = pixel in OpenGL
+// fragment shader defines how our output (out) of type vec 4 and name FragColor
+// Because it is the only variable of output it corresponds by default to its color
 const char* fragmentShaderSource = R"HERE(
     #version 330 core
 
@@ -117,6 +123,8 @@ int main(int argc, char const *argv[])
     // to the current bound buffer
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    // setting up the argument used in the vertex shader code
+    // for index 0 of the VAO we're putting the vertices
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
