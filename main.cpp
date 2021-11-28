@@ -108,16 +108,24 @@ int main(int argc, char const *argv[])
 
     // set up vertex data
     float vertices[] = {
-        -0.5f, -0.5f,  0.0f, // left
-         0.5f, -0.5f,  0.0f, // right
-         0.0f,  0.5f,  0.0f, // top
+        -0.5f, -0.5f,  0.0f, // bottom left
+         0.5f, -0.5f,  0.0f, // bottom right
+        -0.5f,  0.5f,  0.0f, // top left
+         0.5f,  0.5f,  0.0f, // top right
     };
 
-    // VAO : Vertex Array Object, VBO : Vertex Buffer Object
+    // the two triangle composing a rectangle with indexes corresponding to index of vertices above
+    unsigned int indices[] = {
+        0, 1, 3, // first triangle
+        0, 2, 3, // second triangle
+    };
+
+    // VAO : Vertex Array Object, VBO : Vertex Buffer Object, EBO: Element Buffer Object
     // These are the GPU side representation in memory of the vertices
-    unsigned int VBO, VAO;
+    unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
     // bind the Vertex Array Object, then bind and set vertex buffer(s), and then configure attribute(s)
     glBindVertexArray(VAO);
 
@@ -136,7 +144,10 @@ int main(int argc, char const *argv[])
     glEnableVertexAttribArray(0);
 
     // we unbind the buffer
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // render loop
     while (!glfwWindowShouldClose(window)) {
@@ -150,7 +161,9 @@ int main(int argc, char const *argv[])
         // render triangle
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO); // bind
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        
+        //glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0); // unbind
 
         // glfw: swap buffers and poll IO events (keys, mouse, ...)
