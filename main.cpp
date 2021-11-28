@@ -113,6 +113,8 @@ int main(int argc, char const *argv[])
          0.0f,  0.5f,  0.0f, // top
     };
 
+    // VAO : Vertex Array Object, VBO : Vertex Buffer Object
+    // These are the GPU side representation in memory of the vertices
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -121,10 +123,15 @@ int main(int argc, char const *argv[])
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     // to the current bound buffer
+    // We put the data in the VBO, GL_STATIC_DRAW flag influence how the data will be layed out in memory
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     // setting up the argument used in the vertex shader code
-    // for index 0 of the VAO we're putting the vertices
+    // for index 0 of the VAO corresponds to currently bound VBO
+    // 3 corresponds to the number of elements we are reading from the buffer
+    // GL_FLOAT : We're specifying the type of the data we are reading
+    // GL_FALSE : not important
+    // 3 * sizeof(float) : Then we specify the size of each of the element (ex: 3 floats for a vertice)  
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
