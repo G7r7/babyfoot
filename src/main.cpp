@@ -69,15 +69,16 @@ int main(int argc, char const *argv[])
 
     // VAO : Vertex Array Object, VBO : Vertex Buffer Object, EBO: Element Buffer Object
     // These are the GPU side representation in memory of the vertices
-    unsigned int VBO, VAO;
+    unsigned int VBO, VAO, VBO2, VAO2;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    // bind the Vertex Array Object, then bind and set vertex buffer(s), and then configure attribute(s)
-    glBindVertexArray(VAO);
+    glGenVertexArrays(1, &VAO2);
+    glGenBuffers(1, &VBO2);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    // to the current bound buffer
-    // We put the data in the VBO, GL_STATIC_DRAW flag influence how the data will be layed out in memory
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, VBO2);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     // SETTING UP THE INPUT VARIABLES IN THE VERTEX SHADER CODE
@@ -87,12 +88,23 @@ int main(int argc, char const *argv[])
     // GL_FALSE : not important
     // 3 * sizeof(float) : Then we specify the size of each of the element (ex: 3 floats for a vertice)  
     
+    // bind the Vertex Array Object, then bind and set vertex buffer(s), and then configure attribute(s)
+    glBindVertexArray(VAO);
     //positions
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     // colors : last parameter is the byte offset in the array to skip the positions to get to the colors
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    glBindVertexArray(VAO2);
+    //positions
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(18 * sizeof(float)));
+    glEnableVertexAttribArray(0);
+
+    // colors : last parameter is the byte offset in the array to skip the positions to get to the colors
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(21 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
     // we unbind the buffer
@@ -110,7 +122,9 @@ int main(int argc, char const *argv[])
         // render triangle
         myShaderProgram.use();
         glBindVertexArray(VAO); // bind
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(VAO2); // bind
+        glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0); // unbind
 
         // glfw: swap buffers and poll IO events (keys, mouse, ...)
