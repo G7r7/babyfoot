@@ -55,6 +55,7 @@ int main(int argc, char const *argv[])
     }
 
     Shader myShaderProgram("../src/shaders/vertexShader.vs", "../src/shaders/fragmentShader.fs");
+    Shader myShaderProgram2("../src/shaders/vertexShader.vs", "../src/shaders/fragmentShaderYellow.fs");
 
     // set up vertex data
     float vertices[] = {
@@ -123,6 +124,7 @@ int main(int argc, char const *argv[])
         myShaderProgram.use();
         glBindVertexArray(VAO); // bind
         glDrawArrays(GL_TRIANGLES, 0, 3);
+        myShaderProgram2.use();
         glBindVertexArray(VAO2); // bind
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0); // unbind
