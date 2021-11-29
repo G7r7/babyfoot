@@ -120,11 +120,17 @@ int main(int argc, char const *argv[])
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        double time = glfwGetTime();
+        double mod = 2.0f;
+        float offset = sin(time);
+
         // render triangle
         myShaderProgram.use();
+        myShaderProgram.setFloat("offsetX", offset);
         glBindVertexArray(VAO); // bind
         glDrawArrays(GL_TRIANGLES, 0, 3);
         myShaderProgram2.use();
+        myShaderProgram2.setFloat("offsetY", offset);
         glBindVertexArray(VAO2); // bind
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0); // unbind
