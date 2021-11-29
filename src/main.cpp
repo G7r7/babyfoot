@@ -59,9 +59,12 @@ int main(int argc, char const *argv[])
     // set up vertex data
     float vertices[] = {
         // positions         // colors
-        -0.5f, -0.5f,  0.0f,  1.0f, 0.0f, 0.0f,  // bottom left
+        -0.5f,  0.5f,  0.0f,  1.0f, 0.0f, 0.0f,  // top left
+        -0.5f, -0.5f,  0.0f,  0.0f, 1.0f, 0.0f,  // bottom left
+         0.0f,  0.0f,  0.0f,  0.0f, 0.0f, 1.0f,  // center
+         0.5f,  0.5f,  0.0f,  1.0f, 0.0f, 0.0f,  // top right
          0.5f, -0.5f,  0.0f,  0.0f, 1.0f, 0.0f,  // bottom right
-         0.0f,  0.5f,  0.0f,  0.0f, 0.0f, 1.0f,  // top
+         0.0f,  0.0f,  0.0f,  0.0f, 0.0f, 1.0f,  // center
     };
 
     // VAO : Vertex Array Object, VBO : Vertex Buffer Object, EBO: Element Buffer Object
@@ -107,7 +110,7 @@ int main(int argc, char const *argv[])
         // render triangle
         myShaderProgram.use();
         glBindVertexArray(VAO); // bind
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0); // unbind
 
         // glfw: swap buffers and poll IO events (keys, mouse, ...)
