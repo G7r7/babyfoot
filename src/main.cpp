@@ -14,6 +14,8 @@ const char* TITLE = "Babyfoot";
 const unsigned int SCREEN_WIDTH = 960;
 const unsigned int SCREEN_HEIGHT = 540;
 
+float mixLevel = 0.5f;
+
 // Vertex shader : role -> outuput a value for gl_position
 // Apos is the input variable (in) of type vec3 (3 float values)
 // It is the first element (index 0) of the VAO.
@@ -64,9 +66,9 @@ int main(int argc, char const *argv[])
         -0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,      // top left
         -0.5f, -0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,      // bottom left
          0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.5f,      // center
-         0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  2.0f,  2.0f,      // top right
-         0.5f, -0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  2.0f,  0.0f,      // bottom right
-         0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,      // center
+         0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,      // top right
+         0.5f, -0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,      // bottom right
+         0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.5f,      // center
     };
 
     // VAO : Vertex Array Object, VBO : Vertex Buffer Object, EBO: Element Buffer Object
@@ -183,6 +185,8 @@ int main(int argc, char const *argv[])
     stbi_image_free(data2);
     stbi_image_free(data3);
 
+    
+
     // render loop
     while (!glfwWindowShouldClose(window)) {
         // input
@@ -208,6 +212,7 @@ int main(int argc, char const *argv[])
         // render right triangle
         myShaderProgram2.use();
         myShaderProgram2.setFloat("offsetY", offset);
+        myShaderProgram2.setFloat("mixLevel", mixLevel);
         myShaderProgram2.setInt("ourTexture1", 0);
         myShaderProgram2.setInt("ourTexture2", 1);
         glActiveTexture(GL_TEXTURE0);
@@ -237,5 +242,9 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 void process_input(GLFWwindow* window) {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    else if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && mixLevel < 1)
+        mixLevel += 0.0005;
+    else if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && mixLevel > 0)
+        mixLevel -= 0.0005;
         
 }
