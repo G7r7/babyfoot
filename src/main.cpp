@@ -142,8 +142,9 @@ int main(int argc, char const *argv[])
     // Loading the texture file
     int width, height, nrChannels;
     int width2, height2, nrChannels2;
+    stbi_set_flip_vertically_on_load(true);
     unsigned char *data = stbi_load("../src/textures/verre-sur-mesure-granite.jpg", &width, &height, &nrChannels, 0); 
-    unsigned char *data2 = stbi_load("../src/textures/terre.jpg", &width2, &height2, &nrChannels2, 0); 
+    unsigned char *data2 = stbi_load("../src/textures/rl.png", &width2, &height2, &nrChannels2, 0); 
 
     // Generating the texture
     // 2 is the number of textures we generate
