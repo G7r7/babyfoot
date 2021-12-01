@@ -64,9 +64,9 @@ int main(int argc, char const *argv[])
         -0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,      // top left
         -0.5f, -0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,      // bottom left
          0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.5f,      // center
-         0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,      // top right
-         0.5f, -0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,      // bottom right
-         0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.5f,      // center
+         0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  2.0f,  2.0f,      // top right
+         0.5f, -0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  2.0f,  0.0f,      // bottom right
+         0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,      // center
     };
 
     // VAO : Vertex Array Object, VBO : Vertex Buffer Object, EBO: Element Buffer Object
@@ -122,10 +122,6 @@ int main(int argc, char const *argv[])
 
     // TEXTURES
 
-    // Texture wrapping options : GL_REPEAT (default), GL_MIRRORED_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_BORDER 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-
     // Setting up border color for GL_CLAMP_TO_BORDER option
     // float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
     // glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);  
@@ -168,10 +164,15 @@ int main(int argc, char const *argv[])
     glGenerateMipmap(GL_TEXTURE_2D);
 
     glBindTexture(GL_TEXTURE_2D, textures[1]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width2, height2, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     glBindTexture(GL_TEXTURE_2D, textures[2]);
+    // Texture wrapping options : GL_REPEAT (default), GL_MIRRORED_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_BORDER 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width3, height3, 0, GL_RGB, GL_UNSIGNED_BYTE, data3);
     glGenerateMipmap(GL_TEXTURE_2D);
 
