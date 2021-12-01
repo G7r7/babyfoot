@@ -142,15 +142,17 @@ int main(int argc, char const *argv[])
     // Loading the texture file
     int width, height, nrChannels;
     int width2, height2, nrChannels2;
+    int width3, height3, nrChannels3;
     stbi_set_flip_vertically_on_load(true);
     unsigned char *data = stbi_load("../src/textures/verre-sur-mesure-granite.jpg", &width, &height, &nrChannels, 0); 
     unsigned char *data2 = stbi_load("../src/textures/rl.png", &width2, &height2, &nrChannels2, 0); 
+    unsigned char *data3 = stbi_load("../src/textures/rl2.jpg", &width3, &height3, &nrChannels3, 0); 
 
     // Generating the texture
     // 2 is the number of textures we generate
     // store the generated textures in an unsigned int array
-    unsigned int textures[2];
-    glGenTextures(2, textures);  
+    unsigned int textures[3];
+    glGenTextures(3, textures);  
 
     // We bind the generated texture to the current context
     glBindTexture(GL_TEXTURE_2D, textures[0]);
@@ -169,10 +171,16 @@ int main(int argc, char const *argv[])
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width2, height2, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
     glGenerateMipmap(GL_TEXTURE_2D);
 
+    glBindTexture(GL_TEXTURE_2D, textures[2]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width3, height3, 0, GL_RGB, GL_UNSIGNED_BYTE, data3);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+
 
     // we can free the loaded image
     stbi_image_free(data);
     stbi_image_free(data2);
+    stbi_image_free(data3);
 
     // render loop
     while (!glfwWindowShouldClose(window)) {
@@ -187,20 +195,24 @@ int main(int argc, char const *argv[])
         double mod = 2.0f;
         float offset = sin(time);
 
-        // render triangle
+        // render left triangle
         myShaderProgram.use();
         myShaderProgram.setFloat("offsetX", offset);
+        myShaderProgram.setInt("ourTexture", 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textures[0]);
         glBindVertexArray(VAO); // bind
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
+        // render right triangle
         myShaderProgram2.use();
         myShaderProgram2.setFloat("offsetY", offset);
         myShaderProgram2.setInt("ourTexture1", 0);
         myShaderProgram2.setInt("ourTexture2", 1);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textures[0]);
-        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, textures[1]);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, textures[2]);
         glBindVertexArray(VAO2); // bind
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0); // unbind
