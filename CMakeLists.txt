@@ -9,14 +9,16 @@ set(LIBS_DIR C:/Dvlp/libs)
 
 set(GLAD_ROOT_DIR ${LIBS_DIR}/glad)
 set(GLFW_ROOT_DIR ${LIBS_DIR}/glfw-3.3.5)
+set(GLM_ROOT_DIR ${LIBS_DIR}/glm)
 
 set(GLAD_INCLUDE_DIRS ${GLAD_ROOT_DIR}/include)
 set(GLFW_INCLUDE_DIRS ${GLFW_ROOT_DIR}/include)
+set(GLM_INCLUDE_DIRS ${GLM_ROOT_DIR}/glm)
 
 add_library(glad ${GLAD_ROOT_DIR}/src/glad.c)
 set(GLFW_LIBRARY ${GLFW_ROOT_DIR}/build/src/libglfw3dll.a)
 
-include_directories(${GLAD_INCLUDE_DIRS} ${GLFW_INCLUDE_DIRS})
+include_directories(${GLAD_INCLUDE_DIRS} ${GLFW_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS})
 
 add_executable(babyfoot ${SOURCE_FILES})
 

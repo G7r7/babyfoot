@@ -1,5 +1,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
 #include "stb_image.h"
 
 #include <math.h>
@@ -15,6 +18,10 @@ const unsigned int SCREEN_WIDTH = 960;
 const unsigned int SCREEN_HEIGHT = 540;
 
 float mixLevel = 0.5f;
+float rotationX = 0.0f;
+float rotationY = 0.0f;
+float offsetX = 0.0f;
+float offsetY = 0.0f;
 
 // Vertex shader : role -> outuput a value for gl_position
 // Apos is the input variable (in) of type vec3 (3 float values)
@@ -59,6 +66,7 @@ int main(int argc, char const *argv[])
 
     Shader myShaderProgram("../src/shaders/vertexShader.vs", "../src/shaders/fragmentShaderTextureColor.fs");
     Shader myShaderProgram2("../src/shaders/vertexShader.vs", "../src/shaders/fragmentShaderTextureMultiple.fs");
+    Shader myShaderProgramMatrix("../src/shaders/vertexShaderMatrix.vs", "../src/shaders/fragmentShaderTextureColor.fs");
 
     // set up vertex data
     float vertices[] = {
@@ -178,32 +186,37 @@ int main(int argc, char const *argv[])
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width3, height3, 0, GL_RGB, GL_UNSIGNED_BYTE, data3);
     glGenerateMipmap(GL_TEXTURE_2D);
 
-
-
     // we can free the loaded image
     stbi_image_free(data);
     stbi_image_free(data2);
     stbi_image_free(data3);
 
-    
 
     // render loop
     while (!glfwWindowShouldClose(window)) {
         // input
         process_input(window);
 
+        glm::mat4 trans = glm::mat4(1.0f);
+        // Translation matrix
+        glm::vec3 vec(offsetX, offsetY, 0.0f);
+        trans = glm::translate(trans, vec);
+        // Rotation matrix
+        trans = glm::rotate(trans, glm::radians(rotationX), glm::vec3(1.0, 0.0, 0.0));
+        trans = glm::rotate(trans, glm::radians(rotationY), glm::vec3(0.0, 1.0, 0.0));
+        // Scaling matrix
+        trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+        
+
         // render color
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        double time = glfwGetTime();
-        double mod = 2.0f;
-        float offset = sin(time);
-
         // render left triangle
-        myShaderProgram.use();
-        myShaderProgram.setFloat("offsetX", offset);
-        myShaderProgram.setInt("ourTexture", 0);
+        myShaderProgramMatrix.use();
+        myShaderProgramMatrix.setInt("ourTexture", 0);
+        unsigned int transformLocation = glGetUniformLocation(myShaderProgramMatrix.ID, "transform");
+        glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(trans));
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[0]);
         glBindVertexArray(VAO); // bind
@@ -211,7 +224,6 @@ int main(int argc, char const *argv[])
 
         // render right triangle
         myShaderProgram2.use();
-        myShaderProgram2.setFloat("offsetY", offset);
         myShaderProgram2.setFloat("mixLevel", mixLevel);
         myShaderProgram2.setInt("ourTexture1", 0);
         myShaderProgram2.setInt("ourTexture2", 1);
@@ -240,11 +252,27 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 void process_input(GLFWwindow* window) {
+    
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    else if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && mixLevel < 1)
+    if(glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS && mixLevel < 1)
         mixLevel += 0.0005;
-    else if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && mixLevel > 0)
+    if(glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS && mixLevel > 0)
         mixLevel -= 0.0005;
-        
+    if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        rotationX += 0.05;
+    if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        rotationX -= 0.05;
+    if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+        rotationY += 0.05;
+    if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+        rotationY -= 0.05;
+    if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        offsetX += 0.0001;
+    if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        offsetX -= 0.0001;
+    if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        offsetY += 0.0001;
+    if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        offsetY -= 0.0001;
 }
