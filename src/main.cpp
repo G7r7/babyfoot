@@ -19,11 +19,7 @@ const unsigned int SCREEN_HEIGHT = 540;
 
 float mixLevel = 0.5f;
 
-// float rotationX = 0.0f;
-// float rotationY = 0.0f;
-
-// float offsetX = 0.0f;
-// float offsetY = 0.0f;
+float fovGPU = 45.0f;
 
 float cameraOffsetX = 0.0f;
 float cameraOffsetY = 0.0f;
@@ -232,7 +228,7 @@ int main(int argc, char const *argv[])
         // first is angle of the of the frustum
         // second is aspect ratio of frustum plane
         // third and forth are near and far plane coordinates
-        glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 proj = glm::perspective(glm::radians(fovGPU), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
         // Final transform matrix
         trans = proj * view * trans;
@@ -322,6 +318,10 @@ void process_input(GLFWwindow* window) {
         cameraOffsetZ += 0.001;
     if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
         cameraOffsetZ -= 0.001;
+    if(glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+        fovGPU += 0.05;
+    if(glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+        fovGPU -= 0.05;
     
     double X, Y = 0;
     int windowWidth, windowHeight = 0;
