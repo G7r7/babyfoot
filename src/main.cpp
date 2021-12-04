@@ -18,10 +18,20 @@ const unsigned int SCREEN_WIDTH = 960;
 const unsigned int SCREEN_HEIGHT = 540;
 
 float mixLevel = 0.5f;
-float rotationX = 0.0f;
-float rotationY = 0.0f;
-float offsetX = 0.0f;
-float offsetY = 0.0f;
+
+// float rotationX = 0.0f;
+// float rotationY = 0.0f;
+
+// float offsetX = 0.0f;
+// float offsetY = 0.0f;
+
+float cameraOffsetX = 0.0f;
+float cameraOffsetY = 0.0f;
+float cameraOffsetZ = 0.0f;
+
+float cameraRotationX = 0.0f;
+float cameraRotationY = 0.0f;
+
 
 // Vertex shader : role -> outuput a value for gl_position
 // Apos is the input variable (in) of type vec3 (3 float values)
@@ -67,16 +77,17 @@ int main(int argc, char const *argv[])
     Shader myShaderProgram("../src/shaders/vertexShader.vs", "../src/shaders/fragmentShaderTextureColor.fs");
     Shader myShaderProgram2("../src/shaders/vertexShader.vs", "../src/shaders/fragmentShaderTextureMultiple.fs");
     Shader myShaderProgramMatrix("../src/shaders/vertexShaderMatrix.vs", "../src/shaders/fragmentShaderTextureColor.fs");
+    Shader myShaderProgramMatrix2("../src/shaders/vertexShaderMatrix.vs", "../src/shaders/fragmentShaderTextureMultiple.fs");
 
     // set up vertex data
     float vertices[] = {
         // positions          // colors            // texture coords
-        -0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,      // top left
-        -0.5f, -0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,      // bottom left
-         0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.5f,      // center
-         0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,      // top right
-         0.5f, -0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,      // bottom right
-         0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.5f,      // center
+        -0.5f,  0.5f,  -1.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,      // top left
+        -0.5f, -0.5f,  -1.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,      // bottom left
+         0.0f,  0.0f,  -1.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.5f,      // center
+         0.5f,  0.5f,  -1.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,      // top right
+         0.5f, -0.5f,  -1.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,      // bottom right
+         0.0f,  0.0f,  -1.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.5f,      // center
     };
 
     // VAO : Vertex Array Object, VBO : Vertex Buffer Object, EBO: Element Buffer Object
@@ -191,7 +202,6 @@ int main(int argc, char const *argv[])
     stbi_image_free(data2);
     stbi_image_free(data3);
 
-
     // render loop
     while (!glfwWindowShouldClose(window)) {
         // input
@@ -199,14 +209,35 @@ int main(int argc, char const *argv[])
 
         glm::mat4 trans = glm::mat4(1.0f);
         // Translation matrix
-        glm::vec3 vec(offsetX, offsetY, 0.0f);
-        trans = glm::translate(trans, vec);
-        // Rotation matrix
-        trans = glm::rotate(trans, glm::radians(rotationX), glm::vec3(1.0, 0.0, 0.0));
-        trans = glm::rotate(trans, glm::radians(rotationY), glm::vec3(0.0, 1.0, 0.0));
-        // Scaling matrix
-        trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+        // glm::vec3 vec(offsetX, offsetY, 0.0f);
+        // trans = glm::translate(trans, vec);
+        // // Rotation matrix
+        // trans = glm::rotate(trans, glm::radians(rotationX), glm::vec3(1.0, 0.0, 0.0));
+        // trans = glm::rotate(trans, glm::radians(rotationY), glm::vec3(0.0, 1.0, 0.0));
+        // // Scaling matrix
+        // trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
         
+        // View matrix
+        // it is used to move camera around
+        glm::mat4 view = glm::mat4(1.0f);
+        view = glm::rotate(view, glm::radians(cameraRotationX), glm::vec3(1.0, 0.0, 0.0));
+        view = glm::rotate(view, glm::radians(cameraRotationY), glm::vec3(0.0, 1.0, 0.0));
+        view = glm::translate(view, glm::vec3(-cameraOffsetX, -cameraOffsetY, -cameraOffsetZ));
+
+        // Orthographic projection matrix
+        // 0 and 800 are the left and right coordinates of the frustum
+        // 0 and 600 are the bottom and top coordinates of the frustum
+        // 0.1 and 100 are the front and back coordinates of the frustum
+        // glm::ortho(0.0f, (float)SCREEN_WIDTH, 0.0f, (float)SCREEN_HEIGHT, 0.1f, 100.0f);
+
+        // Perspective projection matrix
+        // first is angle of the of the frustum
+        // second is aspect ratio of frustum plane
+        // third and forth are near and far plane coordinates
+        glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.1f, 100.0f);
+
+        // Final transform matrix
+        trans = proj * view * trans;
 
         // render color
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -223,10 +254,12 @@ int main(int argc, char const *argv[])
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         // render right triangle
-        myShaderProgram2.use();
-        myShaderProgram2.setFloat("mixLevel", mixLevel);
-        myShaderProgram2.setInt("ourTexture1", 0);
-        myShaderProgram2.setInt("ourTexture2", 1);
+        myShaderProgramMatrix2.use();
+        myShaderProgramMatrix2.setFloat("mixLevel", mixLevel);
+        myShaderProgramMatrix2.setInt("ourTexture1", 0);
+        myShaderProgramMatrix2.setInt("ourTexture2", 1);
+        unsigned int transformLocation2 = glGetUniformLocation(myShaderProgramMatrix2.ID, "transform");
+        glUniformMatrix4fv(transformLocation2, 1, GL_FALSE, glm::value_ptr(trans));
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[1]);
         glActiveTexture(GL_TEXTURE1);
@@ -255,24 +288,48 @@ void process_input(GLFWwindow* window) {
     
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    // Texture Mixing
     if(glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS && mixLevel < 1)
         mixLevel += 0.0005;
     if(glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS && mixLevel > 0)
         mixLevel -= 0.0005;
-    if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-        rotationX += 0.05;
-    if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-        rotationX -= 0.05;
-    if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-        rotationY += 0.05;
-    if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-        rotationY -= 0.05;
+    // // Triangle translation
+    // if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+    //     rotationX += 0.05;
+    // if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+    //     rotationX -= 0.05;
+    // if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+    //     rotationY += 0.05;
+    // if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+    //     rotationY -= 0.05;
+    // // Triangle rotation
+    // if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    //     offsetX += 0.0001;
+    // if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    //     offsetX -= 0.0001;
+    // if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    //     offsetY += 0.0001;
+    // if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    //     offsetY -= 0.0001;
+    // Camera translation
     if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        offsetX += 0.0001;
+        cameraOffsetX += 0.001;
     if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        offsetX -= 0.0001;
+        cameraOffsetX -= 0.001;
     if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        offsetY += 0.0001;
+        cameraOffsetY += 0.001;
     if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        offsetY -= 0.0001;
+        cameraOffsetY -= 0.001;
+    if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+        cameraOffsetZ += 0.001;
+    if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        cameraOffsetZ -= 0.001;
+    
+    double X, Y = 0;
+    int windowWidth, windowHeight = 0;
+    glfwGetCursorPos(window, &X, &Y);
+    glfwGetWindowSize(window, &windowWidth, &windowHeight);
+    cameraRotationX = (Y - windowHeight / 2) * 0.3f;
+    cameraRotationY = (X - windowWidth / 2) * 0.3f;
+    std::cout << X << " " << Y << " " << cameraRotationX << " " << cameraRotationY << std::endl;
 }
