@@ -74,35 +74,39 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
-    Shader myShaderProgram("../src/shaders/vertexShader.vs", "../src/shaders/fragmentShaderTextureColor.fs");
-    Shader myShaderProgram2("../src/shaders/vertexShader.vs", "../src/shaders/fragmentShaderTextureMultiple.fs");
-    Shader myShaderProgramMatrix("../src/shaders/vertexShaderMatrix.vs", "../src/shaders/fragmentShaderTextureColor.fs");
-    Shader myShaderProgramMatrix2("../src/shaders/vertexShaderMatrix.vs", "../src/shaders/fragmentShaderTextureMultiple.fs");
+    Shader myShaderProgram("../src/shaders/vertexShaderMatrix.vs", "../src/shaders/fragmentShaderTextureMultiple.fs");
 
     // set up vertex data
     float vertices[] = {
         // positions          // colors            // texture coords
-        -0.5f,  0.5f,  -1.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,      // top left
-        -0.5f, -0.5f,  -1.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,      // bottom left
-         0.0f,  0.0f,  -1.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.5f,      // center
-         0.5f,  0.5f,  -1.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,      // top right
-         0.5f, -0.5f,  -1.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,      // bottom right
-         0.0f,  0.0f,  -1.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.5f,      // center
+        -1.0f,  0.0f,   0.0f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,      // top left
+         1.0f,  0.0f,   0.0f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,      // bottom left
+        -1.0f,  0.0f,  -2.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.5f,      // center
+         1.0f,  0.0f,  -2.0f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,      // top right
+         0.0f, 1.62f,  -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.5f,      // center
+    };
+
+    unsigned int indices[] = {
+        0, 1, 2,
+        1, 2, 3,
+        0, 1, 4,
+        0, 2, 4,
+        2, 3, 4,
+        1, 3, 4,
     };
 
     // VAO : Vertex Array Object, VBO : Vertex Buffer Object, EBO: Element Buffer Object
     // These are the GPU side representation in memory of the vertices
-    unsigned int VBO, VAO, VBO2, VAO2;
+    unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    glGenVertexArrays(1, &VAO2);
-    glGenBuffers(1, &VBO2);
+    glGenBuffers(1, &EBO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, VBO2);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // SETTING UP THE INPUT VARIABLES IN THE VERTEX SHADER CODE
     // for index 0 of the VAO corresponds to currently bound VBO
@@ -125,22 +129,6 @@ int main(int argc, char const *argv[])
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    glBindVertexArray(VAO2);
-    //positions
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(24 * sizeof(float)));
-    glEnableVertexAttribArray(0);
-
-    // colors : last parameter is the byte offset in the array to skip the positions to get to the colors
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(27 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    // texture:
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(30 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
-    // we unbind the buffer
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
     // TEXTURES
 
     // Setting up border color for GL_CLAMP_TO_BORDER option
@@ -157,9 +145,7 @@ int main(int argc, char const *argv[])
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // Loading the texture file
-    int width, height, nrChannels;
-    int width2, height2, nrChannels2;
-    int width3, height3, nrChannels3;
+    int width, height, nrChannels, width2, height2, nrChannels2, width3, height3, nrChannels3;
     stbi_set_flip_vertically_on_load(true);
     unsigned char *data = stbi_load("../src/textures/verre-sur-mesure-granite.jpg", &width, &height, &nrChannels, 0); 
     unsigned char *data2 = stbi_load("../src/textures/rl.png", &width2, &height2, &nrChannels2, 0); 
@@ -171,9 +157,9 @@ int main(int argc, char const *argv[])
     unsigned int textures[3];
     glGenTextures(3, textures);  
 
+
     // We bind the generated texture to the current context
     glBindTexture(GL_TEXTURE_2D, textures[0]);
-
     // Loading the date in the texture we created
     // 0 is the mipmap level for wich we are creating a texture
     // GL_RGB is the format in wich we store the data
@@ -183,15 +169,12 @@ int main(int argc, char const *argv[])
     // We also generate automatically the associated mipmap
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
-
     glBindTexture(GL_TEXTURE_2D, textures[1]);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width2, height2, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
     glGenerateMipmap(GL_TEXTURE_2D);
-
     glBindTexture(GL_TEXTURE_2D, textures[2]);
-    // Texture wrapping options : GL_REPEAT (default), GL_MIRRORED_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_BORDER 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width3, height3, 0, GL_RGB, GL_UNSIGNED_BYTE, data3);
@@ -243,30 +226,23 @@ int main(int argc, char const *argv[])
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // render left triangle
-        myShaderProgramMatrix.use();
-        myShaderProgramMatrix.setInt("ourTexture", 0);
-        unsigned int transformLocation = glGetUniformLocation(myShaderProgramMatrix.ID, "transform");
+
+        // render 
+        myShaderProgram.use();
+        myShaderProgram.setFloat("mixLevel", mixLevel);
+        myShaderProgram.setInt("ourTexture0", 0);
+        myShaderProgram.setInt("ourTexture1", 1);
+        myShaderProgram.setInt("ourTexture2", 2);
+        unsigned int transformLocation = glGetUniformLocation(myShaderProgram.ID, "transform");
         glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(trans));
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[0]);
-        glBindVertexArray(VAO); // bind
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        // render right triangle
-        myShaderProgramMatrix2.use();
-        myShaderProgramMatrix2.setFloat("mixLevel", mixLevel);
-        myShaderProgramMatrix2.setInt("ourTexture1", 0);
-        myShaderProgramMatrix2.setInt("ourTexture2", 1);
-        unsigned int transformLocation2 = glGetUniformLocation(myShaderProgramMatrix2.ID, "transform");
-        glUniformMatrix4fv(transformLocation2, 1, GL_FALSE, glm::value_ptr(trans));
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textures[1]);
         glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, textures[1]);
+        glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, textures[2]);
-        glBindVertexArray(VAO2); // bind
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        glBindVertexArray(0); // unbind
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glDrawElements(GL_TRIANGLES, 6 * 3, GL_UNSIGNED_INT, 0);
 
         // glfw: swap buffers and poll IO events (keys, mouse, ...)
         glfwSwapBuffers(window);
@@ -275,6 +251,7 @@ int main(int argc, char const *argv[])
 
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
 
     glfwTerminate();
     return 0;
