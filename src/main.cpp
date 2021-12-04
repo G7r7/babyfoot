@@ -185,6 +185,8 @@ int main(int argc, char const *argv[])
     stbi_image_free(data2);
     stbi_image_free(data3);
 
+    glEnable(GL_DEPTH_TEST);
+
     // render loop
     while (!glfwWindowShouldClose(window)) {
         // input
@@ -225,6 +227,7 @@ int main(int argc, char const *argv[])
         // render color
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_DEPTH_BUFFER_BIT);
 
 
         // render 
