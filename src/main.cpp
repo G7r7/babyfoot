@@ -187,11 +187,24 @@ int main(int argc, char const *argv[])
 
     glEnable(GL_DEPTH_TEST);
 
+    glm::vec3 pyramidPositions[] = {
+        glm::vec3( 0.0f,  0.0f,  0.0f), 
+        glm::vec3( 2.0f,  5.0f, -15.0f), 
+        glm::vec3(-1.5f, -2.2f, -2.5f),  
+        glm::vec3(-3.8f, -2.0f, -12.3f),  
+        glm::vec3( 2.4f, -0.4f, -3.5f),  
+        glm::vec3(-1.7f,  3.0f, -7.5f),  
+        glm::vec3( 1.3f, -2.0f, -2.5f),  
+        glm::vec3( 1.5f,  2.0f, -2.5f), 
+        glm::vec3( 1.5f,  0.2f, -1.5f), 
+        glm::vec3(-1.3f,  1.0f, -1.5f)  
+    };
+
     // render loop
     while (!glfwWindowShouldClose(window)) {
         // input
         process_input(window);
-
+        
         glm::mat4 trans = glm::mat4(1.0f);
         // Translation matrix
         // glm::vec3 vec(offsetX, offsetY, 0.0f);
@@ -230,22 +243,27 @@ int main(int argc, char const *argv[])
         glClear(GL_DEPTH_BUFFER_BIT);
 
 
-        // render 
-        myShaderProgram.use();
-        myShaderProgram.setFloat("mixLevel", mixLevel);
-        myShaderProgram.setInt("ourTexture0", 0);
-        myShaderProgram.setInt("ourTexture1", 1);
-        myShaderProgram.setInt("ourTexture2", 2);
-        unsigned int transformLocation = glGetUniformLocation(myShaderProgram.ID, "transform");
-        glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(trans));
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textures[0]);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, textures[1]);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, textures[2]);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glDrawElements(GL_TRIANGLES, 6 * 3, GL_UNSIGNED_INT, 0);
+        for (size_t i = 0; i < 10; i++)
+        {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(trans, pyramidPositions[i]);
+            // render 
+            myShaderProgram.use();
+            myShaderProgram.setFloat("mixLevel", mixLevel);
+            myShaderProgram.setInt("ourTexture0", 0);
+            myShaderProgram.setInt("ourTexture1", 1);
+            myShaderProgram.setInt("ourTexture2", 2);
+            unsigned int transformLocation = glGetUniformLocation(myShaderProgram.ID, "transform");
+            glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(model));
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, textures[0]);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, textures[1]);
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, textures[2]);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+            glDrawElements(GL_TRIANGLES, 6 * 3, GL_UNSIGNED_INT, 0);
+        }
 
         // glfw: swap buffers and poll IO events (keys, mouse, ...)
         glfwSwapBuffers(window);
