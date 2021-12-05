@@ -198,6 +198,8 @@ int main(int argc, char const *argv[])
 
     // render loop
     while (!glfwWindowShouldClose(window)) {
+        _sleep(10);
+
         // input
         process_input(window);
         
@@ -239,25 +241,24 @@ int main(int argc, char const *argv[])
         glClear(GL_DEPTH_BUFFER_BIT);
 
 
+        // render 
+        myShaderProgram.use();
+        myShaderProgram.setFloat("mixLevel", mixLevel);
+        myShaderProgram.setInt("ourTexture0", 0);
+        myShaderProgram.setInt("ourTexture1", 1);
+        myShaderProgram.setInt("ourTexture2", 2);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textures[0]);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, textures[1]);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, textures[2]);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
         for (size_t i = 0; i < 10; i++)
         {
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(trans, pyramidPositions[i]);
-            // render 
-            myShaderProgram.use();
-            myShaderProgram.setFloat("mixLevel", mixLevel);
-            myShaderProgram.setInt("ourTexture0", 0);
-            myShaderProgram.setInt("ourTexture1", 1);
-            myShaderProgram.setInt("ourTexture2", 2);
-            unsigned int transformLocation = glGetUniformLocation(myShaderProgram.ID, "transform");
-            glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(model));
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, textures[0]);
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, textures[1]);
-            glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, textures[2]);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+            glm::mat4 model = glm::translate(trans, pyramidPositions[i]);
+            myShaderProgram.setMat4f("transform", model);
             glDrawElements(GL_TRIANGLES, 6 * 3, GL_UNSIGNED_INT, 0);
         }
 
@@ -284,40 +285,22 @@ void process_input(GLFWwindow* window) {
         glfwSetWindowShouldClose(window, true);
     // Texture Mixing
     if(glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS && mixLevel < 1)
-        mixLevel += 0.0005;
+        mixLevel += 0.005;
     if(glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS && mixLevel > 0)
-        mixLevel -= 0.0005;
-    // // Triangle translation
-    // if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-    //     rotationX += 0.05;
-    // if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-    //     rotationX -= 0.05;
-    // if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-    //     rotationY += 0.05;
-    // if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-    //     rotationY -= 0.05;
-    // // Triangle rotation
-    // if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-    //     offsetX += 0.0001;
-    // if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-    //     offsetX -= 0.0001;
-    // if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-    //     offsetY += 0.0001;
-    // if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-    //     offsetY -= 0.0001;
+        mixLevel -= 0.005;
     // Camera translation
     if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        cameraOffsetX += 0.001;
+        cameraOffsetX += 0.01;
     if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        cameraOffsetX -= 0.001;
+        cameraOffsetX -= 0.01;
     if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        cameraOffsetY += 0.001;
+        cameraOffsetY += 0.01;
     if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        cameraOffsetY -= 0.001;
+        cameraOffsetY -= 0.01;
     if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-        cameraOffsetZ += 0.001;
+        cameraOffsetZ += 0.01;
     if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-        cameraOffsetZ -= 0.001;
+        cameraOffsetZ -= 0.01;
     if(glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
         fovGPU += 0.05;
     if(glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
