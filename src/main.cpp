@@ -75,11 +75,11 @@ int main(int argc, char const *argv[])
     // set up vertex data
     float vertices[] = {
         // positions          // colors            // texture coords
-        -1.0f,  0.0f,   0.0f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,      // top left
-         1.0f,  0.0f,   0.0f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,      // bottom left
-        -1.0f,  0.0f,  -2.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.5f,      // center
-         1.0f,  0.0f,  -2.0f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,      // top right
-         0.0f, 1.62f,  -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.5f,      // center
+        -1.0f,  0.0f,   1.0f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,      // top left
+         1.0f,  0.0f,   1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,      // bottom left
+        -1.0f,  0.0f,  -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.5f,      // center
+         1.0f,  0.0f,  -1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,      // top right
+         0.0f, 1.62f,   0.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.5f,      // center
     };
 
     unsigned int indices[] = {
@@ -257,7 +257,11 @@ int main(int argc, char const *argv[])
 
         for (size_t i = 0; i < 10; i++)
         {
-            glm::mat4 model = glm::translate(trans, pyramidPositions[i]);
+            glm::mat4 model = trans;
+            model = glm::translate(model, pyramidPositions[i]);
+            if ((i+1)%3 == 0) {
+                model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0, 1.0, 0.0));
+            }
             myShaderProgram.setMat4f("transform", model);
             glDrawElements(GL_TRIANGLES, 6 * 3, GL_UNSIGNED_INT, 0);
         }
@@ -312,5 +316,4 @@ void process_input(GLFWwindow* window) {
     glfwGetWindowSize(window, &windowWidth, &windowHeight);
     cameraRotationX = (Y - windowHeight / 2) * 0.3f;
     cameraRotationY = (X - windowWidth / 2) * 0.3f;
-    std::cout << X << " " << Y << " " << cameraRotationX << " " << cameraRotationY << std::endl;
 }
