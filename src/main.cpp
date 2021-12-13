@@ -212,7 +212,6 @@ int main(int argc, char const *argv[])
 
     // render loop
     while (!glfwWindowShouldClose(window)) {
-        _sleep(10);
 
         float currentFrameTime = glfwGetTime();
         deltaTime = currentFrameTime - lastFrameTime;
