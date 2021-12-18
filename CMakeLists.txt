@@ -24,4 +24,8 @@ include_directories(${GLAD_INCLUDE_DIRS} ${GLFW_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS
 
 add_executable(babyfoot ${SOURCE_FILES})
 
-target_link_libraries(babyfoot glad ${GLFW_LIBRARY} dl pthread)
+if(WIN32)
+    target_link_libraries(babyfoot glad ${GLFW_LIBRARY})
+else()
+    target_link_libraries(babyfoot glad ${GLFW_LIBRARY} dl pthread)
+endif()
