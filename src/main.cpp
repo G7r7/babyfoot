@@ -3,12 +3,13 @@
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
-#include "stb_image.h"
 
 #include <math.h>
 #include <iostream>
 
 #include "shader.hpp"
+#include "models/pyramid_model.hpp"
+#include "models/loaded_model.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void process_input(GLFWwindow* window);
@@ -85,115 +86,11 @@ int main(int argc, char const *argv[])
     }
 
     Shader myShaderProgram("../src/shaders/vertexShaderMatrix.vs", "../src/shaders/fragmentShaderTextureMultiple.fs");
+    // Shader lightSourceShaderProgram("../src/shaders/vertexShaderLight.vs", "../src/shaders/fragmentShaderTextureMultiple.fs");
 
-    // set up vertex data
-    float vertices[] = {
-        // positions          // colors            // texture coords
-        -1.0f,  0.0f,   1.0f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,      // top left
-         1.0f,  0.0f,   1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,      // bottom left
-        -1.0f,  0.0f,  -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.5f,      // center
-         1.0f,  0.0f,  -1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,      // top right
-         0.0f, 1.62f,   0.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.5f,      // center
-    };
-
-    unsigned int indices[] = {
-        0, 1, 2,
-        1, 2, 3,
-        0, 1, 4,
-        0, 2, 4,
-        2, 3, 4,
-        1, 3, 4,
-    };
-
-    // VAO : Vertex Array Object, VBO : Vertex Buffer Object, EBO: Element Buffer Object
-    // These are the GPU side representation in memory of the vertices
-    unsigned int VBO, VAO, EBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    // SETTING UP THE INPUT VARIABLES IN THE VERTEX SHADER CODE
-    // for index 0 of the VAO corresponds to currently bound VBO
-    // 3 corresponds to the number of elements we are reading from the buffer
-    // GL_FLOAT : We're specifying the type of the data we are reading
-    // GL_FALSE : not important
-    // 3 * sizeof(float) : Then we specify the size of each of the element (ex: 3 floats for a vertice)  
-    
-    // bind the Vertex Array Object, then bind and set vertex buffer(s), and then configure attribute(s)
-    glBindVertexArray(VAO);
-    //positions
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // colors : last parameter is the byte offset in the array to skip the positions to get to the colors
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    // texture:
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
-    // TEXTURES
-
-    // Setting up border color for GL_CLAMP_TO_BORDER option
-    // float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
-    // glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);  
-
-    // Setting texture filtering : GL_NEAREST, GL_LINEAR
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    // Setting texture mignification and magnification filtering : 
-    // GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_LINEAR
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    // Loading the texture file
-    int width, height, nrChannels, width2, height2, nrChannels2, width3, height3, nrChannels3;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char *data = stbi_load("../src/textures/verre-sur-mesure-granite.jpg", &width, &height, &nrChannels, 0); 
-    unsigned char *data2 = stbi_load("../src/textures/rl.png", &width2, &height2, &nrChannels2, 0); 
-    unsigned char *data3 = stbi_load("../src/textures/rl2.jpg", &width3, &height3, &nrChannels3, 0); 
-
-    // Generating the texture
-    // 2 is the number of textures we generate
-    // store the generated textures in an unsigned int array
-    unsigned int textures[3];
-    glGenTextures(3, textures);  
-
-
-    // We bind the generated texture to the current context
-    glBindTexture(GL_TEXTURE_2D, textures[0]);
-    // Loading the date in the texture we created
-    // 0 is the mipmap level for wich we are creating a texture
-    // GL_RGB is the format in wich we store the data
-    // other 0 is legacy
-    // GL_RGB format of source
-    // GL_UNSIGNED_BYTE datatype of source
-    // We also generate automatically the associated mipmap
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, textures[1]);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width2, height2, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, textures[2]);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width3, height3, 0, GL_RGB, GL_UNSIGNED_BYTE, data3);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    // we can free the loaded image
-    stbi_image_free(data);
-    stbi_image_free(data2);
-    stbi_image_free(data3);
+    /* This is a pyramid model */
+    PyramidModel my_PyramidModel;
+    LoadedModel my_LoadedPyramid(&my_PyramidModel);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -247,16 +144,7 @@ int main(int argc, char const *argv[])
         // render 
         myShaderProgram.use();
         myShaderProgram.setFloat("mixLevel", mixLevel);
-        myShaderProgram.setInt("ourTexture0", 0);
-        myShaderProgram.setInt("ourTexture1", 1);
-        myShaderProgram.setInt("ourTexture2", 2);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textures[0]);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, textures[1]);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, textures[2]);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        my_LoadedPyramid.Bind();
 
         for (size_t i = 0; i < 10; i++)
         {
@@ -266,7 +154,7 @@ int main(int argc, char const *argv[])
                 model = glm::rotate(model, currentFrameTime, glm::vec3(0.0, 1.0, 0.0));
             }
             myShaderProgram.setMat4f("transform", model);
-            glDrawElements(GL_TRIANGLES, 6 * 3, GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
         }
 
         // glfw: swap buffers and poll IO events (keys, mouse, ...)
@@ -274,9 +162,7 @@ int main(int argc, char const *argv[])
         glfwPollEvents();
     }
 
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
+    my_LoadedPyramid.~LoadedModel();
 
     glfwTerminate();
     return 0;

@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(Babyfoot)
 
-set(SOURCE_FILES src/main.cpp src/shader.hpp src/shader.cpp src/stb_image.h src/stb.cpp)
+set(SOURCE_FILES src/main.cpp 
+    src/shader.hpp src/shader.cpp 
+    src/stb_image.h 
+    src/stb.cpp 
+    src/models/loaded_model.cpp
+    src/models/pyramid_model.cpp
+)
 
 set(LIBS_DIR ${CMAKE_SOURCE_DIR}/../libs)
 
