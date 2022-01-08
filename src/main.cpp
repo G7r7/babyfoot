@@ -154,7 +154,7 @@ int main(int argc, char const *argv[])
                 model = glm::rotate(model, currentFrameTime, glm::vec3(0.0, 1.0, 0.0));
             }
             myShaderProgram.setMat4f("transform", model);
-            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_TRIANGLES, 6*3, GL_UNSIGNED_INT, 0);
         }
 
         // glfw: swap buffers and poll IO events (keys, mouse, ...)

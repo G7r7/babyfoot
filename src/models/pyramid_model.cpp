@@ -26,6 +26,14 @@ std::vector<int> PyramidModel::getIndices() {
     return indices;
 }
 
+unsigned int PyramidModel::getVerticesSize() {
+    return getVertices().size() * sizeof(float);
+}
+
+unsigned int PyramidModel::getIndicesSize() {
+    return getIndices().size() * sizeof(int);
+}
+
 PyramidModel::~PyramidModel()
 {
 

@@ -1,23 +1,24 @@
 #include "loaded_model.hpp"
 #include <glad/glad.h>
 #include "../stb_image.h"
+#include <iostream>²
 
 LoadedModel::LoadedModel(Model* model) {
-        // VAO : Vertex Array Object, VBO : Vertex Buffer Object, EBO: Element Buffer Object
+    // VAO : Vertex Array Object, VBO : Vertex Buffer Object, EBO: Element Buffer Object
     // These are the GPU side representation in memory of the vertices
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(model->getVertices()), model->getVertices().data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, model->getVerticesSize(), model->getVertices().data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(model->getIndices()), model->getIndices().data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, model->getIndicesSize(), model->getIndices().data(), GL_STATIC_DRAW);
 
     // SETTING UP THE INPUT VARIABLES IN THE VERTEX SHADER CODE
     // for index 0 of the VAO corresponds to currently bound VBO
-    // 3 corresponds to the number of elements we are reading from the buffer
+    // 3 corresponds to the number of elements we are reading at a time from the buffer, here 3 coordinates (x,y,z)
     // GL_FLOAT : We're specifying the type of the data we are reading
     // GL_FALSE : not important
     // 3 * sizeof(float) : Then we specify the size of each of the element (ex: 3 floats for a vertice)  
@@ -28,7 +29,7 @@ LoadedModel::LoadedModel(Model* model) {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-        // colors : last parameter is the byte offset in the array to skip the positions to get to the colors
+    // colors : last parameter is the byte offset in the array to skip the positions to get to the colors
     // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     // glEnableVertexAttribArray(1);
 
@@ -74,6 +75,7 @@ LoadedModel::LoadedModel(Model* model) {
     // GL_RGB format of source
     // GL_UNSIGNED_BYTE datatype of source
     // We also generate automatically the associated mipmap
+
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, textures[1]);

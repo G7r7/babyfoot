@@ -13,6 +13,8 @@ class PyramidModel : public Model
         PyramidModel();
         std::vector<float> getVertices() override;
         std::vector<int> getIndices() override;
+        unsigned int getVerticesSize() override;
+        unsigned int getIndicesSize() override;
         ~PyramidModel();
 };
 
