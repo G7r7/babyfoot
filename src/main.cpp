@@ -86,7 +86,13 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
+    //Loading models
+
     /* This is a pyramid model */
+    Model my_PyramidModel = initPyramidModel();
+    LoadedModel my_LoadedPyramidModel(&my_PyramidModel);
+
+    /* This is a zendikar model */
     Model my_FancyModel = initFancyModel();
     LoadedModel my_LoadedFancyModel(&my_FancyModel);
 
@@ -96,6 +102,12 @@ int main(int argc, char const *argv[])
         glm::vec3( 0.0f,  0.0f,  0.0f), 
         glm::vec3( 2.0f,  5.0f, -15.0f), 
         glm::vec3(-1.5f, -2.2f, -2.5f),  
+    };
+
+    glm::vec3 pyramidModelsPositions[] = {
+        glm::vec3(-1.7f,  3.0f, -7.5f),  
+        glm::vec3( 1.3f, -2.0f, -2.5f),  
+        glm::vec3( 1.5f,  2.0f, -2.5f), 
     };
 
     // render loop
@@ -131,21 +143,30 @@ int main(int argc, char const *argv[])
 
         // render 
         my_LoadedFancyModel.setShaderFloat("mixLevel", mixLevel);
-        my_LoadedFancyModel.setShaderInt("ourTexture0", 0);
-        my_LoadedFancyModel.setShaderInt("ourTexture1", 1);
-        my_LoadedFancyModel.setShaderInt("ourTexture2", 2);
         my_LoadedFancyModel.bind();
 
-        for (size_t i = 0; i < 10; i++)
+        for (auto position : fancyModelsPositions)
         {
             glm::mat4 model = trans;
-            model = glm::translate(model, fancyModelsPositions[i]);
-            if ((i+1)%3 == 0) {
-                model = glm::rotate(model, currentFrameTime, glm::vec3(0.0, 1.0, 0.0));
-            }
+            model = glm::translate(model, position);
+            model = glm::rotate(model, currentFrameTime/3, glm::vec3(0.0, 1.0, 0.0));
             my_LoadedFancyModel.setShaderMat4f("transform", model);
             my_LoadedFancyModel.draw();
         }
+
+        // render 
+        my_LoadedPyramidModel.setShaderFloat("mixLevel", mixLevel);
+        my_LoadedPyramidModel.bind();
+
+        for (auto position : pyramidModelsPositions)
+        {
+            glm::mat4 model = trans;
+            model = glm::translate(model, position);
+            model = glm::rotate(model, -currentFrameTime/5, glm::vec3(0.0, 1.0, 0.0));
+            my_LoadedPyramidModel.setShaderMat4f("transform", model);
+            my_LoadedPyramidModel.draw();
+        }
+
 
         // glfw: swap buffers and poll IO events (keys, mouse, ...)
         glfwSwapBuffers(window);

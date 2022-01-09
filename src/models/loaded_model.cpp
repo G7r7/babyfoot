@@ -1,6 +1,7 @@
 #include "loaded_model.hpp"
 #include <glad/glad.h>
 #include <iostream>
+#include <sstream>
 
 LoadedModel::LoadedModel(Model* model) 
     : shader(model->getVertexShaderPath(), model->getFragmentShaderPath()), indicesNb(model->getIndices().size())
@@ -84,7 +85,12 @@ LoadedModel::LoadedModel(Model* model)
         // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
         // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+        shader.use();
+        std::stringstream ss;
+        ss << "ourTexture" << i;
+        setShaderInt(ss.str().c_str(), i);
     }
+
 }
 
 void LoadedModel::bind() {
