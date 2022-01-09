@@ -5,7 +5,7 @@
 
 class LoadedModel {
     private:
-        unsigned int *VBO, *VAO, *EBO;
+        unsigned int *VBO, *VAO, *EBO, *textures, texturesNb;
     public:
         LoadedModel(Model* model);
         void Bind();

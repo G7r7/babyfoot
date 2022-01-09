@@ -7,6 +7,7 @@ set(SOURCE_FILES src/main.cpp
     src/stb.cpp 
     src/models/model.cpp
     src/models/model_point.cpp
+    src/models/texture.cpp
     src/models/loaded_model.cpp
     src/models/pyramid_model.cpp
 )

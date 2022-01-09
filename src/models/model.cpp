@@ -11,6 +11,18 @@ void Model::setIndices(std::vector<int> indices) {
     this->indices = indices;
 }
 
+void Model::setTextures(std::vector<Texture> textures) {
+    this->textures = textures;
+}
+
+std::vector<Texture> Model::getTextures() {
+    return this->textures;
+}
+
+unsigned int Model::getTexturesLength() {
+    return this->textures.size();
+}
+
 std::vector<float> Model::getPositions()  {
     std::vector<float> positions;
     for (ModelPoint point : this->vertices)
@@ -74,4 +86,8 @@ unsigned int Model::getIndiceLength() {
 }
 unsigned int Model::getIndiceSize() {
     return getIndiceLength() * sizeof(int);
+}
+
+Model::~Model() {
+
 }

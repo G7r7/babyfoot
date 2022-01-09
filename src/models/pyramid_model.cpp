@@ -9,7 +9,6 @@ PyramidModel::PyramidModel() {
     vertices.push_back(ModelPoint(std::vector<float> {-1.0f,  0.0f,  -1.0f}, std::vector<float> {0.0f,  0.0f,  1.0f}, std::vector<float> {1.0f,  0.5f}));  // center
     vertices.push_back(ModelPoint(std::vector<float> {1.0f,  0.0f,  -1.0f}, std::vector<float> {1.0f,  0.0f,  0.0f}, std::vector<float> {1.0f,  1.0f}));  // top right
     vertices.push_back(ModelPoint(std::vector<float> {0.0f, 1.62f,   0.0f}, std::vector<float> {0.0f,  0.0f,  1.0f}, std::vector<float> {0.0f,  0.5f}));  // center
-
     setVertices(vertices);
 
     std::vector<int> indices;
@@ -22,4 +21,11 @@ PyramidModel::PyramidModel() {
         1, 3, 4,
     };
     setIndices(indices);
+
+    // Loading the texture files
+    std::vector<Texture> textures;
+    textures.push_back(Texture("../src/textures/verre-sur-mesure-granite.jpg")); 
+    textures.push_back(Texture("../src/textures/rl.png")); 
+    textures.push_back(Texture("../src/textures/rl2.jpg")); 
+    setTextures(textures);
 }

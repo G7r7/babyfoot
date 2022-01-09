@@ -4,17 +4,21 @@
 #include <vector>
 #include "model.hpp"
 #include "model_point.hpp"
+#include "texture.hpp"
 
 class Model
 {
     private:
         std::vector<ModelPoint> vertices;
         std::vector<int> indices;
+        std::vector<Texture> textures;
     public:
         Model();
+        ~Model();
         
         void setVertices(std::vector<ModelPoint>);
         void setIndices(std::vector<int>);
+        void setTextures(std::vector<Texture>);
 
         std::vector<float> getPositions();
         unsigned int getPositionsSize();
@@ -35,6 +39,9 @@ class Model
         unsigned int getIndicesSize();
         unsigned int getIndiceSize();
         unsigned int getIndiceLength();
+
+        std::vector<Texture> getTextures();
+        unsigned int getTexturesLength();
 };
 
 #endif
