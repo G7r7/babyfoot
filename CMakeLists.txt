@@ -9,7 +9,8 @@ set(SOURCE_FILES src/main.cpp
     src/models/model_point.cpp
     src/models/texture.cpp
     src/models/loaded_model.cpp
-    src/models/pyramid_model.cpp
+    src/models/tests/pyramid_model.cpp
+    src/models/tests/fancy_model.cpp
 )
 
 set(LIBS_DIR ${CMAKE_SOURCE_DIR}/../libs)

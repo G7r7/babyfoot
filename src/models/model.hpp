@@ -44,6 +44,8 @@ class Model
 
         std::vector<Texture> getTextures();
         unsigned int getTexturesLength();
+        
+        unsigned int getNbTriangles();
 };
 
 #endif

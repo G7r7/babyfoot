@@ -90,6 +90,10 @@ unsigned int Model::getIndiceSize() {
     return getIndiceLength() * sizeof(int);
 }
 
+unsigned int Model::getNbTriangles(){
+    return (unsigned int) this->indices.size()/3;
+}
+
 Model::~Model() {
 
 }

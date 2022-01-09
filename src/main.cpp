@@ -8,8 +8,9 @@
 #include <iostream>
 
 #include "shader.hpp"
-#include "models/pyramid_model.hpp"
 #include "models/loaded_model.hpp"
+#include "models/tests/pyramid_model.hpp"
+#include "models/tests/fancy_model.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void process_input(GLFWwindow* window);
@@ -89,8 +90,8 @@ int main(int argc, char const *argv[])
     // Shader lightSourceShaderProgram("../src/shaders/vertexShaderLight.vs", "../src/shaders/fragmentShaderTextureMultiple.fs");
 
     /* This is a pyramid model */
-    PyramidModel my_PyramidModel;
-    LoadedModel my_LoadedPyramid(&my_PyramidModel);
+    FancyModel my_model;
+    LoadedModel my_LoadedModel(&my_model);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -144,7 +145,10 @@ int main(int argc, char const *argv[])
         // render 
         myShaderProgram.use();
         myShaderProgram.setFloat("mixLevel", mixLevel);
-        my_LoadedPyramid.Bind();
+        myShaderProgram.setInt("ourTexture0", 0);
+        myShaderProgram.setInt("ourTexture1", 1);
+        myShaderProgram.setInt("ourTexture2", 2);
+        my_LoadedModel.Bind();
 
         for (size_t i = 0; i < 10; i++)
         {
@@ -154,7 +158,7 @@ int main(int argc, char const *argv[])
                 model = glm::rotate(model, currentFrameTime, glm::vec3(0.0, 1.0, 0.0));
             }
             myShaderProgram.setMat4f("transform", model);
-            glDrawElements(GL_TRIANGLES, 6*3, GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_TRIANGLES, my_model.getNbTriangles()*3, GL_UNSIGNED_INT, 0);
         }
 
         // glfw: swap buffers and poll IO events (keys, mouse, ...)
@@ -162,7 +166,6 @@ int main(int argc, char const *argv[])
         glfwPollEvents();
     }
 
-    my_LoadedPyramid.~LoadedModel();
 
     glfwTerminate();
     return 0;

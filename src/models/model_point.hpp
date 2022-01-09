@@ -9,7 +9,7 @@ class ModelPoint {
         std::vector<float> textureCoordinate;
         std::vector<float> rgb;
     public:
-        ModelPoint(std::vector<float> pos, std::vector<float> tex, std::vector<float> col);
+        ModelPoint(std::vector<float> pos, std::vector<float> col, std::vector<float> tex);
 
         std::vector<float> getPosition();
         std::vector<float> getTextureCoordinate();
