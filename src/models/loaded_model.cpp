@@ -97,6 +97,11 @@ void LoadedModel::bind() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
 }
 
+void LoadedModel::setShaderFloat(const char * name, float value) { this->shader.setFloat(name, value); };
+void LoadedModel::setShaderInt(const char * name, int value) { this->shader.setInt(name, value); };
+void LoadedModel::setShaderBool(const char * name, bool value) { this->shader.setBool(name, value); };
+void LoadedModel::setShaderMat4f(const char * name, glm::mat4 value) { this->shader.setMat4f(name, value); };
+
 LoadedModel::~LoadedModel() {
     glDeleteVertexArrays(1, VAO);
     glDeleteBuffers(1, VBO);

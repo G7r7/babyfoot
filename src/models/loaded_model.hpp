@@ -12,10 +12,10 @@ class LoadedModel {
     public:
         LoadedModel(Model* model);
         void bind();
-        void setShaderFloat(const char * name, float value) { this->shader.setFloat(name, value); };
-        void setShaderInt(const char * name, int value) { this->shader.setInt(name, value); };
-        void setShaderBool(const char * name, bool value) { this->shader.setBool(name, value); };
-        void setShaderMat4f(const char * name, glm::mat4 value) { this->shader.setMat4f(name, value); };
+        void setShaderFloat(const char * name, float value);
+        void setShaderInt(const char * name, int value);
+        void setShaderBool(const char * name, bool value);
+        void setShaderMat4f(const char * name, glm::mat4 value);
         ~LoadedModel();
 };
 
