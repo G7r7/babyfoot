@@ -5,22 +5,21 @@
 #include "model.hpp"
 #include "model_point.hpp"
 #include "texture.hpp"
+#include "../shader.hpp"
 
 class Model
 {
     private:
         std::vector<ModelPoint> vertices;
         std::vector<int> indices;
-        std::vector<Texture> textures;
-
+        std::vector<const char *> texturesPaths;
+        const char* vertexShaderPath;
+        const char* fragmentShaderPath;
         void pushInBuffer(std::vector<float>, std::vector<float>*);
+
     public:
-        Model();
+        Model(std::vector<ModelPoint> points, std::vector<int> indices, std::vector<const char*> texturesPaths, const char* vertexShaderPath, const char* fragmentShaderPath);
         ~Model();
-        
-        void setVertices(std::vector<ModelPoint>);
-        void setIndices(std::vector<int>);
-        void setTextures(std::vector<Texture>);
 
         std::vector<float> getPositions();
         unsigned int getPositionsSize();
@@ -42,8 +41,9 @@ class Model
         unsigned int getIndiceSize();
         unsigned int getIndiceLength();
 
-        std::vector<Texture> getTextures();
-        unsigned int getTexturesLength();
+        std::vector<const char *> getTexturesPaths();
+        const char * getVertexShaderPath();
+        const char * getFragmentShaderPath();
         
         unsigned int getNbTriangles();
 };

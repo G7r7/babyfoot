@@ -2,7 +2,9 @@
 #include <glad/glad.h>
 #include <iostream>
 
-LoadedModel::LoadedModel(Model* model) {
+LoadedModel::LoadedModel(Model* model) 
+    : shader(model->getVertexShaderPath(), model->getFragmentShaderPath()) 
+{
     // VAO : Vertex Array Object, VBO : Vertex Buffer Object, EBO: Element Buffer Object
     // These are the GPU side representation in memory of the vertices
     VAO = (unsigned int*)malloc(sizeof(unsigned int)*1);
@@ -56,9 +58,12 @@ LoadedModel::LoadedModel(Model* model) {
     // Generating the texture
     // 2 is the number of textures we generate
     // store the generated textures in an unsigned int array
-    texturesNb = model->getTexturesLength();
-    textures = (unsigned int*)malloc(sizeof(unsigned int)*texturesNb);
-    glGenTextures(texturesNb, textures);  
+    std::vector<const char*> texturesPaths = model->getTexturesPaths();
+    for (const char* path : texturesPaths)
+        this->texturesData.push_back(Texture(path));
+
+    textures = (unsigned int*)malloc(sizeof(unsigned int)*texturesData.size());
+    glGenTextures(texturesData.size(), textures);  
 
     // We bind the generated texture to the current context
     // Loading the date in the texture we created
@@ -69,9 +74,9 @@ LoadedModel::LoadedModel(Model* model) {
     // GL_UNSIGNED_BYTE datatype of source
     // We also generate automatically the associated mipmap
 
-    for (int i = 0; i < texturesNb; i++)
+    for (int i = 0; i < texturesData.size(); i++)
     {
-        Texture tex = model->getTextures()[i];
+        Texture tex = this->texturesData[i];
         glBindTexture(GL_TEXTURE_2D, textures[i]);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex.getWidth(), tex.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, tex.getData());
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -82,12 +87,13 @@ LoadedModel::LoadedModel(Model* model) {
     }
 }
 
-void LoadedModel::Bind() {
-    for (int i = 0; i < texturesNb; i++)
+void LoadedModel::bind() {
+    for (int i = 0; i < this->texturesData.size(); i++)
     {
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, textures[i]);
     }
+    this->shader.use();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
 }
 

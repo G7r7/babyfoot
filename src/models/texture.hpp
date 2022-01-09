@@ -7,7 +7,7 @@ private:
     int width, height, nbChannels;
     unsigned char *data;
 public:
-    Texture(char* path);
+    Texture(char const * path);
     int getWidth();
     int getHeight();
     int getNbChannels();

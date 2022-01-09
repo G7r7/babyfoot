@@ -86,11 +86,8 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
-    Shader myShaderProgram("../src/shaders/vertexShaderMatrix.vs", "../src/shaders/fragmentShaderTextureMultiple.fs");
-    // Shader lightSourceShaderProgram("../src/shaders/vertexShaderLight.vs", "../src/shaders/fragmentShaderTextureMultiple.fs");
-
     /* This is a pyramid model */
-    FancyModel my_model;
+    Model my_model = initFancyModel();
     LoadedModel my_LoadedModel(&my_model);
 
     glEnable(GL_DEPTH_TEST);
@@ -143,12 +140,11 @@ int main(int argc, char const *argv[])
 
 
         // render 
-        myShaderProgram.use();
-        myShaderProgram.setFloat("mixLevel", mixLevel);
-        myShaderProgram.setInt("ourTexture0", 0);
-        myShaderProgram.setInt("ourTexture1", 1);
-        myShaderProgram.setInt("ourTexture2", 2);
-        my_LoadedModel.Bind();
+        my_LoadedModel.setShaderFloat("mixLevel", mixLevel);
+        my_LoadedModel.setShaderInt("ourTexture0", 0);
+        my_LoadedModel.setShaderInt("ourTexture1", 1);
+        my_LoadedModel.setShaderInt("ourTexture2", 2);
+        my_LoadedModel.bind();
 
         for (size_t i = 0; i < 10; i++)
         {
@@ -157,7 +153,7 @@ int main(int argc, char const *argv[])
             if ((i+1)%3 == 0) {
                 model = glm::rotate(model, currentFrameTime, glm::vec3(0.0, 1.0, 0.0));
             }
-            myShaderProgram.setMat4f("transform", model);
+            my_LoadedModel.setShaderMat4f("transform", model);
             glDrawElements(GL_TRIANGLES, my_model.getNbTriangles()*3, GL_UNSIGNED_INT, 0);
         }
 

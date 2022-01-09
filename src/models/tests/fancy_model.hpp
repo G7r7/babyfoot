@@ -2,9 +2,7 @@
 #define FMODEL
 
 #include "../model.hpp"
-class FancyModel : public Model {
-    public:
-        FancyModel();
-};
+
+Model initFancyModel();
 
 #endif

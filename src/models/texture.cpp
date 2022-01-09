@@ -1,7 +1,7 @@
 #include "texture.hpp"
 #include "../stb_image.h"
 
-Texture::Texture(char* path) {
+Texture::Texture(char const * path) {
     stbi_set_flip_vertically_on_load(true);
     data = stbi_load(path, &width, &height, &nbChannels, 0); 
 }

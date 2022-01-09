@@ -2,9 +2,7 @@
 #define PMODEL
 
 #include "../model.hpp"
-class PyramidModel : public Model {
-    public:
-        PyramidModel();
-};
+
+Model initPyramidModel();
 
 #endif
