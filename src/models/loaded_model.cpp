@@ -3,7 +3,7 @@
 #include <iostream>
 
 LoadedModel::LoadedModel(Model* model) 
-    : shader(model->getVertexShaderPath(), model->getFragmentShaderPath()) 
+    : shader(model->getVertexShaderPath(), model->getFragmentShaderPath()), indicesNb(model->getIndices().size())
 {
     // VAO : Vertex Array Object, VBO : Vertex Buffer Object, EBO: Element Buffer Object
     // These are the GPU side representation in memory of the vertices
@@ -101,6 +101,10 @@ void LoadedModel::setShaderFloat(const char * name, float value) { this->shader.
 void LoadedModel::setShaderInt(const char * name, int value) { this->shader.setInt(name, value); };
 void LoadedModel::setShaderBool(const char * name, bool value) { this->shader.setBool(name, value); };
 void LoadedModel::setShaderMat4f(const char * name, glm::mat4 value) { this->shader.setMat4f(name, value); };
+
+void LoadedModel::draw() {
+    glDrawElements(GL_TRIANGLES, this->indicesNb, GL_UNSIGNED_INT, 0);
+}
 
 LoadedModel::~LoadedModel() {
     glDeleteVertexArrays(1, VAO);

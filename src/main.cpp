@@ -87,22 +87,15 @@ int main(int argc, char const *argv[])
     }
 
     /* This is a pyramid model */
-    Model my_model = initFancyModel();
-    LoadedModel my_LoadedModel(&my_model);
+    Model my_FancyModel = initFancyModel();
+    LoadedModel my_LoadedFancyModel(&my_FancyModel);
 
     glEnable(GL_DEPTH_TEST);
 
-    glm::vec3 modelsPositions[] = {
+    glm::vec3 fancyModelsPositions[] = {
         glm::vec3( 0.0f,  0.0f,  0.0f), 
         glm::vec3( 2.0f,  5.0f, -15.0f), 
         glm::vec3(-1.5f, -2.2f, -2.5f),  
-        glm::vec3(-3.8f, -2.0f, -12.3f),  
-        glm::vec3( 2.4f, -0.4f, -3.5f),  
-        glm::vec3(-1.7f,  3.0f, -7.5f),  
-        glm::vec3( 1.3f, -2.0f, -2.5f),  
-        glm::vec3( 1.5f,  2.0f, -2.5f), 
-        glm::vec3( 1.5f,  0.2f, -1.5f), 
-        glm::vec3(-1.3f,  1.0f, -1.5f)  
     };
 
     // render loop
@@ -117,12 +110,9 @@ int main(int argc, char const *argv[])
         
         glm::mat4 trans = glm::mat4(1.0f);
         
-
-
         // View matrix
         // it is used to move camera around
         glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
 
         // Perspective projection matrix
         // first is angle of the of the frustum
@@ -140,21 +130,21 @@ int main(int argc, char const *argv[])
 
 
         // render 
-        my_LoadedModel.setShaderFloat("mixLevel", mixLevel);
-        my_LoadedModel.setShaderInt("ourTexture0", 0);
-        my_LoadedModel.setShaderInt("ourTexture1", 1);
-        my_LoadedModel.setShaderInt("ourTexture2", 2);
-        my_LoadedModel.bind();
+        my_LoadedFancyModel.setShaderFloat("mixLevel", mixLevel);
+        my_LoadedFancyModel.setShaderInt("ourTexture0", 0);
+        my_LoadedFancyModel.setShaderInt("ourTexture1", 1);
+        my_LoadedFancyModel.setShaderInt("ourTexture2", 2);
+        my_LoadedFancyModel.bind();
 
         for (size_t i = 0; i < 10; i++)
         {
             glm::mat4 model = trans;
-            model = glm::translate(model, modelsPositions[i]);
+            model = glm::translate(model, fancyModelsPositions[i]);
             if ((i+1)%3 == 0) {
                 model = glm::rotate(model, currentFrameTime, glm::vec3(0.0, 1.0, 0.0));
             }
-            my_LoadedModel.setShaderMat4f("transform", model);
-            glDrawElements(GL_TRIANGLES, my_model.getNbTriangles()*3, GL_UNSIGNED_INT, 0);
+            my_LoadedFancyModel.setShaderMat4f("transform", model);
+            my_LoadedFancyModel.draw();
         }
 
         // glfw: swap buffers and poll IO events (keys, mouse, ...)
