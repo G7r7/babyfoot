@@ -94,7 +94,7 @@ int main(int argc, char const *argv[])
 
     glEnable(GL_DEPTH_TEST);
 
-    glm::vec3 pyramidPositions[] = {
+    glm::vec3 modelsPositions[] = {
         glm::vec3( 0.0f,  0.0f,  0.0f), 
         glm::vec3( 2.0f,  5.0f, -15.0f), 
         glm::vec3(-1.5f, -2.2f, -2.5f),  
@@ -149,7 +149,7 @@ int main(int argc, char const *argv[])
         for (size_t i = 0; i < 10; i++)
         {
             glm::mat4 model = trans;
-            model = glm::translate(model, pyramidPositions[i]);
+            model = glm::translate(model, modelsPositions[i]);
             if ((i+1)%3 == 0) {
                 model = glm::rotate(model, currentFrameTime, glm::vec3(0.0, 1.0, 0.0));
             }

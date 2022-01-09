@@ -5,6 +5,8 @@ set(SOURCE_FILES src/main.cpp
     src/shader.hpp src/shader.cpp 
     src/stb_image.h 
     src/stb.cpp 
+    src/models/model.cpp
+    src/models/model_point.cpp
     src/models/loaded_model.cpp
     src/models/pyramid_model.cpp
 )
