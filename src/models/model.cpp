@@ -39,7 +39,7 @@ unsigned int Model::getColorsSize() {
     return getColors().size() * sizeof(float);
 }
 unsigned int Model::getColorLength() {
-    return 2; // A Color is composed of 3 values (rgb)
+    return 3; // A Color is composed of 3 values (rgb)
 }
 unsigned int Model::getColorSize() {
     return getColorLength() * sizeof(float);

@@ -1,6 +1,6 @@
 #include "model_point.hpp"
 
-ModelPoint::ModelPoint(std::vector<float> pos, std::vector<float> tex, std::vector<float> col) {
+ModelPoint::ModelPoint(std::vector<float> pos, std::vector<float> col, std::vector<float> tex) {
     position = pos;
     textureCoordinate = tex;
     rgb = col;
