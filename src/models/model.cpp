@@ -3,6 +3,11 @@
 
 Model::Model() {}
 
+void Model::pushInBuffer(std::vector<float> modelPointProperty, std::vector<float>* buffer) {
+    for (float modelPointPropertyValue: modelPointProperty)
+        buffer->push_back(modelPointPropertyValue);
+}
+
 void Model::setVertices(std::vector<ModelPoint> points) {
     this->vertices = points;
 }
@@ -26,8 +31,7 @@ unsigned int Model::getTexturesLength() {
 std::vector<float> Model::getPositions()  {
     std::vector<float> positions;
     for (ModelPoint point : this->vertices)
-        for (float coordinate : point.getPosition())
-            positions.push_back(coordinate);
+        pushInBuffer(point.getPosition(), &positions);
     return positions;
 }
 unsigned int Model::getPositionsSize() {
@@ -43,8 +47,7 @@ unsigned int Model::getPositionSize() {
 std::vector<float> Model::getColors()  {
     std::vector<float> colors;
     for (ModelPoint point : this->vertices)
-        for (float value : point.getColor())
-            colors.push_back(value);
+        pushInBuffer(point.getColor(), &colors);
     return colors;
 }
 unsigned int Model::getColorsSize() {
@@ -60,8 +63,7 @@ unsigned int Model::getColorSize() {
 std::vector<float> Model::getTextureCoordinates()  {
     std::vector<float> textureCoordinates;
     for (ModelPoint point : this->vertices)
-        for (float coordinate : point.getTextureCoordinate())
-            textureCoordinates.push_back(coordinate);
+        pushInBuffer(point.getTextureCoordinate(), &textureCoordinates);
     return textureCoordinates;
 }
 unsigned int Model::getTextureCoordinatesSize() {

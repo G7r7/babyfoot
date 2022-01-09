@@ -12,6 +12,8 @@ class Model
         std::vector<ModelPoint> vertices;
         std::vector<int> indices;
         std::vector<Texture> textures;
+
+        void pushInBuffer(std::vector<float>, std::vector<float>*);
     public:
         Model();
         ~Model();
