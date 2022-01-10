@@ -17,6 +17,7 @@ class LoadedModel {
         void setShaderInt(const char * name, int value);
         void setShaderBool(const char * name, bool value);
         void setShaderMat4f(const char * name, glm::mat4 value);
+        void setShaderVec3f(const char * name, glm::vec3 value);
         void draw();
         ~LoadedModel();
 };

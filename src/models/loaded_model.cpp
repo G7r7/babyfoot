@@ -94,12 +94,12 @@ LoadedModel::LoadedModel(Model* model)
 }
 
 void LoadedModel::bind() {
+    this->shader.use();
     for (int i = 0; i < this->texturesData.size(); i++)
     {
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, textures[i]);
     }
-    this->shader.use();
     glBindVertexArray(*VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
 }
@@ -108,6 +108,7 @@ void LoadedModel::setShaderFloat(const char * name, float value) { this->shader.
 void LoadedModel::setShaderInt(const char * name, int value) { this->shader.setInt(name, value); };
 void LoadedModel::setShaderBool(const char * name, bool value) { this->shader.setBool(name, value); };
 void LoadedModel::setShaderMat4f(const char * name, glm::mat4 value) { this->shader.setMat4f(name, value); };
+void LoadedModel::setShaderVec3f(const char * name, glm::vec3 value) { this->shader.setVec3f(name, value); };
 
 void LoadedModel::draw() {
     glDrawElements(GL_TRIANGLES, this->indicesNb, GL_UNSIGNED_INT, 0);

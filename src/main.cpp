@@ -97,9 +97,9 @@ int main(int argc, char const *argv[])
     Model my_FancyModel = initFancyModel();
     LoadedModel my_LoadedFancyModel(&my_FancyModel);
 
-    /* This is a cube model */
-    Model my_CubeModel = initCubeModel();
-    LoadedModel my_LoadedCubeModel(&my_CubeModel);
+    /* This is a light source model */
+    Model my_LightSourceModel = initCubeModel();
+    LoadedModel my_LoadedLightSourceModel(&my_LightSourceModel);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -115,7 +115,7 @@ int main(int argc, char const *argv[])
         glm::vec3( 1.5f,  2.0f, -2.5f), 
     };
 
-    glm::vec3 cubeModelPosition = 
+    glm::vec3 LightSourceModelPosition = 
         glm::vec3(-4.0f,  3.0f, -2.5f);  
 
     // render loop
@@ -150,8 +150,8 @@ int main(int argc, char const *argv[])
 
 
         // render 
-        my_LoadedFancyModel.setShaderFloat("mixLevel", mixLevel);
         my_LoadedFancyModel.bind();
+        my_LoadedFancyModel.setShaderFloat("mixLevel", mixLevel);
 
         for (auto position : fancyModelsPositions)
         {
@@ -163,8 +163,8 @@ int main(int argc, char const *argv[])
         }
 
         // render 
-        my_LoadedPyramidModel.setShaderFloat("mixLevel", mixLevel);
         my_LoadedPyramidModel.bind();
+        my_LoadedPyramidModel.setShaderFloat("mixLevel", mixLevel);
 
         for (auto position : pyramidModelsPositions)
         {
@@ -176,13 +176,14 @@ int main(int argc, char const *argv[])
         }
 
         // render 
-        my_LoadedCubeModel.setShaderFloat("mixLevel", mixLevel);
-        my_LoadedCubeModel.bind();
+        my_LoadedLightSourceModel.bind();
+        my_LoadedLightSourceModel.setShaderVec3f("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
+        my_LoadedLightSourceModel.setShaderVec3f("lightColor",  glm::vec3(1.0f, 1.0f, 1.0f));
 
         glm::mat4 model = trans;
-        model = glm::translate(model, cubeModelPosition);
-        my_LoadedCubeModel.setShaderMat4f("transform", model);
-        my_LoadedCubeModel.draw();
+        model = glm::translate(model, LightSourceModelPosition);
+        my_LoadedLightSourceModel.setShaderMat4f("transform", model);
+        my_LoadedLightSourceModel.draw();
 
         // glfw: swap buffers and poll IO events (keys, mouse, ...)
         glfwSwapBuffers(window);
