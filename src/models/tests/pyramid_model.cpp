@@ -21,7 +21,7 @@ Model initPyramidModel() {
     };
 
     // Textures paths
-    std::vector<const char *> texturesPaths{"../src/textures/pegue.jpg", "../src/textures/rl.png", "../src/textures/rl2.jpg"};
+    std::vector<const char *> texturesPaths{"../src/textures/pegue.jpg", "../src/textures/rl2.jpg", "../src/textures/rl.png"};
 
     // Shader paths
     std::vector<const char *> shaderPaths{"../src/shaders/vertexShaderMatrix.vs", "../src/shaders/fragmentShaderTextureMultiple.fs"};

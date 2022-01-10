@@ -11,6 +11,7 @@
 #include "models/loaded_model.hpp"
 #include "models/tests/pyramid_model.hpp"
 #include "models/tests/fancy_model.hpp"
+#include "models/tests/cube_model.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void process_input(GLFWwindow* window);
@@ -96,6 +97,10 @@ int main(int argc, char const *argv[])
     Model my_FancyModel = initFancyModel();
     LoadedModel my_LoadedFancyModel(&my_FancyModel);
 
+    /* This is a cube model */
+    Model my_CubeModel = initCubeModel();
+    LoadedModel my_LoadedCubeModel(&my_CubeModel);
+
     glEnable(GL_DEPTH_TEST);
 
     glm::vec3 fancyModelsPositions[] = {
@@ -109,6 +114,9 @@ int main(int argc, char const *argv[])
         glm::vec3( 1.3f, -2.0f, -2.5f),  
         glm::vec3( 1.5f,  2.0f, -2.5f), 
     };
+
+    glm::vec3 cubeModelPosition = 
+        glm::vec3(-4.0f,  3.0f, -2.5f);  
 
     // render loop
     while (!glfwWindowShouldClose(window)) {
@@ -167,6 +175,14 @@ int main(int argc, char const *argv[])
             my_LoadedPyramidModel.draw();
         }
 
+        // render 
+        my_LoadedCubeModel.setShaderFloat("mixLevel", mixLevel);
+        my_LoadedCubeModel.bind();
+
+        glm::mat4 model = trans;
+        model = glm::translate(model, cubeModelPosition);
+        my_LoadedCubeModel.setShaderMat4f("transform", model);
+        my_LoadedCubeModel.draw();
 
         // glfw: swap buffers and poll IO events (keys, mouse, ...)
         glfwSwapBuffers(window);

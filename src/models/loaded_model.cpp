@@ -75,6 +75,7 @@ LoadedModel::LoadedModel(Model* model)
     // GL_UNSIGNED_BYTE datatype of source
     // We also generate automatically the associated mipmap
 
+    shader.use();
     for (int i = 0; i < texturesData.size(); i++)
     {
         Texture tex = this->texturesData[i];
@@ -85,7 +86,6 @@ LoadedModel::LoadedModel(Model* model)
         // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
         // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-        shader.use();
         std::stringstream ss;
         ss << "ourTexture" << i;
         setShaderInt(ss.str().c_str(), i);
@@ -100,6 +100,7 @@ void LoadedModel::bind() {
         glBindTexture(GL_TEXTURE_2D, textures[i]);
     }
     this->shader.use();
+    glBindVertexArray(*VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
 }
 
