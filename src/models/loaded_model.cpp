@@ -4,17 +4,15 @@
 #include <sstream>
 
 LoadedModel::LoadedModel(Model* model) :
-    shader(model->getVertexShaderPath(), model->getFragmentShaderPath()), indicesNb(model->getIndices().size()),
+    shader(model->getVertexShaderPath(), model->getFragmentShaderPath()), verticesNb(model->getVerticesNb()),
     textureData(Texture(model->getTexturePath()))
 {
     // VAO : Vertex Array Object, VBO : Vertex Buffer Object, EBO: Element Buffer Object
     // These are the GPU side representation in memory of the vertices
     VAO = (unsigned int*)malloc(sizeof(unsigned int)*1);
     glGenVertexArrays(1, VAO);
-    VBO = (unsigned int*)malloc(sizeof(unsigned int)*3);
-    glGenBuffers(3, VBO);
-    EBO = (unsigned int*)malloc(sizeof(unsigned int)*1);
-    glGenBuffers(1, EBO);
+    VBO = (unsigned int*)malloc(sizeof(unsigned int)*4);
+    glGenBuffers(4, VBO);
     
     // bind the Vertex Array Object, then bind and set vertex buffer(s), and then configure attribute(s)
     glBindVertexArray(*VAO);
@@ -38,9 +36,11 @@ LoadedModel::LoadedModel(Model* model) :
     glVertexAttribPointer(2, model->getTextureCoordinateLength(), GL_FLOAT, GL_FALSE, model->getTextureCoordinateSize(), (void*)0);
     glEnableVertexAttribArray(2);
 
-    // Indices
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, model->getIndicesSize(), model->getIndices().data(), GL_STATIC_DRAW);
+    // normals
+    glBindBuffer(GL_ARRAY_BUFFER, VBO[3]);
+    glBufferData(GL_ARRAY_BUFFER, model->getNormalsSize(), model->getNormals().data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(3, model->getNormalLength(), GL_FLOAT, GL_FALSE, model->getNormalSize(), (void*)0);
+    glEnableVertexAttribArray(3);
 
     // TEXTURES
 
@@ -88,7 +88,6 @@ void LoadedModel::bind() {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
     glBindVertexArray(*VAO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
 }
 
 void LoadedModel::setShaderFloat(const char * name, float value) { this->shader.setFloat(name, value); };
@@ -98,14 +97,12 @@ void LoadedModel::setShaderMat4f(const char * name, glm::mat4 value) { this->sha
 void LoadedModel::setShaderVec3f(const char * name, glm::vec3 value) { this->shader.setVec3f(name, value); };
 
 void LoadedModel::draw() {
-    glDrawElements(GL_TRIANGLES, this->indicesNb, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLES, 0, this->verticesNb);
 }
 
 LoadedModel::~LoadedModel() {
     glDeleteVertexArrays(1, VAO);
     glDeleteBuffers(1, VBO);
-    glDeleteBuffers(1, EBO);
     free(VAO);
     free(VBO);
-    free(EBO);
 }

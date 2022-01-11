@@ -6,10 +6,10 @@
 
 class LoadedModel {
     private:
-        unsigned int indicesNb;
+        unsigned int verticesNb;
         Texture textureData;
         Shader shader;
-        unsigned int *VBO, *VAO, *EBO, texture;
+        unsigned int *VBO, *VAO, texture;
     public:
         LoadedModel(Model* model);
         void bind();

@@ -3,18 +3,17 @@
 #include <iostream>
 
 Model initCubeModel() {
-    std::vector<ModelPoint> vertices;
-    vertices.push_back(ModelPoint(std::vector<float> {-1.0f,  -1.0f,   1.0f}, std::vector<float> {1.0f,  0.0f,  0.0f}, std::vector<float> {0.0f,  1.0f})); // basis front left
-    vertices.push_back(ModelPoint(std::vector<float> {1.0f,  -1.0f,   1.0f}, std::vector<float> {0.0f,  1.0f,  0.0f}, std::vector<float> {0.0f,  0.0f}));  // basis front right
-    vertices.push_back(ModelPoint(std::vector<float> {-1.0f,  -1.0f,  -1.0f}, std::vector<float> {1.0f,  1.0f,  0.0f}, std::vector<float> {1.0f,  0.5f}));  // basis back left
-    vertices.push_back(ModelPoint(std::vector<float> {1.0f, -1.0f,  -1.0f}, std::vector<float> {1.0f,  0.0f,  0.0f}, std::vector<float> {1.0f,  1.0f}));  // basis back right
-    vertices.push_back(ModelPoint(std::vector<float> {-1.0f,  1.0f,   1.0f}, std::vector<float> {1.0f,  0.0f,  0.0f}, std::vector<float> {0.0f,  1.0f})); // top front left
-    vertices.push_back(ModelPoint(std::vector<float> {1.0f,  1.0f,   1.0f}, std::vector<float> {0.0f,  1.0f,  0.0f}, std::vector<float> {0.0f,  0.0f}));  // top front right
-    vertices.push_back(ModelPoint(std::vector<float> {-1.0f,  1.0f,  -1.0f}, std::vector<float> {1.0f,  1.0f,  0.0f}, std::vector<float> {1.0f,  0.5f}));  // top back left
-    vertices.push_back(ModelPoint(std::vector<float> {1.0f,  1.0f,  -1.0f}, std::vector<float> {1.0f,  0.0f,  0.0f}, std::vector<float> {1.0f,  1.0f}));  // top back right
+    std::vector<ModelPoint> distinctVertices;
+    distinctVertices.push_back(ModelPoint(std::vector<float> {-1.0f,  -1.0f,   1.0f}, std::vector<float> {1.0f,  0.0f,  0.0f}, std::vector<float> {0.0f,  1.0f})); // basis front left
+    distinctVertices.push_back(ModelPoint(std::vector<float> {1.0f,  -1.0f,   1.0f}, std::vector<float> {0.0f,  1.0f,  0.0f}, std::vector<float> {0.0f,  0.0f}));  // basis front right
+    distinctVertices.push_back(ModelPoint(std::vector<float> {-1.0f,  -1.0f,  -1.0f}, std::vector<float> {1.0f,  1.0f,  0.0f}, std::vector<float> {1.0f,  0.5f}));  // basis back left
+    distinctVertices.push_back(ModelPoint(std::vector<float> {1.0f, -1.0f,  -1.0f}, std::vector<float> {1.0f,  0.0f,  0.0f}, std::vector<float> {1.0f,  1.0f}));  // basis back right
+    distinctVertices.push_back(ModelPoint(std::vector<float> {-1.0f,  1.0f,   1.0f}, std::vector<float> {1.0f,  0.0f,  0.0f}, std::vector<float> {0.0f,  1.0f})); // top front left
+    distinctVertices.push_back(ModelPoint(std::vector<float> {1.0f,  1.0f,   1.0f}, std::vector<float> {0.0f,  1.0f,  0.0f}, std::vector<float> {0.0f,  0.0f}));  // top front right
+    distinctVertices.push_back(ModelPoint(std::vector<float> {-1.0f,  1.0f,  -1.0f}, std::vector<float> {1.0f,  1.0f,  0.0f}, std::vector<float> {1.0f,  0.5f}));  // top back left
+    distinctVertices.push_back(ModelPoint(std::vector<float> {1.0f,  1.0f,  -1.0f}, std::vector<float> {1.0f,  0.0f,  0.0f}, std::vector<float> {1.0f,  1.0f}));  // top back right
 
-    std::vector<int> indices;
-    indices = {
+    std::vector<int> indices = {
         0, 1, 2,
         1, 2, 3,
 
@@ -34,6 +33,10 @@ Model initCubeModel() {
         3, 5, 7
     };
 
+    std::vector<ModelPoint> vertices;
+    for (int i : indices)
+        vertices.push_back(distinctVertices[i]);
+
     // Textures paths
     const char * texturePath = "../src/textures/pegue.jpg";
 
@@ -41,5 +44,5 @@ Model initCubeModel() {
     const char * vertexShaderPath = "../src/shaders/vertexShaderLightSource.vs";
     const char * fragmentShaderPath = "../src/shaders/fragmentShaderLightSource.fs";
 
-    return Model(vertices, indices, texturePath, vertexShaderPath, fragmentShaderPath);
+    return Model(vertices, texturePath, vertexShaderPath, fragmentShaderPath);
 }

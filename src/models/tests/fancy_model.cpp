@@ -3,13 +3,13 @@
 #include <iostream>
 
 Model initFancyModel() {
-    std::vector<ModelPoint> vertices;
-    vertices.push_back(ModelPoint(std::vector<float> {-1.0f,  0.0f,   1.0f}, std::vector<float> {1.0f,  0.0f,  0.0f}, std::vector<float> {0.0f,  1.0f})); // basis front left
-    vertices.push_back(ModelPoint(std::vector<float> {1.0f,  0.0f,   1.0f}, std::vector<float> {0.0f,  1.0f,  0.0f}, std::vector<float> {0.0f,  0.0f}));  // basis front right
-    vertices.push_back(ModelPoint(std::vector<float> {-1.0f,  0.0f,  -1.0f}, std::vector<float> {1.0f,  1.0f,  0.0f}, std::vector<float> {1.0f,  0.5f}));  // basis back left
-    vertices.push_back(ModelPoint(std::vector<float> {1.0f,  0.0f,  -1.0f}, std::vector<float> {1.0f,  0.0f,  0.0f}, std::vector<float> {1.0f,  1.0f}));  // basis back right
-    vertices.push_back(ModelPoint(std::vector<float> {0.0f, 2.0f,   0.0f}, std::vector<float> {0.0f,  0.0f,  1.0f}, std::vector<float> {0.0f,  0.5f}));  // top
-    vertices.push_back(ModelPoint(std::vector<float> {0.0f, -2.0f,   0.0f}, std::vector<float> {1.0f,  1.0f,  1.0f}, std::vector<float> {0.0f,  0.5f}));  // bottom
+    std::vector<ModelPoint> distinctVertices;
+    distinctVertices.push_back(ModelPoint(std::vector<float> {-1.0f,  0.0f,   1.0f}, std::vector<float> {1.0f,  0.0f,  0.0f}, std::vector<float> {0.0f,  1.0f})); // basis front left
+    distinctVertices.push_back(ModelPoint(std::vector<float> {1.0f,  0.0f,   1.0f}, std::vector<float> {0.0f,  1.0f,  0.0f}, std::vector<float> {0.0f,  0.0f}));  // basis front right
+    distinctVertices.push_back(ModelPoint(std::vector<float> {-1.0f,  0.0f,  -1.0f}, std::vector<float> {1.0f,  1.0f,  0.0f}, std::vector<float> {1.0f,  0.5f}));  // basis back left
+    distinctVertices.push_back(ModelPoint(std::vector<float> {1.0f,  0.0f,  -1.0f}, std::vector<float> {1.0f,  0.0f,  0.0f}, std::vector<float> {1.0f,  1.0f}));  // basis back right
+    distinctVertices.push_back(ModelPoint(std::vector<float> {0.0f, 2.0f,   0.0f}, std::vector<float> {0.0f,  0.0f,  1.0f}, std::vector<float> {0.0f,  0.5f}));  // top
+    distinctVertices.push_back(ModelPoint(std::vector<float> {0.0f, -2.0f,   0.0f}, std::vector<float> {1.0f,  1.0f,  1.0f}, std::vector<float> {0.0f,  0.5f}));  // bottom
 
     std::vector<int> indices;
     indices = {
@@ -23,6 +23,10 @@ Model initFancyModel() {
         1, 3, 5
     };
 
+    std::vector<ModelPoint> vertices;
+    for (int i : indices)
+        vertices.push_back(distinctVertices[i]);
+
     // Textures paths
     const char * texturePath = "../src/textures/pegue.jpg";
 
@@ -30,5 +34,5 @@ Model initFancyModel() {
     const char * vertexShaderPath = "../src/shaders/vertexShaderMatrix.vs";
     const char * fragmentShaderPath = "../src/shaders/fragmentShaderTextureMultiple.fs";
 
-    return Model(vertices, indices, texturePath, vertexShaderPath, fragmentShaderPath);
+    return Model(vertices, texturePath, vertexShaderPath, fragmentShaderPath);
 }

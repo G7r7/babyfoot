@@ -129,21 +129,16 @@ int main(int argc, char const *argv[])
 
         // input
         process_input(window);
-        
-        glm::mat4 trans = glm::mat4(1.0f);
-        
-        // View matrix
-        // it is used to move camera around
-        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
         // Perspective projection matrix
         // first is angle of the of the frustum
         // second is aspect ratio of frustum plane
         // third and forth are near and far plane coordinates
         glm::mat4 proj = glm::perspective(glm::radians(fovGPU), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.1f, 100.0f);
-
-        // Final transform matrix
-        trans = proj * view * trans;
+        
+        // View matrix
+        // it is used to move camera around
+        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
         // render color
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -155,13 +150,17 @@ int main(int argc, char const *argv[])
         my_LoadedFancyModel.bind();
         my_LoadedFancyModel.setShaderVec3f("lightColor", lightColor);
         my_LoadedFancyModel.setShaderFloat("lightStrength", lightStrength);
+        my_LoadedFancyModel.setShaderVec3f("lightPos", LightSourceModelPosition);
+        my_LoadedFancyModel.setShaderMat4f("projection", proj);
+        my_LoadedFancyModel.setShaderMat4f("view", view);
+
 
         for (auto position : fancyModelsPositions)
         {
-            glm::mat4 model = trans;
+            glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, position);
-            model = glm::rotate(model, currentFrameTime/3, glm::vec3(0.0, 1.0, 0.0));
-            my_LoadedFancyModel.setShaderMat4f("transform", model);
+            model = glm::rotate(model, currentFrameTime/300, glm::vec3(0.0, 1.0, 0.0));
+            my_LoadedFancyModel.setShaderMat4f("model", model);
             my_LoadedFancyModel.draw();
         }
 
@@ -169,13 +168,16 @@ int main(int argc, char const *argv[])
         my_LoadedPyramidModel.bind();
         my_LoadedPyramidModel.setShaderVec3f("lightColor", lightColor);
         my_LoadedPyramidModel.setShaderFloat("lightStrength", lightStrength);
+        my_LoadedPyramidModel.setShaderVec3f("lightPos", LightSourceModelPosition);
+        my_LoadedPyramidModel.setShaderMat4f("projection", proj);
+        my_LoadedPyramidModel.setShaderMat4f("view", view);
 
         for (auto position : pyramidModelsPositions)
         {
-            glm::mat4 model = trans;
+            glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, position);
-            model = glm::rotate(model, -currentFrameTime/5, glm::vec3(0.0, 1.0, 0.0));
-            my_LoadedPyramidModel.setShaderMat4f("transform", model);
+            model = glm::rotate(model, -currentFrameTime/500, glm::vec3(0.0, 1.0, 0.0));
+            my_LoadedPyramidModel.setShaderMat4f("model", model);
             my_LoadedPyramidModel.draw();
         }
 
@@ -183,10 +185,12 @@ int main(int argc, char const *argv[])
         my_LoadedLightSourceModel.bind();
         my_LoadedLightSourceModel.setShaderVec3f("lightColor", lightColor);
         my_LoadedLightSourceModel.setShaderFloat("lightStrength", lightStrength);
+        my_LoadedLightSourceModel.setShaderMat4f("projection", proj);
+        my_LoadedLightSourceModel.setShaderMat4f("view", view);
 
-        glm::mat4 model = trans;
+        glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, LightSourceModelPosition);
-        my_LoadedLightSourceModel.setShaderMat4f("transform", model);
+        my_LoadedLightSourceModel.setShaderMat4f("model", model);
         my_LoadedLightSourceModel.draw();
 
         // glfw: swap buffers and poll IO events (keys, mouse, ...)
