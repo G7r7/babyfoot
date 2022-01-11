@@ -20,7 +20,7 @@ void main()
     vec3 diffuse = diff * lightColor * lightStrength;
 
     // ambient lighting calculations
-    vec3 ambient = lightColor * lightStrength * 0.15 ;
+    vec3 ambient = lightColor * lightStrength * 0.1 ;
 
     FragColor = texture(ourTexture, TexCoord) * vec4(ambient + diffuse, 1.0f);
 }

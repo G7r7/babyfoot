@@ -14,13 +14,13 @@ Model initFancyModel() {
     std::vector<int> indices;
     indices = {
         0, 1, 4,
-        0, 2, 4,
-        2, 3, 4,
+        0, 4, 2,
+        2, 4, 3,
         1, 3, 4,
-        0, 1, 5,
+        0, 5, 1,
         0, 2, 5,
         2, 3, 5,
-        1, 3, 5
+        1, 5, 3
     };
 
     std::vector<ModelPoint> vertices;

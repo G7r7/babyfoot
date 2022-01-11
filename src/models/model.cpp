@@ -61,7 +61,7 @@ std::vector<float> Model::getNormals() {
                 vertices[i+1].getPosition()[1] - vertices[i+2].getPosition()[1], 
                 vertices[i+1].getPosition()[2] - vertices[i+2].getPosition()[2]
             );
-            glm::vec3 normal = -glm::cross(dir1, dir2);
+            glm::vec3 normal = glm::cross(dir1, dir2);
             for (size_t i = 0; i < 3; i++) {
                 normals.push_back(normal[0]);
                 normals.push_back(normal[1]);

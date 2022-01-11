@@ -105,7 +105,7 @@ int main(int argc, char const *argv[])
 
     glm::vec3 fancyModelsPositions[] = {
         glm::vec3( 0.0f,  0.0f,  0.0f), 
-        glm::vec3( 2.0f,  5.0f, -15.0f), 
+        glm::vec3( 2.0f,  5.0f, 10.0f), 
         glm::vec3(-1.5f, -2.2f, -2.5f),  
     };
 
@@ -114,9 +114,6 @@ int main(int argc, char const *argv[])
         glm::vec3( 1.3f, -2.0f, -2.5f),  
         glm::vec3( 1.5f,  2.0f, -2.5f), 
     };
-
-    glm::vec3 LightSourceModelPosition = 
-        glm::vec3(-4.0f,  3.0f, -2.5f);  
 
     glm::vec3 lightColor(1.0f, 0.8f, 0.7f);
 
@@ -145,6 +142,8 @@ int main(int argc, char const *argv[])
         glClear(GL_COLOR_BUFFER_BIT);
         glClear(GL_DEPTH_BUFFER_BIT);
 
+        glm::vec3 LightSourceModelPosition = 
+            glm::vec3(-4.0f,  3.0f, -2.5f*currentFrameTime/10); 
 
         // render 
         my_LoadedFancyModel.bind();
@@ -159,7 +158,7 @@ int main(int argc, char const *argv[])
         {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, position);
-            model = glm::rotate(model, currentFrameTime/300, glm::vec3(0.0, 1.0, 0.0));
+            model = glm::rotate(model, currentFrameTime/3, glm::vec3(0.0, 1.0, 0.0));
             my_LoadedFancyModel.setShaderMat4f("model", model);
             my_LoadedFancyModel.draw();
         }
@@ -176,7 +175,7 @@ int main(int argc, char const *argv[])
         {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, position);
-            model = glm::rotate(model, -currentFrameTime/500, glm::vec3(0.0, 1.0, 0.0));
+            model = glm::rotate(model, -currentFrameTime/5, glm::vec3(0.0, 1.0, 0.0));
             my_LoadedPyramidModel.setShaderMat4f("model", model);
             my_LoadedPyramidModel.draw();
         }
@@ -190,6 +189,7 @@ int main(int argc, char const *argv[])
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, LightSourceModelPosition);
+        model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2));
         my_LoadedLightSourceModel.setShaderMat4f("model", model);
         my_LoadedLightSourceModel.draw();
 
