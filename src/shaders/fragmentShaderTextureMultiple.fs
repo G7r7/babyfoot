@@ -4,17 +4,11 @@ in vec3 ourColor;
 in vec2 TexCoord;
 out vec4 FragColor;
 
-uniform sampler2D ourTexture0;
-uniform sampler2D ourTexture1;
-uniform sampler2D ourTexture2;
-uniform float mixLevel;
+uniform sampler2D ourTexture;
+uniform vec3 lightColor;
+uniform float lightStrength;
 
 void main()
 {
-    vec4 color = vec4(ourColor, 1.0);
-    vec4 texture0 = texture(ourTexture0, TexCoord);
-    vec4 texture1 = texture(ourTexture1, TexCoord);
-    vec4 texture2 = texture(ourTexture2, TexCoord);
-    vec4 texture = mix(texture0, texture1, mixLevel);
-    FragColor = mix(color, texture, 0.5);
+    FragColor = texture(ourTexture, TexCoord) * (lightColor, 1.0f) * lightStrength;
 }

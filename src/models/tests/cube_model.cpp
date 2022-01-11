@@ -35,11 +35,11 @@ Model initCubeModel() {
     };
 
     // Textures paths
-    std::vector<const char *> texturesPaths{"../src/textures/pegue.jpg", "../src/textures/rl.png", "../src/textures/rl2.jpg"};
+    const char * texturePath = "../src/textures/pegue.jpg";
 
     // Shader paths
-    const char * vertexShaderPath = "../src/shaders/vertexShaderLight.vs";
+    const char * vertexShaderPath = "../src/shaders/vertexShaderLightSource.vs";
     const char * fragmentShaderPath = "../src/shaders/fragmentShaderLightSource.fs";
 
-    return Model(vertices, indices, texturesPaths, vertexShaderPath, fragmentShaderPath);
+    return Model(vertices, indices, texturePath, vertexShaderPath, fragmentShaderPath);
 }

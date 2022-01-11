@@ -3,8 +3,9 @@
 #include <iostream>
 #include <sstream>
 
-LoadedModel::LoadedModel(Model* model) 
-    : shader(model->getVertexShaderPath(), model->getFragmentShaderPath()), indicesNb(model->getIndices().size())
+LoadedModel::LoadedModel(Model* model) :
+    shader(model->getVertexShaderPath(), model->getFragmentShaderPath()), indicesNb(model->getIndices().size()),
+    textureData(Texture(model->getTexturePath()))
 {
     // VAO : Vertex Array Object, VBO : Vertex Buffer Object, EBO: Element Buffer Object
     // These are the GPU side representation in memory of the vertices
@@ -59,12 +60,8 @@ LoadedModel::LoadedModel(Model* model)
     // Generating the texture
     // 2 is the number of textures we generate
     // store the generated textures in an unsigned int array
-    std::vector<const char*> texturesPaths = model->getTexturesPaths();
-    for (const char* path : texturesPaths)
-        this->texturesData.push_back(Texture(path));
-
-    textures = (unsigned int*)malloc(sizeof(unsigned int)*texturesData.size());
-    glGenTextures(texturesData.size(), textures);  
+    this->textureData = Texture(model->getTexturePath());
+    glGenTextures(1, &texture);  
 
     // We bind the generated texture to the current context
     // Loading the date in the texture we created
@@ -76,30 +73,20 @@ LoadedModel::LoadedModel(Model* model)
     // We also generate automatically the associated mipmap
 
     shader.use();
-    for (int i = 0; i < texturesData.size(); i++)
-    {
-        Texture tex = this->texturesData[i];
-        glBindTexture(GL_TEXTURE_2D, textures[i]);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex.getWidth(), tex.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, tex.getData());
-        glGenerateMipmap(GL_TEXTURE_2D);
-        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-        std::stringstream ss;
-        ss << "ourTexture" << i;
-        setShaderInt(ss.str().c_str(), i);
-    }
-
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureData.getWidth(), textureData.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, textureData.getData());
+    glGenerateMipmap(GL_TEXTURE_2D);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    setShaderInt("ourTexture", 0);
 }
 
 void LoadedModel::bind() {
     this->shader.use();
-    for (int i = 0; i < this->texturesData.size(); i++)
-    {
-        glActiveTexture(GL_TEXTURE0 + i);
-        glBindTexture(GL_TEXTURE_2D, textures[i]);
-    }
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
     glBindVertexArray(*VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
 }
@@ -118,7 +105,6 @@ LoadedModel::~LoadedModel() {
     glDeleteVertexArrays(1, VAO);
     glDeleteBuffers(1, VBO);
     glDeleteBuffers(1, EBO);
-    free(textures);
     free(VAO);
     free(VBO);
     free(EBO);

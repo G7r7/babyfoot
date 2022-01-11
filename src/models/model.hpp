@@ -12,13 +12,13 @@ class Model
     private:
         std::vector<ModelPoint> vertices;
         std::vector<int> indices;
-        std::vector<const char *> texturesPaths;
+        const char* texturePath;
         const char* vertexShaderPath;
         const char* fragmentShaderPath;
         void pushInBuffer(std::vector<float>, std::vector<float>*);
 
     public:
-        Model(std::vector<ModelPoint> points, std::vector<int> indices, std::vector<const char*> texturesPaths, const char* vertexShaderPath, const char* fragmentShaderPath);
+        Model(std::vector<ModelPoint> points, std::vector<int> indices, const char* texturePath, const char* vertexShaderPath, const char* fragmentShaderPath);
         ~Model();
 
         std::vector<float> getPositions();
@@ -41,7 +41,7 @@ class Model
         unsigned int getIndiceSize();
         unsigned int getIndiceLength();
 
-        std::vector<const char *> getTexturesPaths();
+        const char* getTexturePath();
         const char * getVertexShaderPath();
         const char * getFragmentShaderPath();
         

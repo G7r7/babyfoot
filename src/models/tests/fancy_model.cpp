@@ -24,11 +24,11 @@ Model initFancyModel() {
     };
 
     // Textures paths
-    std::vector<const char *> texturesPaths{"../src/textures/pegue.jpg", "../src/textures/rl.png", "../src/textures/rl2.jpg"};
+    const char * texturePath = "../src/textures/pegue.jpg";
 
     // Shader paths
     const char * vertexShaderPath = "../src/shaders/vertexShaderMatrix.vs";
     const char * fragmentShaderPath = "../src/shaders/fragmentShaderTextureMultiple.fs";
 
-    return Model(vertices, indices, texturesPaths, vertexShaderPath, fragmentShaderPath);
+    return Model(vertices, indices, texturePath, vertexShaderPath, fragmentShaderPath);
 }

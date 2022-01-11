@@ -7,9 +7,9 @@
 class LoadedModel {
     private:
         unsigned int indicesNb;
-        std::vector<Texture> texturesData;
+        Texture textureData;
         Shader shader;
-        unsigned int *VBO, *VAO, *EBO, *textures;
+        unsigned int *VBO, *VAO, *EBO, texture;
     public:
         LoadedModel(Model* model);
         void bind();

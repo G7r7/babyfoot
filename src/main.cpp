@@ -25,7 +25,7 @@ const unsigned int SCREEN_HEIGHT = 540;
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrameTime = 0.0f; // Time of last frame
 
-float mixLevel = 0.5f;
+float lightStrength = 0.5f;
 
 float fovGPU = 45.0f;
 
@@ -151,7 +151,7 @@ int main(int argc, char const *argv[])
 
         // render 
         my_LoadedFancyModel.bind();
-        my_LoadedFancyModel.setShaderFloat("mixLevel", mixLevel);
+        my_LoadedFancyModel.setShaderFloat("lightStrength", lightStrength);
 
         for (auto position : fancyModelsPositions)
         {
@@ -164,7 +164,7 @@ int main(int argc, char const *argv[])
 
         // render 
         my_LoadedPyramidModel.bind();
-        my_LoadedPyramidModel.setShaderFloat("mixLevel", mixLevel);
+        my_LoadedPyramidModel.setShaderFloat("lightStrength", lightStrength);
 
         for (auto position : pyramidModelsPositions)
         {
@@ -204,10 +204,10 @@ void process_input(GLFWwindow* window) {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     // Texture Mixing
-    if(glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS && mixLevel < 1)
-        mixLevel += 0.005;
-    if(glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS && mixLevel > 0)
-        mixLevel -= 0.005;
+    if(glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS && lightStrength < 1)
+        lightStrength += 0.005;
+    if(glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS && lightStrength > 0)
+        lightStrength -= 0.005;
     // Camera translation
     float cameraSpeed = 2.5f * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)

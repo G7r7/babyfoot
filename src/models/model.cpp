@@ -1,8 +1,8 @@
 #include "model.hpp"
 #include <iostream>
 
-Model::Model(std::vector<ModelPoint> points, std::vector<int> indices, std::vector<const char *> texturesPaths, const char * vertexShaderPath, const char * fragmentShaderPath) :
-    vertices(points), indices(indices), texturesPaths(texturesPaths), vertexShaderPath(vertexShaderPath), fragmentShaderPath(fragmentShaderPath) {}
+Model::Model(std::vector<ModelPoint> points, std::vector<int> indices, const char* texturePath, const char * vertexShaderPath, const char * fragmentShaderPath) :
+    vertices(points), indices(indices), texturePath(texturePath), vertexShaderPath(vertexShaderPath), fragmentShaderPath(fragmentShaderPath) {}
 
 unsigned int Model::getPositionsSize() { return getPositions().size() * sizeof(float); }
 unsigned int Model::getPositionLength() { return 3; } // A Position is composed of 3 coordinates
@@ -22,7 +22,7 @@ unsigned int Model::getIndiceSize() { return getIndiceLength() * sizeof(int); }
 
 unsigned int Model::getNbTriangles(){ return (unsigned int) this->indices.size()/3; }
 
-std::vector<const char *> Model::getTexturesPaths() { return this->texturesPaths; }
+const char * Model::getTexturePath() { return this->texturePath; }
 const char * Model::getVertexShaderPath() { return this->vertexShaderPath; }
 const char * Model::getFragmentShaderPath() { return this->fragmentShaderPath; }
 
