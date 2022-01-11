@@ -118,6 +118,8 @@ int main(int argc, char const *argv[])
     glm::vec3 LightSourceModelPosition = 
         glm::vec3(-4.0f,  3.0f, -2.5f);  
 
+    glm::vec3 lightColor(1.0f, 0.8f, 0.7f);
+
     // render loop
     while (!glfwWindowShouldClose(window)) {
 
@@ -151,6 +153,7 @@ int main(int argc, char const *argv[])
 
         // render 
         my_LoadedFancyModel.bind();
+        my_LoadedFancyModel.setShaderVec3f("lightColor", lightColor);
         my_LoadedFancyModel.setShaderFloat("lightStrength", lightStrength);
 
         for (auto position : fancyModelsPositions)
@@ -164,6 +167,7 @@ int main(int argc, char const *argv[])
 
         // render 
         my_LoadedPyramidModel.bind();
+        my_LoadedPyramidModel.setShaderVec3f("lightColor", lightColor);
         my_LoadedPyramidModel.setShaderFloat("lightStrength", lightStrength);
 
         for (auto position : pyramidModelsPositions)
@@ -177,8 +181,8 @@ int main(int argc, char const *argv[])
 
         // render 
         my_LoadedLightSourceModel.bind();
-        my_LoadedLightSourceModel.setShaderVec3f("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
-        my_LoadedLightSourceModel.setShaderVec3f("lightColor",  glm::vec3(1.0f, 1.0f, 1.0f));
+        my_LoadedLightSourceModel.setShaderVec3f("lightColor", lightColor);
+        my_LoadedLightSourceModel.setShaderFloat("lightStrength", lightStrength);
 
         glm::mat4 model = trans;
         model = glm::translate(model, LightSourceModelPosition);
