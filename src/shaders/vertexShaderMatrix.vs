@@ -9,6 +9,7 @@ out vec3 ourColor;
 out vec2 TexCoord;
 out vec3 Normal;
 out vec3 FragPos;
+out vec3 cameraPos;
 
 uniform mat4 projection;
 uniform mat4 view;

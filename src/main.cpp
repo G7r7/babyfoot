@@ -152,6 +152,7 @@ int main(int argc, char const *argv[])
         my_LoadedFancyModel.setShaderVec3f("lightPos", LightSourceModelPosition);
         my_LoadedFancyModel.setShaderMat4f("projection", proj);
         my_LoadedFancyModel.setShaderMat4f("view", view);
+        my_LoadedFancyModel.setShaderVec3f("cameraPos", cameraPos);
 
 
         for (auto position : fancyModelsPositions)
@@ -170,6 +171,8 @@ int main(int argc, char const *argv[])
         my_LoadedPyramidModel.setShaderVec3f("lightPos", LightSourceModelPosition);
         my_LoadedPyramidModel.setShaderMat4f("projection", proj);
         my_LoadedPyramidModel.setShaderMat4f("view", view);
+        my_LoadedPyramidModel.setShaderVec3f("cameraPos", cameraPos);
+
 
         for (auto position : pyramidModelsPositions)
         {
