@@ -15,7 +15,8 @@ uniform vec3 cameraPos;
 void main()
 {
     // ambient lighting calculations
-    vec3 ambient = lightColor * lightStrength * 0.1 ;
+    float ambientStrength;
+    vec3 ambient = lightColor * lightStrength * ambientStrength;
 
     // diffuse lighting calculations
     vec3 norm = normalize(Normal);
