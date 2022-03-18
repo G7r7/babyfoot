@@ -1,8 +1,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <glm.hpp>
-#include <gtc/matrix_transform.hpp>
-#include <gtc/type_ptr.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <math.h>
 #include <iostream>
@@ -54,6 +54,7 @@ float pitch = 0.0f;
 
 int main(int argc, char const *argv[])
 {
+
     // glfw init and config
     int init = glfwInit();
     if(init == GLFW_FALSE) {
@@ -89,15 +90,15 @@ int main(int argc, char const *argv[])
 
     //Loading models
 
-    /* This is a pyramid model */
+    // This is a pyramid model
     Model my_PyramidModel = initPyramidModel();
     LoadedModel my_LoadedPyramidModel(&my_PyramidModel);
 
-    /* This is a zendikar model */
+    // This is a zendikar model
     Model my_FancyModel = initFancyModel();
     LoadedModel my_LoadedFancyModel(&my_FancyModel);
 
-    /* This is a light source model */
+    // This is a light source model
     Model my_LightSourceModel = initCubeModel();
     LoadedModel my_LoadedLightSourceModel(&my_LightSourceModel);
 
@@ -200,7 +201,6 @@ int main(int argc, char const *argv[])
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
 
     glfwTerminate();
     return 0;

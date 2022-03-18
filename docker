@@ -1,0 +1,10 @@
+#!/bin/bash
+
+function run(){
+    docker build --tag babyfoot . &&
+    docker run --rm -it --name babyfoot \
+    --volume $(pwd):/home/babyfoot \
+    babyfoot
+}
+
+"$@"

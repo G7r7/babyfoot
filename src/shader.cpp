@@ -8,8 +8,9 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
     std::ifstream vShaderFile;
     std::ifstream fShaderFile;
     // ensure ifstream objects can throw exceptions:
-    vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
-    fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+    // These lines cause an error when running the cross compiled version for windows
+    // vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+    // fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
     try 
     {
         // open files
