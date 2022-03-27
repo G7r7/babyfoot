@@ -8,10 +8,7 @@
 #include <iostream>
 
 #include "shader.hpp"
-#include "models/loaded_model.hpp"
-#include "models/tests/pyramid_model.hpp"
-#include "models/tests/fancy_model.hpp"
-#include "models/tests/cube_model.hpp"
+#include "model.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void process_input(GLFWwindow* window);
@@ -89,18 +86,12 @@ int main(int argc, char const *argv[])
     }
 
     //Loading models
+    std::cout << "Loading ..." << std::endl;
+    Model donut((char*)"ressources/models/donut.obj");
+    std::cout << "Loaded" << std::endl;
+    Shader donutShader((char*)"ressources/shaders/vertexShaderMatrix.vs", (char*)"ressources/shaders/fragmentShaderTextureMultiple.fs");
+    donutShader.use();
 
-    // This is a pyramid model
-    Model my_PyramidModel = initPyramidModel();
-    LoadedModel my_LoadedPyramidModel(&my_PyramidModel);
-
-    // This is a zendikar model
-    Model my_FancyModel = initFancyModel();
-    LoadedModel my_LoadedFancyModel(&my_FancyModel);
-
-    // This is a light source model
-    Model my_LightSourceModel = initCubeModel();
-    LoadedModel my_LoadedLightSourceModel(&my_LightSourceModel);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -146,56 +137,21 @@ int main(int argc, char const *argv[])
         glm::vec3 LightSourceModelPosition = 
             glm::vec3(-4.0f,  3.0f, -2.5f*currentFrameTime/10); 
 
-        // render 
-        my_LoadedFancyModel.bind();
-        my_LoadedFancyModel.setShaderVec3f("lightColor", lightColor);
-        my_LoadedFancyModel.setShaderFloat("lightStrength", lightStrength);
-        my_LoadedFancyModel.setShaderVec3f("lightPos", LightSourceModelPosition);
-        my_LoadedFancyModel.setShaderMat4f("projection", proj);
-        my_LoadedFancyModel.setShaderMat4f("view", view);
-        my_LoadedFancyModel.setShaderVec3f("cameraPos", cameraPos);
-
-
-        for (auto position : fancyModelsPositions)
-        {
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, position);
-            model = glm::rotate(model, currentFrameTime/3, glm::vec3(0.0, 1.0, 0.0));
-            my_LoadedFancyModel.setShaderMat4f("model", model);
-            my_LoadedFancyModel.draw();
-        }
-
-        // render 
-        my_LoadedPyramidModel.bind();
-        my_LoadedPyramidModel.setShaderVec3f("lightColor", lightColor);
-        my_LoadedPyramidModel.setShaderFloat("lightStrength", lightStrength);
-        my_LoadedPyramidModel.setShaderVec3f("lightPos", LightSourceModelPosition);
-        my_LoadedPyramidModel.setShaderMat4f("projection", proj);
-        my_LoadedPyramidModel.setShaderMat4f("view", view);
-        my_LoadedPyramidModel.setShaderVec3f("cameraPos", cameraPos);
-
-
+        donutShader.setVec3f("lightColor", lightColor);
+        donutShader.setFloat("lightStrength", lightStrength);
+        donutShader.setVec3f("lightPos", LightSourceModelPosition);
+        donutShader.setMat4f("projection", proj);
+        donutShader.setMat4f("view", view);
+        donutShader.setVec3f("cameraPos", cameraPos);
+        // std::cout << "Drawing ..." << std::endl;
         for (auto position : pyramidModelsPositions)
         {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, position);
             model = glm::rotate(model, -currentFrameTime/5, glm::vec3(0.0, 1.0, 0.0));
-            my_LoadedPyramidModel.setShaderMat4f("model", model);
-            my_LoadedPyramidModel.draw();
+            donutShader.setMat4f("model", model);
+            donut.Draw(donutShader);
         }
-
-        // render 
-        my_LoadedLightSourceModel.bind();
-        my_LoadedLightSourceModel.setShaderVec3f("lightColor", lightColor);
-        my_LoadedLightSourceModel.setShaderFloat("lightStrength", lightStrength);
-        my_LoadedLightSourceModel.setShaderMat4f("projection", proj);
-        my_LoadedLightSourceModel.setShaderMat4f("view", view);
-
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, LightSourceModelPosition);
-        model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2));
-        my_LoadedLightSourceModel.setShaderMat4f("model", model);
-        my_LoadedLightSourceModel.draw();
 
         // glfw: swap buffers and poll IO events (keys, mouse, ...)
         glfwSwapBuffers(window);

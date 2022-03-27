@@ -7,4 +7,14 @@ function run(){
     babyfoot
 }
 
+function build(){
+    docker build --tag babyfoot .
+}
+
+function start(){
+    docker run --rm -it --name babyfoot \
+    --volume $(pwd):/home/babyfoot \
+    babyfoot
+}
+
 "$@"

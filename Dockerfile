@@ -10,13 +10,12 @@ RUN apt-get -y install xorg-dev \
     && unzip glfw-3.3.6.zip \
     && rm glfw-3.3.6.zip
 WORKDIR "/tmp/glfw-3.3.6"
-RUN cp -r include/GLFW /usr/include
 RUN mkdir build && mkdir mingw
 WORKDIR "/tmp/glfw-3.3.6/build"
 RUN cmake .. \
         -D GLFW_BUILD_EXAMPLES=false \
         -D GLFW_BUILD_TESTS=false \
-        -D GLFW_BUILD_DOCS=false \
+        # -D GLFW_BUILD_DOCS=false \
         -D GLFW_INSTALL=false \
     && make
 WORKDIR "/tmp/glfw-3.3.6/mingw"
@@ -42,10 +41,45 @@ RUN cmake .. && make
 WORKDIR "/tmp"
 RUN wget https://github.com/g-truc/glm/releases/download/0.9.9.8/glm-0.9.9.8.zip
 RUN unzip glm-0.9.9.8.zip && rm glm-0.9.9.8.zip
-WORKDIR "/tmp/glm"
    
 #stb
 WORKDIR "/tmp"
 RUN git clone https://github.com/nothings/stb
+
+#assimp
+WORKDIR "/tmp"
+RUN wget https://github.com/assimp/assimp/archive/refs/tags/v3.1.1.zip
+RUN unzip v3.1.1.zip && rm v3.1.1.zip
+WORKDIR "/tmp/assimp-3.1.1"
+RUN mkdir build && mkdir mingw
+WORKDIR "/tmp/assimp-3.1.1/build"
+RUN cmake .. \
+        # -D BUILD_SHARED_LIBS=OFF \
+        -D ASSIMP_BUILD_ASSIMP_TOOLS=OFF \
+        -D ASSIMP_NO_EXPORT=ON \
+        -D ASSIMP_BUILD_TESTS=OFF \
+        -D ASSIMP_BUILD_ZLIB=ON \
+        -D ASSIMP_INSTALL_PDB=OFF \
+    && make -j6
+WORKDIR "/tmp/assimp-3.1.1/mingw"
+RUN cmake .. \
+        -D CMAKE_SYSTEM_NAME=Windows \
+        -D CMAKE_C_COMPILER=x86_64-w64-mingw32-gcc \
+        -D CMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++ \
+        # -D BUILD_SHARED_LIBS=OFF \
+        -D ASSIMP_BUILD_ASSIMP_TOOLS=OFF \
+        -D ASSIMP_NO_EXPORT=ON \
+        -D ASSIMP_BUILD_TESTS=OFF \
+        -D ASSIMP_BUILD_ZLIB=ON \
+        -D ASSIMP_INSTALL_PDB=OFF \
+    && make -j6
+
+
+#Adding header files to usr/include/ for intellisense
+RUN cp -r /tmp/glfw-3.3.6/include/GLFW /usr/include \
+    && cp -r /tmp/glad-0.1.36/build/include/* /usr/include/ \
+    && cp -r /tmp/glm/glm/ /usr/include/ \
+    && cp -r /tmp/stb/* /usr/include \
+    && cp -r /tmp/assimp-3.1.1/include/* /usr/include
 
 WORKDIR /home/babyfoot
