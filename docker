@@ -15,7 +15,7 @@ function cmake(){
     --volume $(pwd):/home/babyfoot \
     --workdir="/home/babyfoot/build" \
     babyfoot \
-    cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/x86_64-w64-mingw32.cmake
+    cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/x86_64-w64-mingw32.cmake -DCMAKE_BUILD_TYPE=Debug
 }
 
 function make(){

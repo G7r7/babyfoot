@@ -70,9 +70,11 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
             vec.y = mesh->mTextureCoords[0][i].y;
             vertex.TexCoords = vec;
         }
-        else
-            vertex.TexCoords = glm::vec2(0.0f, 0.0f); 
+        else {
+            vertex.TexCoords = glm::vec2(0.0f, 0.0f);
         }
+        vertices.push_back(vertex);
+    }
     
     // process indices
     for(unsigned int i = 0; i < mesh->mNumFaces; i++)
