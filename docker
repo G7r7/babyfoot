@@ -1,12 +1,5 @@
 #!/bin/bash
 
-function run(){
-    docker build --tag babyfoot . &&
-    docker run --rm -it --name babyfoot \
-    --volume $(pwd):/home/babyfoot \
-    babyfoot
-}
-
 function build(){
     docker build --tag babyfoot .
 }
@@ -15,6 +8,22 @@ function start(){
     docker run --rm -it --name babyfoot \
     --volume $(pwd):/home/babyfoot \
     babyfoot
+}
+
+function cmake(){
+    docker run --rm --name babyfoot \
+    --volume $(pwd):/home/babyfoot \
+    --workdir="/home/babyfoot/build" \
+    babyfoot \
+    cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/x86_64-w64-mingw32.cmake
+}
+
+function make(){
+    docker run --rm --name babyfoot \
+    --volume $(pwd):/home/babyfoot \
+    --workdir="/home/babyfoot/build" \
+    babyfoot \
+    make -j6
 }
 
 "$@"
