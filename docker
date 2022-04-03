@@ -26,4 +26,12 @@ function make(){
     make -j6
 }
 
+function headers(){
+    docker run --rm --name babyfoot \
+    --volume $(pwd):/home/babyfoot \
+    --workdir="/home/babyfoot" \
+    babyfoot \
+    cp -r /usr/include ./headerfiles
+}
+
 "$@"

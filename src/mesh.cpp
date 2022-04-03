@@ -1,16 +1,61 @@
 #include "mesh.hpp"
+#include "material.hpp"
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
+Mesh::Mesh(aiMesh* mesh, const aiScene* scene)
 {
-    this->vertices = vertices;
-    this->indices = indices;
-    this->textures = textures;
-    // now that we have all the required data, set the vertex buffers and its attribute pointers.
-    setupMesh();
+    // Load vertices
+    for(unsigned int i = 0; i < mesh->mNumVertices; i++)
+    {
+        Vertex vertex;
+        // process vertex position
+        glm::vec3 position; 
+        position.x = mesh->mVertices[i].x;
+        position.y = mesh->mVertices[i].y;
+        position.z = mesh->mVertices[i].z; 
+        vertex.Position = position;
+
+        // process vertex normal
+        glm::vec3 normal;
+        normal.x = mesh->mNormals[i].x;
+        normal.y = mesh->mNormals[i].y;
+        normal.z = mesh->mNormals[i].z;
+        vertex.Normal = normal;  
+
+        // process vertex textures coordinates
+        if(mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
+        {
+            glm::vec2 coordinate;
+            coordinate.x = mesh->mTextureCoords[0][i].x; 
+            coordinate.y = mesh->mTextureCoords[0][i].y;
+            vertex.TexCoords = coordinate;
+        }
+        else {
+            vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+        }
+        this->vertices.push_back(vertex);
+    }
+    
+    // Load indices
+    for(unsigned int i = 0; i < mesh->mNumFaces; i++)
+    {
+        aiFace face = mesh->mFaces[i];
+        for(unsigned int j = 0; j < face.mNumIndices; j++)
+            this->indices.push_back(face.mIndices[j]);
+    }
+
+    // Load material
+    if(mesh->mMaterialIndex >= 0)
+    {
+        aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+        this->material = Material(material);
+    }
+
+    this->init();
 }
 
-void Mesh::setupMesh()
-{
+void Mesh::init() {
+    
+    // now that we have all the required data, set the vertex buffers and its attribute pointers.
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -38,31 +83,10 @@ void Mesh::setupMesh()
 
 void Mesh::Draw(Shader &shader) 
 {
-        // bind appropriate textures
-        unsigned int diffuseNr  = 1;
-        unsigned int specularNr = 1;
-        unsigned int normalNr   = 1;
-        unsigned int heightNr   = 1;
-        for(unsigned int i = 0; i < textures.size(); i++)
-        {
-            glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
-            // retrieve texture number (the N in diffuse_textureN)
-            std::string number;
-            std::string name = textures[i].type;
-            if(name == "texture_diffuse")
-                number = std::to_string(diffuseNr++);
-            else if(name == "texture_specular")
-                number = std::to_string(specularNr++); // transfer unsigned int to string
-            else if(name == "texture_normal")
-                number = std::to_string(normalNr++); // transfer unsigned int to string
-             else if(name == "texture_height")
-                number = std::to_string(heightNr++); // transfer unsigned int to string
-
-            // now set the sampler to the correct texture unit
-            glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
-            // and finally bind the texture
-            glBindTexture(GL_TEXTURE_2D, textures[i].id);
-        }
+        shader.setFloat("material_shininess", this->material.shininess);
+        shader.setVec3f("material_ambient", this->material.ambient);
+        shader.setVec3f("material_diffuse", this->material.diffuse);
+        shader.setVec3f("material_specular", this->material.specular);
         
         // draw mesh
         glBindVertexArray(VAO);

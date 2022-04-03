@@ -5,7 +5,10 @@
 #include <vector>
 #include <string>
 #include <glm/glm.hpp>
+#include <assimp/scene.h>
+#include <assimp/mesh.h>
 #include "shader.hpp"
+#include "material.hpp"
 
 struct Vertex {
     glm::vec3 Position;
@@ -21,16 +24,17 @@ struct Texture {
 
 class Mesh {
     public:
-        // mesh data
+        Mesh(aiMesh* mesh, const aiScene* scene);
+
         std::vector<Vertex>       vertices;
         std::vector<unsigned int> indices;
         std::vector<Texture>      textures;
+        Material                  material;
 
-        Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
         void Draw(Shader &shader);
     private:
         unsigned int VAO, VBO, EBO;
-        void setupMesh();
+        void init();
 }; 
 
 #endif

@@ -86,12 +86,11 @@ int main(int argc, char const *argv[])
     }
 
     //Loading models
-    std::cout << "Loading ..." << std::endl;
     Model donut((char*)"ressources/models/donut.obj");
-    std::cout << "Loaded" << std::endl;
     Shader donutShader((char*)"ressources/shaders/vertexShaderMatrix.vs", (char*)"ressources/shaders/fragmentShaderTextureMultiple.fs");
-    donutShader.use();
 
+    Model bulb((char*)"ressources/models/lightbulb.obj");
+    Shader bulbShader((char*)"ressources/shaders/vertexShaderMatrix.vs", (char*)"ressources/shaders/fragmentShaderTextureMultiple.fs");
 
     glEnable(GL_DEPTH_TEST);
 
@@ -137,13 +136,14 @@ int main(int argc, char const *argv[])
         glm::vec3 LightSourceModelPosition = 
             glm::vec3(-4.0f,  3.0f, -2.5f*currentFrameTime/10); 
 
+        donutShader.use();
         donutShader.setVec3f("lightColor", lightColor);
         donutShader.setFloat("lightStrength", lightStrength);
         donutShader.setVec3f("lightPos", LightSourceModelPosition);
         donutShader.setMat4f("projection", proj);
         donutShader.setMat4f("view", view);
         donutShader.setVec3f("cameraPos", cameraPos);
-        // std::cout << "Drawing ..." << std::endl;
+
         for (auto position : pyramidModelsPositions)
         {
             glm::mat4 model = glm::mat4(1.0f);
@@ -152,6 +152,18 @@ int main(int argc, char const *argv[])
             donutShader.setMat4f("model", model);
             donut.Draw(donutShader);
         }
+
+        bulbShader.use();
+        bulbShader.setBool("lightSource", true);
+        bulbShader.setVec3f("lightColor", lightColor);
+        bulbShader.setFloat("lightStrength", lightStrength);
+        bulbShader.setMat4f("projection", proj);
+        bulbShader.setMat4f("view", view);
+        bulbShader.setVec3f("cameraPos", cameraPos);
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, LightSourceModelPosition);
+        bulbShader.setMat4f("model", model);
+        bulb.Draw(bulbShader);
 
         // glfw: swap buffers and poll IO events (keys, mouse, ...)
         glfwSwapBuffers(window);
@@ -172,9 +184,9 @@ void process_input(GLFWwindow* window) {
         glfwSetWindowShouldClose(window, true);
     // Texture Mixing
     if(glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS && lightStrength < 1)
-        lightStrength += 0.005;
+        lightStrength += 0.0005;
     if(glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS && lightStrength > 0)
-        lightStrength -= 0.005;
+        lightStrength -= 0.0005;
     // Camera translation
     float cameraSpeed = 2.5f * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
