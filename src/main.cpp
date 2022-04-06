@@ -92,6 +92,9 @@ int main(int argc, char const *argv[])
     Model bulb((char*)"ressources/models/lightbulb.obj");
     Shader bulbShader((char*)"ressources/shaders/vertexShaderMatrix.vs", (char*)"ressources/shaders/fragmentShaderTextureMultiple.fs");
 
+    Model microsoft((char*)"ressources/models/microsoft.obj");
+    Shader microsoftShader((char*)"ressources/shaders/vertexShaderMatrix.vs", (char*)"ressources/shaders/fragmentShaderTextureMultiple.fs");
+
     glEnable(GL_DEPTH_TEST);
 
     glm::vec3 fancyModelsPositions[] = {
@@ -164,6 +167,22 @@ int main(int argc, char const *argv[])
         model = glm::translate(model, LightSourceModelPosition);
         bulbShader.setMat4f("model", model);
         bulb.Draw(bulbShader);
+
+        microsoftShader.use();
+        microsoftShader.setVec3f("lightColor", lightColor);
+        microsoftShader.setFloat("lightStrength", lightStrength);
+        microsoftShader.setMat4f("projection", proj);
+        microsoftShader.setMat4f("view", view);
+        microsoftShader.setVec3f("cameraPos", cameraPos);
+        for (auto position : fancyModelsPositions)
+        {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, position);
+            model = glm::rotate(model, currentFrameTime/5, glm::vec3(0.0, 1.0, 0.0));
+            microsoftShader.setMat4f("model", model);
+            microsoft.Draw(microsoftShader);
+        }
+
 
         // glfw: swap buffers and poll IO events (keys, mouse, ...)
         glfwSwapBuffers(window);

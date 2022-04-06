@@ -48,11 +48,11 @@ RUN git clone https://github.com/nothings/stb
 
 #assimp
 WORKDIR "/tmp"
-RUN wget https://github.com/assimp/assimp/archive/refs/tags/v3.1.1.zip
-RUN unzip v3.1.1.zip && rm v3.1.1.zip
-WORKDIR "/tmp/assimp-3.1.1"
+RUN wget https://github.com/assimp/assimp/archive/refs/tags/v5.1.0.zip
+RUN unzip v5.1.0.zip && rm v5.1.0.zip
+WORKDIR "/tmp/assimp-5.1.0"
 RUN mkdir build && mkdir mingw
-WORKDIR "/tmp/assimp-3.1.1/build"
+WORKDIR "/tmp/assimp-5.1.0/build"
 RUN cmake .. \
         # -D BUILD_SHARED_LIBS=OFF \
         -D ASSIMP_BUILD_ASSIMP_TOOLS=OFF \
@@ -61,7 +61,7 @@ RUN cmake .. \
         -D ASSIMP_BUILD_ZLIB=ON \
         -D ASSIMP_INSTALL_PDB=OFF \
     && make -j6
-WORKDIR "/tmp/assimp-3.1.1/mingw"
+WORKDIR "/tmp/assimp-5.1.0/mingw"
 RUN cmake .. \
         -D CMAKE_SYSTEM_NAME=Windows \
         -D CMAKE_C_COMPILER=x86_64-w64-mingw32-gcc \
@@ -80,6 +80,6 @@ RUN cp -r /tmp/glfw-3.3.6/include/GLFW /usr/include \
     && cp -r /tmp/glad-0.1.36/build/include/* /usr/include/ \
     && cp -r /tmp/glm/glm/ /usr/include/ \
     && cp -r /tmp/stb/* /usr/include \
-    && cp -r /tmp/assimp-3.1.1/include/* /usr/include
+    && cp -r /tmp/assimp-5.1.0/include/* /usr/include
 
 WORKDIR /home/babyfoot
