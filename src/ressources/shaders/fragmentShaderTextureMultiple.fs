@@ -4,10 +4,14 @@ in vec3 FragPos;
 in vec3 Normal;
 in vec2 TexCoord;
 
-uniform vec3 material_ambient;
-uniform vec3 material_diffuse;
-uniform vec3 material_specular;
-uniform float material_shininess;
+struct Material {
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    float shininess;
+};
+
+uniform Material material;
 
 // uniform sampler2D ourTexture;
 uniform bool lightSource;
@@ -21,10 +25,10 @@ out vec4 FragColor;
 void main()
 {
     // material
-    vec4 material = vec4(material_ambient + material_diffuse + material_specular, 1.0f);
+    vec4 material_vec = vec4(material.ambient + material.diffuse + material.specular, 1.0f);
 
     if(lightSource) {
-        FragColor = material * lightStrength;
+        FragColor = material_vec * lightStrength;
         return;
     }
 
@@ -42,10 +46,10 @@ void main()
     float specularStrength = 0.5;
     vec3 viewDir = normalize(cameraPos - FragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
-    float shininess = material_shininess;
+    float shininess = material.shininess;
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
     vec3 specular = specularStrength * spec * lightColor;  
 
     // FragColor = texture(ourTexture, TexCoord) * material * vec4(ambient + diffuse + specular, 1.0f);
-    FragColor = material * vec4(ambient + diffuse + specular, 1.0f);
+    FragColor = material_vec * vec4(ambient + diffuse + specular, 1.0f);
 }

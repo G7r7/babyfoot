@@ -83,10 +83,7 @@ void Mesh::init() {
 
 void Mesh::Draw(Shader &shader) 
 {
-        shader.setFloat("material_shininess", this->material.shininess);
-        shader.setVec3f("material_ambient", this->material.ambient);
-        shader.setVec3f("material_diffuse", this->material.diffuse);
-        shader.setVec3f("material_specular", this->material.specular);
+        this->material.setShaderUniform(&shader, "material");
         
         // draw mesh
         glBindVertexArray(VAO);

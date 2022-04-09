@@ -1,4 +1,5 @@
 #include "shader.hpp"
+#include "uniformable.hpp"
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath)
 {
@@ -107,3 +108,8 @@ void Shader::setVec3f(const std::string &name, glm::vec3 value) const
 { 
     glUniform3fv(glGetUniformLocation(this->ID, name.c_str()), 1, glm::value_ptr(value));
 } 
+
+void Shader::setUniform(const std::string &name, Uniformable* value)
+{
+    value->setShaderUniform(this, name);
+}

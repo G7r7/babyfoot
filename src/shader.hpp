@@ -11,6 +11,10 @@
 #include <sstream>
 #include <iostream>
 
+#include "uniformable.hpp"
+
+class Uniformable;
+
 class Shader
 {
 public:
@@ -26,6 +30,7 @@ public:
     void setFloat(const std::string &name, float value) const;
     void setMat4f(const std::string &name, glm::mat4 value) const;
     void setVec3f(const std::string &name, glm::vec3 value) const;
+    void setUniform(const std::string &name, Uniformable* value);
 };
 
 #endif

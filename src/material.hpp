@@ -4,7 +4,10 @@
 #include <glm/glm.hpp>
 #include <assimp/material.h>
 
-struct Material
+#include "uniformable.hpp"
+#include "shader.hpp"
+
+struct Material : public Uniformable
 {   
     glm::vec3 diffuse;
     glm::vec3 ambient;
@@ -12,6 +15,7 @@ struct Material
     float shininess;
     Material(aiMaterial *mat);
     Material();
+    void setShaderUniform(Shader* shader, const std::string &uniform_name);
 };
 
 #endif
