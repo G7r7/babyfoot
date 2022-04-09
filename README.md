@@ -4,12 +4,16 @@
 - Docker
 - Docker-Compose
 
+## Build
+```shell
+docker-compose up
+```
 ## Target Linux (Default)
 Set target in the `.env` file
 ```env
 TARGET=LINUX
 ```
-## Target Linux
+## Target Windows
 Set target in the `.env` file
 ```env
 TARGET=WINDOWS
