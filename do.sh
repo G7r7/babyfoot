@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function build(){
+function image(){
     docker build --tag babyfoot .
 }
 
