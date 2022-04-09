@@ -29,7 +29,7 @@ void main()
     }
 
     // ambient lighting calculations
-    float ambientStrength;
+    float ambientStrength = 0.1;
     vec3 ambient = lightColor * lightStrength * ambientStrength;
 
     // diffuse lighting calculations
