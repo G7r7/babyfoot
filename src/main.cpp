@@ -9,6 +9,7 @@
 
 #include "shader.hpp"
 #include "model.hpp"
+#include "light.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void process_input(GLFWwindow* window);
@@ -22,8 +23,7 @@ const unsigned int SCREEN_HEIGHT = 540;
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrameTime = 0.0f; // Time of last frame
 
-float lightStrength = 0.5f;
-
+Light light;
 float fovGPU = 45.0f;
 
 glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
@@ -136,13 +136,15 @@ int main(int argc, char const *argv[])
         glClear(GL_COLOR_BUFFER_BIT);
         glClear(GL_DEPTH_BUFFER_BIT);
 
+
+
         glm::vec3 LightSourceModelPosition = 
             glm::vec3(-4.0f,  3.0f, -2.5f*currentFrameTime/10); 
 
+        light.position = LightSourceModelPosition;
+
         donutShader.use();
-        donutShader.setVec3f("lightColor", lightColor);
-        donutShader.setFloat("lightStrength", lightStrength);
-        donutShader.setVec3f("lightPos", LightSourceModelPosition);
+        donutShader.setUniform("light", &light);
         donutShader.setMat4f("projection", proj);
         donutShader.setMat4f("view", view);
         donutShader.setVec3f("cameraPos", cameraPos);
@@ -158,8 +160,7 @@ int main(int argc, char const *argv[])
 
         bulbShader.use();
         bulbShader.setBool("lightSource", true);
-        bulbShader.setVec3f("lightColor", lightColor);
-        bulbShader.setFloat("lightStrength", lightStrength);
+        bulbShader.setUniform("light", &light);
         bulbShader.setMat4f("projection", proj);
         bulbShader.setMat4f("view", view);
         bulbShader.setVec3f("cameraPos", cameraPos);
@@ -169,8 +170,7 @@ int main(int argc, char const *argv[])
         bulb.Draw(bulbShader);
 
         microsoftShader.use();
-        microsoftShader.setVec3f("lightColor", lightColor);
-        microsoftShader.setFloat("lightStrength", lightStrength);
+        microsoftShader.setUniform("light", &light);
         microsoftShader.setMat4f("projection", proj);
         microsoftShader.setMat4f("view", view);
         microsoftShader.setVec3f("cameraPos", cameraPos);
@@ -202,10 +202,10 @@ void process_input(GLFWwindow* window) {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     // Texture Mixing
-    if(glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS && lightStrength < 1)
-        lightStrength += 0.0005;
-    if(glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS && lightStrength > 0)
-        lightStrength -= 0.0005;
+    if(glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS && light.strength < 1)
+        light.strength += 0.0005;
+    if(glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS && light.strength > 0)
+        light.strength -= 0.0005;
     // Camera translation
     float cameraSpeed = 2.5f * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
