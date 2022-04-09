@@ -1,0 +1,12 @@
+version: '2'
+services:
+  builder:
+    container_name: babyfoot
+    build: .
+    image: babyfoot
+    volumes:
+      - ".:/home/babyfoot"
+    entrypoint: /entrypoint.sh
+    command: build
+    env_file:
+      - .env
