@@ -173,7 +173,8 @@ RUN cp -r /tmp/glfw-3.3.6/include/GLFW /usr/include \
     && cp -r /tmp/glad-0.1.36/build/include/* /usr/include/ \
     && cp -r /tmp/glm/glm/ /usr/include/ \
     && cp -r /tmp/stb/* /usr/include \
-    && cp -r /tmp/assimp-5.1.0/include/* /usr/include
+    && cp -r /tmp/assimp-5.1.0/include/* /usr/include \
+    && cp -r /tmp/assimp-5.1.0/build/include/* /usr/include
 
 COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod u+x /entrypoint.sh
