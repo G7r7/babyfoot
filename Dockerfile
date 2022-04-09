@@ -54,7 +54,7 @@ WORKDIR "/tmp/assimp-5.1.0"
 RUN mkdir build && mkdir mingw
 WORKDIR "/tmp/assimp-5.1.0/build"
 RUN cmake .. \
-        # -D BUILD_SHARED_LIBS=OFF \
+        -D BUILD_SHARED_LIBS=OFF \
         -D ASSIMP_BUILD_3DS_IMPORTER=OFF \
         -D ASSIMP_BUILD_AMF_IMPORTER=OFF \
         -D ASSIMP_BUILD_AC_IMPORTER=OFF \
@@ -113,7 +113,7 @@ RUN cmake .. \
         -D CMAKE_SYSTEM_NAME=Windows \
         -D CMAKE_C_COMPILER=x86_64-w64-mingw32-gcc \
         -D CMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++ \
-        # -D BUILD_SHARED_LIBS=OFF \
+        -D BUILD_SHARED_LIBS=OFF \
         -D ASSIMP_BUILD_3DS_IMPORTER=OFF \
         -D ASSIMP_BUILD_AMF_IMPORTER=OFF \
         -D ASSIMP_BUILD_AC_IMPORTER=OFF \
