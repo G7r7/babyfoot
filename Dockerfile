@@ -82,4 +82,6 @@ RUN cp -r /tmp/glfw-3.3.6/include/GLFW /usr/include \
     && cp -r /tmp/stb/* /usr/include \
     && cp -r /tmp/assimp-5.1.0/include/* /usr/include
 
-WORKDIR /home/babyfoot
+COPY entrypoint.sh /entrypoint.sh
+ENTRYPOINT [ "/entrypoint.sh" ]
+CMD [ "build" ]
