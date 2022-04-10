@@ -10,6 +10,7 @@
 #include "shader.hpp"
 #include "model.hpp"
 #include "light.hpp"
+#include "camera.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void process_input(GLFWwindow* window);
@@ -19,16 +20,17 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 const char* TITLE = "Babyfoot";
 const unsigned int SCREEN_WIDTH = 960;
 const unsigned int SCREEN_HEIGHT = 540;
+float fovGPU = 45.0f;
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrameTime = 0.0f; // Time of last frame
 
 Light light;
-float fovGPU = 45.0f;
 
 glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+Camera camera(cameraPos, cameraFront, cameraUp, fovGPU, (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
 bool fisrtMouseInput = true;
 float mouseLastX = SCREEN_WIDTH/2;
@@ -87,13 +89,13 @@ int main(int argc, char const *argv[])
 
     //Loading models
     Model donut((char*)"ressources/models/donut.obj");
-    Shader donutShader((char*)"ressources/shaders/vertexShaderMatrix.vs", (char*)"ressources/shaders/fragmentShaderTextureMultiple.fs");
+    Shader donutShader((char*)"ressources/shaders/vertex.vs", (char*)"ressources/shaders/fragment.fs");
 
     Model bulb((char*)"ressources/models/lightbulb.obj");
-    Shader bulbShader((char*)"ressources/shaders/vertexShaderMatrix.vs", (char*)"ressources/shaders/fragmentShaderTextureMultiple.fs");
+    Shader bulbShader((char*)"ressources/shaders/vertex.vs", (char*)"ressources/shaders/fragment.fs");
 
     Model microsoft((char*)"ressources/models/microsoft.obj");
-    Shader microsoftShader((char*)"ressources/shaders/vertexShaderMatrix.vs", (char*)"ressources/shaders/fragmentShaderTextureMultiple.fs");
+    Shader microsoftShader((char*)"ressources/shaders/vertex.vs", (char*)"ressources/shaders/fragment.fs");
 
     glEnable(GL_DEPTH_TEST);
 
@@ -121,33 +123,16 @@ int main(int argc, char const *argv[])
         // input
         process_input(window);
 
-        // Perspective projection matrix
-        // first is angle of the of the frustum
-        // second is aspect ratio of frustum plane
-        // third and forth are near and far plane coordinates
-        glm::mat4 proj = glm::perspective(glm::radians(fovGPU), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.1f, 100.0f);
-        
-        // View matrix
-        // it is used to move camera around
-        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
         // render color
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         glClear(GL_DEPTH_BUFFER_BIT);
 
-
-
-        glm::vec3 LightSourceModelPosition = 
-            glm::vec3(-4.0f,  3.0f, -2.5f*currentFrameTime/10); 
-
-        light.position = LightSourceModelPosition;
+        light.position = glm::vec3(-4.0f,  3.0f, -2.5f*currentFrameTime/10); 
 
         donutShader.use();
         donutShader.setUniform("light", &light);
-        donutShader.setMat4f("projection", proj);
-        donutShader.setMat4f("view", view);
-        donutShader.setVec3f("cameraPos", cameraPos);
+        donutShader.setUniform("camera", &camera);
 
         for (auto position : pyramidModelsPositions)
         {
@@ -161,19 +146,17 @@ int main(int argc, char const *argv[])
         bulbShader.use();
         bulbShader.setBool("lightSource", true);
         bulbShader.setUniform("light", &light);
-        bulbShader.setMat4f("projection", proj);
-        bulbShader.setMat4f("view", view);
-        bulbShader.setVec3f("cameraPos", cameraPos);
+        bulbShader.setUniform("camera", &camera);
+
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, LightSourceModelPosition);
+        model = glm::translate(model, light.position);
         bulbShader.setMat4f("model", model);
         bulb.Draw(bulbShader);
 
         microsoftShader.use();
         microsoftShader.setUniform("light", &light);
-        microsoftShader.setMat4f("projection", proj);
-        microsoftShader.setMat4f("view", view);
-        microsoftShader.setVec3f("cameraPos", cameraPos);
+        microsoftShader.setUniform("camera", &camera);
+
         for (auto position : fancyModelsPositions)
         {
             glm::mat4 model = glm::mat4(1.0f);
@@ -182,7 +165,6 @@ int main(int argc, char const *argv[])
             microsoftShader.setMat4f("model", model);
             microsoft.Draw(microsoftShader);
         }
-
 
         // glfw: swap buffers and poll IO events (keys, mouse, ...)
         glfwSwapBuffers(window);
@@ -201,25 +183,25 @@ void process_input(GLFWwindow* window) {
     
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    // Texture Mixing
+    // Light strength
     if(glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS && light.strength < 1)
-        light.strength += 0.0005;
+        light.strength += deltaTime * 0.5;
     if(glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS && light.strength > 0)
-        light.strength -= 0.0005;
+        light.strength -= deltaTime * 0.5;
     // Camera translation
     float cameraSpeed = 2.5f * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        cameraPos += cameraSpeed * cameraFront;
+        camera.position += cameraSpeed * camera.front;
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        cameraPos -= cameraSpeed * cameraFront;
+        camera.position -= cameraSpeed * camera.front;
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        cameraPos -= cameraSpeed * glm::normalize(glm::cross(cameraFront, cameraUp));
+        camera.position -= cameraSpeed * glm::normalize(glm::cross(camera.front, camera.up));
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        cameraPos += cameraSpeed * glm::normalize(glm::cross(cameraFront, cameraUp));
+        camera.position += cameraSpeed * glm::normalize(glm::cross(camera.front, camera.up));
     if(glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
-        fovGPU += 0.05;
+        camera.FOV += 20 * deltaTime;
     if(glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
-        fovGPU -= 0.05;
+        camera.FOV -= 20 * deltaTime;
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -255,14 +237,14 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
     direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
     direction.y = sin(glm::radians(pitch));
     direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    cameraFront = glm::normalize(direction);
+    camera.front = glm::normalize(direction);
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    fovGPU -= (float)yoffset;
-    if (fovGPU < 1.0f)
-        fovGPU = 1.0f;
-    if (fovGPU > 45.0f)
-        fovGPU = 45.0f; 
+    camera.FOV -= (float)yoffset;
+    if (camera.FOV < 1.0f)
+        camera.FOV = 1.0f;
+    if (camera.FOV > 45.0f)
+        camera.FOV = 45.0f; 
 }

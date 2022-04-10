@@ -24,7 +24,15 @@ struct Light {
 uniform Light light; 
 uniform bool lightSource;
 
-uniform vec3 cameraPos;
+struct Camera {
+    vec3 position;
+    vec3 front;
+    vec3 up;
+    mat4 view;
+    mat4 projection;
+};
+
+uniform Camera camera;
 
 out vec4 FragColor;
 
@@ -45,7 +53,7 @@ void main()
     vec3 diffuse = diff * (light.diffuse *  material.diffuse);
 
     // specular lighting calculations
-    vec3 viewDir = normalize(cameraPos - FragPos);
+    vec3 viewDir = normalize(camera.position - FragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     vec3 specular = light.specular * (spec  * material.specular);  
