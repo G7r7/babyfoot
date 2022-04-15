@@ -1,5 +1,7 @@
 #include "camera.hpp"
 
+Camera::Camera() {}
+
 Camera::Camera(glm::vec3 camera_position, glm::vec3 camera_front, glm::vec3 camera_up, float FOV, float aspect_ratio, float near_plane, float far_plane):
 position{camera_position}, front{camera_front}, up{camera_up}, FOV{FOV}, aspect_ration{aspect_ratio}, near_plane{near_plane}, far_plane{far_plane} {} 
 

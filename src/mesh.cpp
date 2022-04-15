@@ -83,7 +83,7 @@ void Mesh::init() {
 
 void Mesh::Draw(Shader &shader) 
 {
-        this->material.setShaderUniform(&shader, "material");
+        shader.setUniform("material", &material);
         
         // draw mesh
         glBindVertexArray(VAO);

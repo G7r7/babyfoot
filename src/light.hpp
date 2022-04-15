@@ -1,5 +1,5 @@
-#ifndef LIGHT_S_H
-#define LIGHT_S_H
+#ifndef LIGHT_H
+#define LIGHT_H
 
 #include "uniformable.hpp"
 

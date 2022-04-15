@@ -111,5 +111,6 @@ void Shader::setVec3f(const std::string &name, glm::vec3 value) const
 
 void Shader::setUniform(const std::string &name, Uniformable* value)
 {
+    this->use();
     value->setShaderUniform(this, name);
 }
