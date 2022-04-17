@@ -7,6 +7,11 @@ Game::Game(GLFWwindow* window, Scene& scene)
 void Game::render() {
     float currentFrameTime = glfwGetTime();
     this->deltaTime = currentFrameTime - this->lastFrameTime;
-    this->lastFrameTime = currentFrameTime;  
+    this->lastFrameTime = currentFrameTime;
+    this->process_inputs();
     this->scene.render();
+}
+
+void Game::process_inputs() {
+    this->inputHandler->process_inputs();
 }

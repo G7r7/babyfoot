@@ -18,6 +18,32 @@ InputHandler::InputHandler(Game* game) : game{game}
     glfwSetScrollCallback(this->game->window, CallbackWrapper::scroll_callback);
 }
 
+void InputHandler::process_inputs() {
+    // Light strength
+    if(glfwGetKey(game->window, GLFW_KEY_PAGE_UP) == GLFW_PRESS) {
+        if (this->game->scene.light->strength < 1) {}
+            this->game->scene.light->strength += this->game->deltaTime * 0.5f;
+    }
+    if(glfwGetKey(game->window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS) {
+        if (this->game->scene.light->strength > 0)
+            this->game->scene.light->strength -= this->game->deltaTime * 0.5f;
+    }
+    // Camera translation
+    float cameraSpeed = 2.5f * this->game->deltaTime;
+    if (glfwGetKey(game->window, GLFW_KEY_W) == GLFW_PRESS)
+        game->scene.camera->position += cameraSpeed * game->scene.camera->front;
+    if (glfwGetKey(game->window, GLFW_KEY_S) == GLFW_PRESS)
+        game->scene.camera->position -= cameraSpeed * game->scene.camera->front;
+    if (glfwGetKey(game->window, GLFW_KEY_A) == GLFW_PRESS)
+        game->scene.camera->position -= cameraSpeed * glm::normalize(glm::cross(game->scene.camera->front, game->scene.camera->up));
+    if (glfwGetKey(game->window, GLFW_KEY_D) == GLFW_PRESS)
+        game->scene.camera->position += cameraSpeed * glm::normalize(glm::cross(game->scene.camera->front, game->scene.camera->up));
+    if(glfwGetKey(game->window, GLFW_KEY_P) == GLFW_PRESS)
+        game->scene.camera->FOV += 20 * this->game->deltaTime;
+    if(glfwGetKey(game->window, GLFW_KEY_O) == GLFW_PRESS)
+        game->scene.camera->FOV -= 20 * this->game->deltaTime;
+}
+
 void InputHandler::CallbackWrapper::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     staticInputHandler->key_callback(window, key, scancode, action, mods);
 }
@@ -26,29 +52,6 @@ void InputHandler::key_callback(GLFWwindow* window, int key, int scancode, int a
 {   
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    // Light strength
-    if(key == GLFW_KEY_PAGE_UP && action == GLFW_PRESS) {
-        if (this->game->scene.light->strength < 1) {}
-            this->game->scene.light->strength += this->game->deltaTime * 0.5f;
-    }
-    if(key == GLFW_KEY_PAGE_DOWN && action == GLFW_PRESS) {
-        if (this->game->scene.light->strength > 0)
-            this->game->scene.light->strength -= this->game->deltaTime * 0.5f;
-    }
-    // Camera translation
-    float cameraSpeed = 2.5f * this->game->deltaTime;
-    if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT))
-        game->scene.camera->position += cameraSpeed * game->scene.camera->front;
-    if (key == GLFW_KEY_S && action == GLFW_PRESS)
-        game->scene.camera->position -= cameraSpeed * game->scene.camera->front;
-    if (key == GLFW_KEY_A && action == GLFW_PRESS)
-        game->scene.camera->position -= cameraSpeed * glm::normalize(glm::cross(game->scene.camera->front, game->scene.camera->up));
-    if (key == GLFW_KEY_D && action == GLFW_PRESS)
-        game->scene.camera->position += cameraSpeed * glm::normalize(glm::cross(game->scene.camera->front, game->scene.camera->up));
-    if(key == GLFW_KEY_P && action == GLFW_PRESS)
-        game->scene.camera->FOV += 20 * this->game->deltaTime;
-    if(key == GLFW_KEY_O && action == GLFW_PRESS)
-        game->scene.camera->FOV -= 20 * this->game->deltaTime;
 }
 
 void InputHandler::CallbackWrapper::mouse_callback(GLFWwindow* window, double xpos, double ypos) {

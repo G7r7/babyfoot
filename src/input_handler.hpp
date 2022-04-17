@@ -6,9 +6,10 @@
 class Game;
 
 class InputHandler {
-    public:
+public:
     InputHandler(Game* game);
-    private:
+    void process_inputs();
+private:
     Game* game;
     bool firstMouseInput;
     float mouseLastX;

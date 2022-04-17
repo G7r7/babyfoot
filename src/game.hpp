@@ -13,6 +13,7 @@ class Game
     public:
     Game(GLFWwindow* window, Scene& scene);
     void render();
+    void process_inputs();
     GLFWwindow* window;
     Scene scene;
     InputHandler* inputHandler;
