@@ -14,6 +14,9 @@
 #include "game_object.hpp"
 #include "scene.hpp"
 #include "game.hpp"
+#include "objects/bulb.hpp"
+#include "objects/microsoft.hpp"
+#include "objects/donut.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -54,32 +57,19 @@ int main(int argc, char const *argv[])
     }
 
     //Loading models
-    Model donutModel((char*)"ressources/models/donut.obj");
-    Shader donutShader((char*)"ressources/shaders/vertex.vs", (char*)"ressources/shaders/fragment.fs");
-    GameObject donut(donutModel, donutShader, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
-
-    Model bulbModel((char*)"ressources/models/lightbulb.obj");
-    Shader bulbShader((char*)"ressources/shaders/vertex.vs", (char*)"ressources/shaders/fragment.fs");
-    GameObject bulb(bulbModel, bulbShader, glm::vec3(-1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
-
-    Model microsoftModel((char*)"ressources/models/microsoft.obj");
-    Shader microsoftShader((char*)"ressources/shaders/vertex.vs", (char*)"ressources/shaders/fragment.fs");
-    GameObject microsoft(microsoftModel, microsoftShader, glm::vec3(1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+    Microsoft microsoft;
+    Donut donut;
+    Bulb bulb;
 
     Light light;
-
-    glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
-    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
-    float fovGPU = 45.0f;
-    Camera camera(cameraPos, cameraFront, cameraUp, fovGPU, (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.1f, 100.0f);
+    Camera camera(45.0f, (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
     Scene scene;
+    scene.light = &light;
+    scene.camera = &camera;
     scene.objects.push_back(donut);
     scene.objects.push_back(bulb);
     scene.objects.push_back(microsoft);
-    scene.light = &light;
-    scene.camera = &camera;
 
     Game game(window, scene);
     

@@ -6,7 +6,7 @@
 
 struct Camera : public Uniformable {
         Camera();
-        Camera(glm::vec3 camera_position, glm::vec3 camera_front, glm::vec3 camera_up, float FOV, float aspect_ratio, float near_plane, float far_plane);
+        Camera(float FOV, float aspect_ratio, float near_plane, float far_plane);
         float aspect_ration;
         glm::vec3 position;
         glm::vec3 front;

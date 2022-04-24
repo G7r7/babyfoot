@@ -1,7 +1,13 @@
 #include "game_object.hpp"
 
-GameObject::GameObject(Model model, Shader shader, glm::vec3 position, glm::vec3 up, glm::vec3 front) :
-model{model}, shader{shader}, position{position}, up{up}, front{front} {}
+GameObject::GameObject(Model model, Shader shader) :
+model{model}, shader{shader} {
+    this->position = glm::vec3(0.0f);
+    this->up = glm::vec3(0.0f, 1.0f, 0.0f);
+    this->front = glm::vec3(0.0f, 0.0f, -1.0f);
+
+    this->isGlowing = false;
+}
 
 glm::mat4 GameObject::getTransformationMatrix() {
     return glm::lookAt(position, position + front, up);
@@ -21,4 +27,9 @@ void GameObject::setCamera(Camera* camera) {
 
 void GameObject::draw() {
     model.Draw(shader);
+}
+
+void GameObject::glow() {
+    isGlowing = !isGlowing;
+    shader.setBool("glowing", isGlowing);
 }

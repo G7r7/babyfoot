@@ -52,6 +52,8 @@ void InputHandler::key_callback(GLFWwindow* window, int key, int scancode, int a
 {   
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    // if(key == GLFW_KEY_G && action == GLFW_PRESS)
+    //     game->scene.objects[0].glow();
 }
 
 void InputHandler::CallbackWrapper::mouse_callback(GLFWwindow* window, double xpos, double ypos) {

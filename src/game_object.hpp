@@ -6,7 +6,7 @@
 #include "light.hpp"
 #include "camera.hpp"
 struct GameObject {
-    GameObject(Model model, Shader shader, glm::vec3 position, glm::vec3 up, glm::vec3 front);
+    GameObject(Model model, Shader shader);
     Model model;
     Shader shader;
     glm::vec3 position;
@@ -17,6 +17,9 @@ struct GameObject {
     void setLighting(Light* light);
     void setCamera(Camera* camera);
     void draw();
+
+    bool isGlowing;
+    void glow();
 };
 
 #endif

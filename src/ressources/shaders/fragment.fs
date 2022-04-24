@@ -10,7 +10,6 @@ struct Material {
     vec3 specular;
     float shininess;
 };
-
 uniform Material material;
 
 struct Light {
@@ -20,9 +19,7 @@ struct Light {
     vec3 specular;
     float strength;
 };
-
 uniform Light light; 
-uniform bool lightSource;
 
 struct Camera {
     vec3 position;
@@ -31,8 +28,11 @@ struct Camera {
     mat4 view;
     mat4 projection;
 };
-
 uniform Camera camera;
+
+// Optionnal states
+uniform bool lightSource;
+uniform bool glowing;
 
 out vec4 FragColor;
 
@@ -59,4 +59,8 @@ void main()
     vec3 specular = light.specular * (spec  * material.specular);  
 
     FragColor = light.strength * vec4(ambient + diffuse + specular, 1.0f);
+
+    if(glowing) {
+        FragColor = FragColor * vec4(0.0, 1.0, 0.0, 1.0);    
+    }
 }
