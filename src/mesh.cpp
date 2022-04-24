@@ -1,7 +1,7 @@
 #include "mesh.hpp"
 #include "material.hpp"
 
-Mesh::Mesh(aiMesh* mesh, const aiScene* scene)
+Mesh::Mesh(aiMesh* mesh, const aiScene* scene, std::string directory) : directory{directory}
 {
     // Load vertices
     for(unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -48,6 +48,14 @@ Mesh::Mesh(aiMesh* mesh, const aiScene* scene)
     {
         aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
         this->material = Material(material);
+        
+        for(unsigned int i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++)
+        {
+            aiString str;
+            material->GetTexture(aiTextureType_DIFFUSE, i, &str);
+            Texture texture(str.C_Str(), directory, aiTextureType_DIFFUSE);
+            this->textures.push_back(texture);
+        }
     }
 
     this->init();
@@ -83,13 +91,24 @@ void Mesh::init() {
 
 void Mesh::Draw(Shader &shader) 
 {
-        shader.setUniform("material", &material);
-        
-        // draw mesh
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0); // Default texture
 
-        // always good practice to set everything back to defaults once configured.
-        glActiveTexture(GL_TEXTURE0);
-} 
+    int a, s, d = 0;
+    for(int i = 0; i < textures.size(); i++) {
+        glBindTexture(GL_TEXTURE_2D, textures[i].id); // Loaded_Texture
+        glActiveTexture(GL_TEXTURE0 + i); // Texture_unit
+        if(textures[i].type == aiTextureType_DIFFUSE) {
+            shader.setUniform(textures[i].getComputedName() + std::to_string(d), &textures[i]);
+            d++;
+        }
+    }
+    shader.setUniform("material", &material);
+    
+    // draw mesh
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+
+    // always good practice to set everything back to defaults once configured.
+    glActiveTexture(GL_TEXTURE0);
+}

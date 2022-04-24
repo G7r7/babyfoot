@@ -17,6 +17,7 @@
 #include "objects/bulb.hpp"
 #include "objects/microsoft.hpp"
 #include "objects/donut.hpp"
+#include "objects/ball.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -60,6 +61,7 @@ int main(int argc, char const *argv[])
     Microsoft microsoft;
     Donut donut;
     Bulb bulb;
+    Ball ball;
 
     Light light;
     Camera camera(45.0f, (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.1f, 100.0f);
@@ -70,6 +72,7 @@ int main(int argc, char const *argv[])
     scene.objects.push_back(donut);
     scene.objects.push_back(bulb);
     scene.objects.push_back(microsoft);
+    scene.objects.push_back(ball);
 
     Game game(window, scene);
     

@@ -9,6 +9,7 @@
 #include <assimp/mesh.h>
 #include "shader.hpp"
 #include "material.hpp"
+#include "texture.hpp"
 
 struct Vertex {
     glm::vec3 Position;
@@ -16,20 +17,16 @@ struct Vertex {
     glm::vec2 TexCoords;
 };
 
-struct Texture {
-    unsigned int id;
-    std::string type;
-    std::string path;
-};
-
 class Mesh {
     public:
-        Mesh(aiMesh* mesh, const aiScene* scene);
+        Mesh(aiMesh* mesh, const aiScene* scene, std::string directory);
 
         std::vector<Vertex>       vertices;
         std::vector<unsigned int> indices;
         std::vector<Texture>      textures;
         Material                  material;
+
+        std::string               directory;
 
         void Draw(Shader &shader);
     private:

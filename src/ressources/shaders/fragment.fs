@@ -12,6 +12,11 @@ struct Material {
 };
 uniform Material material;
 
+uniform sampler2D texture_diffuse;
+uniform sampler2D texture_ambient;
+uniform sampler2D texture_specular;
+uniform sampler2D texture_height;
+
 struct Light {
     vec3 position;
     vec3 ambient;
@@ -58,9 +63,10 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     vec3 specular = light.specular * (spec  * material.specular);  
 
-    FragColor = light.strength * vec4(ambient + diffuse + specular, 1.0f);
+    FragColor = light.strength * (vec4(ambient + diffuse + specular, 1.0f) + texture(texture_diffuse, TexCoord));
 
     if(glowing) {
         FragColor = FragColor * vec4(0.0, 1.0, 0.0, 1.0);    
     }
+
 }
