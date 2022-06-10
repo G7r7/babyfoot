@@ -11,7 +11,7 @@ class InputHandler;
 class Game
 {
     public:
-    Game(GLFWwindow* window, Scene& scene);
+    Game(GLFWwindow* window, Scene&& scene);
     void render();
     void process_inputs();
     GLFWwindow* window;

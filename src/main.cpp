@@ -9,15 +9,10 @@
 
 #include "shader.hpp"
 #include "model.hpp"
-#include "light.hpp"
-#include "camera.hpp"
 #include "game_object.hpp"
 #include "scene.hpp"
 #include "game.hpp"
-#include "objects/bulb.hpp"
-#include "objects/microsoft.hpp"
-#include "objects/donut.hpp"
-#include "objects/ball.hpp"
+#include "scenes/test_level.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -36,6 +31,7 @@ int main(int argc, char const *argv[])
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    // glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
     // glfw create window
     GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE, NULL, NULL);
@@ -57,24 +53,7 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
-    //Loading models
-    Microsoft microsoft;
-    Donut donut;
-    Bulb bulb;
-    Ball ball;
-
-    Light light;
-    Camera camera(45.0f, (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.1f, 100.0f);
-
-    Scene scene;
-    scene.light = &light;
-    scene.camera = &camera;
-    scene.objects.push_back(donut);
-    scene.objects.push_back(bulb);
-    scene.objects.push_back(microsoft);
-    scene.objects.push_back(ball);
-
-    Game game(window, scene);
+    Game game(window, TestLevel());
     
     glEnable(GL_DEPTH_TEST);
 
@@ -99,4 +78,5 @@ int main(int argc, char const *argv[])
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
+    
 }

@@ -6,7 +6,6 @@ services:
     image: babyfoot
     volumes:
       - ".:/home/babyfoot"
-    entrypoint: /entrypoint.sh
-    command: build
+    command: tail -f /dev/null
     env_file:
       - .env

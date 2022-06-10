@@ -7,10 +7,10 @@
 #include "camera.hpp"
 
 struct Scene {
-    Scene();
+    Scene(Camera camera, Light light, std::vector<GameObject> objects);
     std::vector<GameObject> objects;
-    Light* light;
-    Camera* camera;
+    Light light;
+    Camera camera;
     void render();
 };
 
