@@ -3,7 +3,7 @@
 
 #include "../engine/game_object.hpp"
 
-struct Donut : GameObject
+struct Donut : public GameObject
 {
     Donut();
 };

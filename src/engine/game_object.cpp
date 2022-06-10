@@ -33,3 +33,7 @@ void GameObject::glow() {
     isGlowing = !isGlowing;
     shader.setBool("glowing", isGlowing);
 }
+
+void GameObject::move(glm::vec3 vector) {
+    position += vector;
+}

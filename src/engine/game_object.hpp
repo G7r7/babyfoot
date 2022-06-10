@@ -20,6 +20,7 @@ struct GameObject {
 
     bool isGlowing;
     void glow();
+    void move(glm::vec3 vector);
 };
 
 #endif

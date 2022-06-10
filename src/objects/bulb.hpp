@@ -3,7 +3,7 @@
 
 #include "../engine/game_object.hpp"
 
-struct Bulb : GameObject
+struct Bulb : public GameObject
 {
     Bulb();
 };

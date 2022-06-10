@@ -12,7 +12,7 @@
 #include "engine/game_object.hpp"
 #include "engine/scene.hpp"
 #include "game.hpp"
-#include "scenes/test_level.hpp"
+#include "scenes/soccer.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -53,7 +53,7 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
-    Game game(window, TestLevel());
+    Game game(window, SoccerLevel());
     
     glEnable(GL_DEPTH_TEST);
 
