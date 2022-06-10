@@ -1,7 +1,7 @@
 #ifndef TEST_LEVEL_H
 #define TEST_LEVEL_H
 
-#include "../scene.hpp"
+#include "../engine/scene.hpp"
 
 struct TestLevel : Scene
 {

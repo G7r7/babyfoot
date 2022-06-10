@@ -3,7 +3,7 @@
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-#include "scene.hpp"
+#include "engine/scene.hpp"
 #include "input_handler.hpp"
 
 class InputHandler;

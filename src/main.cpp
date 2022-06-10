@@ -7,10 +7,10 @@
 #include <math.h>
 #include <iostream>
 
-#include "shader.hpp"
-#include "model.hpp"
-#include "game_object.hpp"
-#include "scene.hpp"
+#include "engine/shader.hpp"
+#include "engine/model.hpp"
+#include "engine/game_object.hpp"
+#include "engine/scene.hpp"
 #include "game.hpp"
 #include "scenes/test_level.hpp"
 
