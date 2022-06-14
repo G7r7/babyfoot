@@ -21,6 +21,8 @@ struct GameObject {
     bool isGlowing;
     void glow();
     void move(glm::vec3 vector);
+    glm::vec3 speed;
+    bool fixed;
 };
 
 #endif

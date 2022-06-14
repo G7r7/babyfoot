@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include "engine/scene.hpp"
 #include "input_handler.hpp"
+#include "engine/physics/physics_processor.hpp"
 
 class InputHandler;
 
@@ -17,6 +18,7 @@ class Game
     GLFWwindow* window;
     Scene scene;
     InputHandler* inputHandler;
+    PhysicsProcessor physicsProcessor;
     float deltaTime;
     float lastFrameTime;
 };

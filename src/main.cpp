@@ -13,6 +13,7 @@
 #include "engine/scene.hpp"
 #include "game.hpp"
 #include "scenes/soccer.hpp"
+#include "scenes/test.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -54,6 +55,10 @@ int main(int argc, char const *argv[])
     }
 
     Game game(window, SoccerLevel());
+
+    game.scene.objects[0].fixed = false;
+    game.scene.objects[1].fixed = false;
+    game.scene.objects[2].fixed = true;
     
     glEnable(GL_DEPTH_TEST);
 

@@ -12,8 +12,9 @@ TestLevel::TestLevel() : Scene([]{
             Microsoft(),
             Donut(),
             Bulb(),
-            Ball()
-        }
+            Ball(),
+        },
+        glm::vec3(0.1f)
     );
 }()) {}
 

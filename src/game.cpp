@@ -15,6 +15,7 @@ void Game::render() {
     this->deltaTime = currentFrameTime - this->lastFrameTime;
     this->lastFrameTime = currentFrameTime;
     this->process_inputs();
+    this->physicsProcessor.process(&scene, deltaTime);
     this->scene.render();
 }
 

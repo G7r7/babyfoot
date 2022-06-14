@@ -5,7 +5,8 @@ model{model}, shader{shader} {
     this->position = glm::vec3(0.0f);
     this->up = glm::vec3(0.0f, 1.0f, 0.0f);
     this->front = glm::vec3(0.0f, 0.0f, -1.0f);
-
+    this->speed = glm::vec3(0.0f);
+    this->fixed = false;
     this->isGlowing = false;
 }
 
