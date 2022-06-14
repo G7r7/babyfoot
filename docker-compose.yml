@@ -7,5 +7,3 @@ services:
     volumes:
       - ".:/home/babyfoot"
     command: tail -f /dev/null
-    env_file:
-      - .env
