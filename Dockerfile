@@ -1,7 +1,7 @@
 FROM gcc:9
 
 RUN apt-get update && apt-get -y install \
-    git make cmake unzip gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64
+    git make cmake ninja-build unzip gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64
 
 #glfw
 WORKDIR "/tmp"
