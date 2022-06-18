@@ -25,11 +25,11 @@ public:
     // use/activate shader
     void use();
     // utility uniform functions
-    void setBool(const std::string &name, bool value) const;
-    void setInt(const std::string &name, int value) const;
-    void setFloat(const std::string &name, float value) const;
-    void setMat4f(const std::string &name, glm::mat4 value) const;
-    void setVec3f(const std::string &name, glm::vec3 value) const;
+    void setBool(const std::string &name, bool value);
+    void setInt(const std::string &name, int value);
+    void setFloat(const std::string &name, float value);
+    void setMat4f(const std::string &name, glm::mat4 value);
+    void setVec3f(const std::string &name, glm::vec3 value);
     void setUniform(const std::string &name, Uniformable* value);
 };
 
