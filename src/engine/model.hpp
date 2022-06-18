@@ -11,10 +11,9 @@ class Model
 {
     public:
         Model(std::string path);
-        void Draw(Shader &shader);	
+        std::vector<Mesh> meshes;
     private:
         std::string directory;
-        std::vector<Mesh> meshes;
 
         void processNode(aiNode *node, const aiScene *scene);
         Mesh processMesh(aiMesh *mesh, const aiScene *scene);

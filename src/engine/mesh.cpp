@@ -88,27 +88,3 @@ void Mesh::init() {
 
     glBindVertexArray(0);
 }
-
-void Mesh::Draw(Shader &shader) 
-{
-    glBindTexture(GL_TEXTURE_2D, 0); // Default texture
-
-    int a, s, d = 0;
-    for(int i = 0; i < textures.size(); i++) {
-        glBindTexture(GL_TEXTURE_2D, textures[i].id); // Loaded_Texture
-        glActiveTexture(GL_TEXTURE0 + i); // Texture_unit
-        if(textures[i].type == aiTextureType_DIFFUSE) {
-            shader.setUniform(textures[i].getComputedName() + std::to_string(d), &textures[i]);
-            d++;
-        }
-    }
-    shader.setUniform("material", &material);
-    
-    // draw mesh
-    glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
-
-    // always good practice to set everything back to defaults once configured.
-    glActiveTexture(GL_TEXTURE0);
-}

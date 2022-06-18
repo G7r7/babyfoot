@@ -1,7 +1,7 @@
 #ifndef PHYSX_PROC_H
 #define PHYSX_PROC_H
 
-#include "../scene.hpp"
+#include "../scene/scene.hpp"
 #include "./gravity/gravity_processor.hpp"
 
 struct PhysicsProcessor {

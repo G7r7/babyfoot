@@ -34,9 +34,3 @@ void Model::processNode(aiNode *node, const aiScene *scene)
         processNode(node->mChildren[i], scene);
     }
 }
-
-void Model::Draw(Shader &shader)
-{
-    for(unsigned int i = 0; i < meshes.size(); i++)
-        meshes[i].Draw(shader);
-}

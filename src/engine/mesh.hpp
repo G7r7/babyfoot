@@ -28,9 +28,8 @@ class Mesh {
 
         std::string               directory;
 
-        void Draw(Shader &shader);
-    private:
         unsigned int VAO, VBO, EBO;
+    private:
         void init();
 }; 
 

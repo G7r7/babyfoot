@@ -2,46 +2,53 @@
 
 InputHandler* InputHandler::CallbackWrapper::staticInputHandler;
 
-InputHandler::InputHandler(Game* game) : game{game}
+InputHandler::InputHandler()
 {
     int width;
     int height;
-    glfwGetWindowSize(game->window, &width, &height);
+    // glfwGetWindowSize(game->window, &width, &height);
     this->firstMouseInput = true;
     this->mouseLastX = width/2;
     this->mouseLastY = height/2;
     this->yaw = -90.0f;
     this->pitch = 0.0f;
     CallbackWrapper::staticInputHandler = this;
-    glfwSetKeyCallback(this->game->window, CallbackWrapper::key_callback);
-    glfwSetCursorPosCallback(this->game->window, CallbackWrapper::mouse_callback);  
-    glfwSetScrollCallback(this->game->window, CallbackWrapper::scroll_callback);
+
 }
 
-void InputHandler::process_inputs() {
+void InputHandler::process_inputs(Window* window, Game* game, float deltaTime) {
+
     // Light strength
-    if(glfwGetKey(game->window, GLFW_KEY_PAGE_UP) == GLFW_PRESS) {
-        if (this->game->scene.light.strength < 1) {}
-            this->game->scene.light.strength += this->game->deltaTime * 0.5f;
+    if(glfwGetKey(window->window, GLFW_KEY_PAGE_UP) == GLFW_PRESS) {
+        if (game->scene.light.strength < 1) {}
+            game->scene.light.strength += deltaTime * 0.5f;
     }
-    if(glfwGetKey(game->window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS) {
-        if (this->game->scene.light.strength > 0)
-            this->game->scene.light.strength -= this->game->deltaTime * 0.5f;
+    if(glfwGetKey(window->window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS) {
+        if (game->scene.light.strength > 0)
+            game->scene.light.strength -= deltaTime * 0.5f;
     }
     // Camera translation
-    float cameraSpeed = 2.5f * this->game->deltaTime;
-    if (glfwGetKey(game->window, GLFW_KEY_W) == GLFW_PRESS)
+    float cameraSpeed = 2.5f * deltaTime;
+    if (glfwGetKey(window->window, GLFW_KEY_W) == GLFW_PRESS)
         game->scene.camera.position += cameraSpeed * game->scene.camera.front;
-    if (glfwGetKey(game->window, GLFW_KEY_S) == GLFW_PRESS)
+    if (glfwGetKey(window->window, GLFW_KEY_S) == GLFW_PRESS)
         game->scene.camera.position -= cameraSpeed * game->scene.camera.front;
-    if (glfwGetKey(game->window, GLFW_KEY_A) == GLFW_PRESS)
+    if (glfwGetKey(window->window, GLFW_KEY_A) == GLFW_PRESS)
         game->scene.camera.position -= cameraSpeed * glm::normalize(glm::cross(game->scene.camera.front, game->scene.camera.up));
-    if (glfwGetKey(game->window, GLFW_KEY_D) == GLFW_PRESS)
+    if (glfwGetKey(window->window, GLFW_KEY_D) == GLFW_PRESS)
         game->scene.camera.position += cameraSpeed * glm::normalize(glm::cross(game->scene.camera.front, game->scene.camera.up));
-    if(glfwGetKey(game->window, GLFW_KEY_P) == GLFW_PRESS)
-        game->scene.camera.FOV += 20 * this->game->deltaTime;
-    if(glfwGetKey(game->window, GLFW_KEY_O) == GLFW_PRESS)
-        game->scene.camera.FOV -= 20 * this->game->deltaTime;
+    if(glfwGetKey(window->window, GLFW_KEY_P) == GLFW_PRESS)
+        game->scene.camera.FOV += 20 * deltaTime;
+    if(glfwGetKey(window->window, GLFW_KEY_O) == GLFW_PRESS)
+        game->scene.camera.FOV -= 20 * deltaTime;
+}
+
+void InputHandler::bind_input_callbacks(Window* window, Game* game) {
+    glfwSetWindowUserPointer(window->window, game);
+    glfwSetKeyCallback(window->window, CallbackWrapper::key_callback);
+    glfwSetCursorPosCallback(window->window, CallbackWrapper::mouse_callback);  
+    glfwSetScrollCallback(window->window, CallbackWrapper::scroll_callback);
+    glfwSetWindowSizeCallback(window->window, CallbackWrapper::resize_callback);
 }
 
 void InputHandler::CallbackWrapper::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -50,10 +57,11 @@ void InputHandler::CallbackWrapper::key_callback(GLFWwindow* window, int key, in
 
 void InputHandler::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {   
+    Game* game = (Game*)glfwGetWindowUserPointer(window);
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    // if(key == GLFW_KEY_G && action == GLFW_PRESS)
-    //     game->scene.objects[0].glow();
+    if(key == GLFW_KEY_G && action == GLFW_PRESS)
+        game->scene.objects[0].glow();
 }
 
 void InputHandler::CallbackWrapper::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -93,7 +101,8 @@ void InputHandler::mouse_callback(GLFWwindow* window, double xpos, double ypos) 
     direction.x = cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
     direction.y = sin(glm::radians(this->pitch));
     direction.z = sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
-    this->game->scene.camera.front = glm::normalize(direction);
+    Game* game = (Game*)glfwGetWindowUserPointer(window);
+    game->scene.camera.front = glm::normalize(direction);
 }
 
 void InputHandler::CallbackWrapper::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
@@ -102,9 +111,19 @@ void InputHandler::CallbackWrapper::scroll_callback(GLFWwindow* window, double x
 
 void InputHandler::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    this->game->scene.camera.FOV -= (float)yoffset;
-    if (this->game->scene.camera.FOV < 1.0f)
-        this->game->scene.camera.FOV = 1.0f;
-    if (this->game->scene.camera.FOV > 45.0f)
-        this->game->scene.camera.FOV = 45.0f; 
+    Game* game = (Game*)glfwGetWindowUserPointer(window);
+    game->scene.camera.FOV -= (float)yoffset;
+    if (game->scene.camera.FOV < 1.0f)
+        game->scene.camera.FOV = 1.0f;
+    if (game->scene.camera.FOV > 45.0f)
+        game->scene.camera.FOV = 45.0f; 
+}
+
+void InputHandler::CallbackWrapper::resize_callback(GLFWwindow* window, int width, int height) {
+    staticInputHandler->scroll_callback(window, width, height);
+}
+
+void InputHandler::resize_callback(GLFWwindow* window, int width, int height){
+    Game* game = (Game*)glfwGetWindowUserPointer(window);
+    game->scene.camera.aspect_ration = (float)width/(float)height;
 }

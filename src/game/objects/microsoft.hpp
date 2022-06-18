@@ -1,7 +1,7 @@
 #ifndef MICROSOFT_H
 #define MICROSOFT_H
 
-#include "../engine/game_object.hpp"
+#include "../../engine/scene/object/game_object.hpp"
 
 struct Microsoft : public GameObject
 {

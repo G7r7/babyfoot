@@ -10,26 +10,6 @@ model{model}, shader{shader} {
     this->isGlowing = false;
 }
 
-glm::mat4 GameObject::getTransformationMatrix() {
-    return glm::lookAt(position, position + front, up);
-}
-
-void GameObject::updateTransformationUniform() {
-    shader.setMat4f("transformation", getTransformationMatrix());
-}
-
-void GameObject::setLighting(Light* light) {
-    shader.setUniform("light", light);
-}
-
-void GameObject::setCamera(Camera* camera) {
-    shader.setUniform("camera", camera);
-}
-
-void GameObject::draw() {
-    model.Draw(shader);
-}
-
 void GameObject::glow() {
     isGlowing = !isGlowing;
     shader.setBool("glowing", isGlowing);
