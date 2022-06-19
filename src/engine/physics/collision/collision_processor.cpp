@@ -35,13 +35,13 @@ void CollisionProcessor::process(GameObject* object1, GameObject* object2) {
 
                 for (size_t j = 0; j < mesh2.indices.size(); j+=3)
                 {
-                    glm::vec3 point21 = mesh2.vertices[i].Position + object2->position;
+                    glm::vec3 point21 = mesh2.vertices[j].Position + object2->position;
                     double p21[3] = { point21.x, point21.y, point21.z };
 
-                    glm::vec3 point22 = mesh2.vertices[i+1].Position + object2->position;
+                    glm::vec3 point22 = mesh2.vertices[j+1].Position + object2->position;
                     double p22[3] = { point22.x, point22.y, point22.z };
 
-                    glm::vec3 point23 = mesh2.vertices[i+2].Position + object2->position;
+                    glm::vec3 point23 = mesh2.vertices[j+2].Position + object2->position;
                     double p23[3] = { point23.x, point23.y, point23.z };
 
                     int coplanar = 0;
