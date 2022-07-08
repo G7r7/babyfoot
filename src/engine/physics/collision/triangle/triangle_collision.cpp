@@ -59,19 +59,19 @@ void planeIntersectionLineEquation(glm::vec3* normal_1, float *d_1, glm::vec3* n
   float x, y;
   bool success = false;
   // Trying with z = 0
-  success = solveEquations(normal_1->x, normal_1->y, *d_1, normal_2->x, normal_2->y, *d_2, &x, &y);
+  success = solveEquations(normal_1->x, normal_1->y, -*d_1, normal_2->x, normal_2->y, -*d_2, &x, &y);
   if (success) {
     *point = {x, y, 0};
     return;
   }
   // Trying with y = 0
-  success = solveEquations(normal_1->x, normal_1->z, *d_1, normal_2->x, normal_2->z, *d_2, &x, &y);
+  success = solveEquations(normal_1->x, normal_1->z, -*d_1, normal_2->x, normal_2->z, -*d_2, &x, &y);
   if (success) {
     *point = {x, 0, y};
     return;
   }
   // Trying with x = 0
-  success = solveEquations(normal_1->y, normal_1->z, *d_1, normal_2->y, normal_2->z, *d_2, &x, &y);
+  success = solveEquations(normal_1->y, normal_1->z, -*d_1, normal_2->y, normal_2->z, -*d_2, &x, &y);
   if (success) {
     *point = {0, x, y};
     return;

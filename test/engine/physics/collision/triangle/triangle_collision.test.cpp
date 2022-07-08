@@ -108,8 +108,8 @@ TEST(TriangleCollision, planeIntersectionLineEquation) {
         ASSERT_EQ(direction.y, 10);
         ASSERT_EQ(direction.z, -5);
         // point
-        ASSERT_EQ(point.x, -2);
-        ASSERT_EQ(point.y, 3);
+        ASSERT_EQ(point.x, 2);
+        ASSERT_EQ(point.y, -3);
         ASSERT_EQ(point.z, 0);
     }
     {
@@ -174,5 +174,18 @@ TEST(TriangleCollision, checkForIntersection) {
         bool intersection = checkForIntersection(a1, b1, c1, a2, b2, c2);
 
         ASSERT_FALSE(intersection);
+    }
+    { // Triangle crossing
+        glm::vec3 a1(0, 0, 0);
+        glm::vec3 b1(1, 0, 0);
+        glm::vec3 c1(0, 1, 0);
+
+        glm::vec3 a2(1,0,1);
+        glm::vec3 b2(-1,0,1);
+        glm::vec3 c2(0,1,-1);
+        
+        bool intersection = checkForIntersection(a1, b1, c1, a2, b2, c2);
+
+        ASSERT_TRUE(intersection);
     }
 }
