@@ -1,7 +1,8 @@
 FROM gcc:9
 
 RUN apt-get update && apt-get -y install \
-    git make cmake ninja-build unzip gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64
+    git make cmake ninja-build unzip gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 \
+    python-pip
 
 #glfw
 WORKDIR "/tmp"
@@ -168,12 +169,26 @@ RUN cmake .. \
         -D ASSIMP_INSTALL_PDB=OFF \
         && make -j
 
+#Google Test
+WORKDIR "/tmp"
+RUN wget https://github.com/google/googletest/archive/refs/tags/release-1.12.1.zip
+RUN unzip release-1.12.1.zip && rm release-1.12.1.zip
+WORKDIR "/tmp/googletest-release-1.12.1"
+RUN mkdir build
+WORKDIR "/tmp/googletest-release-1.12.1/build"
+RUN cmake .. && make -j
+
+#Gcovr
+RUN pip install gcovr
+
 #Adding header files to usr/include/ for intellisense
 RUN cp -r /tmp/glfw-3.3.6/include/GLFW /usr/include \
     && cp -r /tmp/glad-0.1.36/build/include/* /usr/include/ \
     && cp -r /tmp/glm/glm/ /usr/include/ \
     && cp -r /tmp/stb/* /usr/include \
     && cp -r /tmp/assimp-5.1.0/include/* /usr/include \
-    && cp -r /tmp/assimp-5.1.0/build/include/* /usr/include
+    && cp -r /tmp/assimp-5.1.0/build/include/* /usr/include \
+    && cp -r /tmp/googletest-release-1.12.1/googletest/include/* /usr/include \
+    && cp -r /tmp/googletest-release-1.12.1/googlemock/include/* /usr/include
 
 WORKDIR "/home/babyfoot/build"

@@ -16,7 +16,7 @@ SoccerLevel::SoccerLevel() : Scene([]{
         camera,
         Light(),
         {
-            bulb,
+            // bulb,
             ball,
             field,
         },
