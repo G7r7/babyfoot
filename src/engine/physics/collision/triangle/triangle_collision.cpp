@@ -78,6 +78,10 @@ void planeIntersectionLineEquation(glm::vec3* normal_1, float *d_1, glm::vec3* n
   }
 }
 
+float sclalarProjectionPointOnLine(glm::vec3* point_to_project, glm::vec3* line_direction, glm::vec3* point_of_line) {
+  return glm::dot(*line_direction, (*point_to_project - *point_of_line));
+}
+
 bool checkForIntersection(glm::vec3 t0_v0, glm::vec3 t0_v1, glm::vec3 t0_v2,
   glm::vec3 t1_v0, glm::vec3 t1_v1, glm::vec3 t1_v2) {
   

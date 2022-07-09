@@ -19,6 +19,8 @@ bool solveEquations(float a1, float b1, float c1, float a2, float b2, float c2, 
 
 void planeIntersectionLineEquation(glm::vec3* normal_1, float* d_1, glm::vec3* normal_2, float* d_2, glm::vec3* direction, glm::vec3* point);
 
+float sclalarProjectionPointOnLine(glm::vec3* point_to_project, glm::vec3* line_direction, glm::vec3* point_of_line);
+
 bool checkForIntervalOverlap(float* interval_1, float* interval_2);
 
 #endif
