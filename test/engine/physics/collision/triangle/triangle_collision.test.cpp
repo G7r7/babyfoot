@@ -1,7 +1,7 @@
 #include "../../../../../src/engine/physics/collision/triangle/triangle_collision.hpp"
 #include <gtest/gtest.h>
 
-TEST(TriangleOverlap, checkForIntervalOverlap) {
+TEST(IntervalOverlap, checkForIntervalOverlap) {
     {
         float interval_1[] = {0, 1};
         float interval_2[] = {2, 3};
@@ -30,7 +30,7 @@ TEST(TriangleOverlap, checkForIntervalOverlap) {
 }
 
 
-TEST(TriangleCollision, checkForIntersection) {
+TEST(CheckForIntersection, Test1) {
     { // Same triangle rotated 90° (forming a "pine tree")
         glm::vec3 a1(-0.5, 0, 0);
         glm::vec3 b1(0.5, 0, 0);

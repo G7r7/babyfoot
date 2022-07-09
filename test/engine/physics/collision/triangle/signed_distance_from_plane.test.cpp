@@ -1,7 +1,7 @@
 #include "../../../../../src/engine/physics/collision/triangle/triangle_collision.hpp"
 #include <gtest/gtest.h>
 
-TEST(TriangleCollisionSignedDistanceFromPlane, PositiveDistance) {
+TEST(SignedDistanceFromPlane, PositiveDistance) {
     { // Positive
         glm::vec3 v = {1, 2, 3};
         glm::vec3 normal = {1, 2, 3};
@@ -10,7 +10,7 @@ TEST(TriangleCollisionSignedDistanceFromPlane, PositiveDistance) {
     }
 }
 
-TEST(TriangleCollisionSignedDistanceFromPlane, ZeroDistance) {
+TEST(SignedDistanceFromPlane, ZeroDistance) {
     { // On plane = 0
         glm::vec3 v = {1, -7, 3};
         glm::vec3 normal = {1, 2, 3};
@@ -19,7 +19,7 @@ TEST(TriangleCollisionSignedDistanceFromPlane, ZeroDistance) {
     }
 }
 
-TEST(TriangleCollisionSignedDistanceFromPlane, NegativeDistance) {
+TEST(SignedDistanceFromPlane, NegativeDistance) {
     { // Negative
         glm::vec3 v = {1, -20, 3};
         glm::vec3 normal = {1, 2, 3};

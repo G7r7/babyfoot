@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 // Plane equation
-TEST(TriangleCollisionPlaneEquation, IntegersPlane) {
+TEST(PlaneEquation, IntegersPlane) {
     glm::vec3 a, b, c, normal;
     float d;
 
@@ -16,7 +16,7 @@ TEST(TriangleCollisionPlaneEquation, IntegersPlane) {
     ASSERT_EQ(d, -15);
 }
 
-TEST(TriangleCollisionPlaneEquation, FloatsPlane) {
+TEST(PlaneEquation, FloatsPlane) {
     glm::vec3 a, b, c, normal;
     float d;
 

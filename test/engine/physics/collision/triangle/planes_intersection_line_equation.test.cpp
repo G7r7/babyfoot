@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 
-TEST(TriangleCollisionPlaneIntersectionLineEquation, Intersection1) {
+TEST(PlaneIntersectionLineEquation, Intersection1) {
     {
         glm::vec3 normal_1 = {1, 2, 3};
         float d_1 = 4;
@@ -22,7 +22,7 @@ TEST(TriangleCollisionPlaneIntersectionLineEquation, Intersection1) {
     }
 }
 
-TEST(TriangleCollisionPlaneIntersectionLineEquation, Intersection2) {
+TEST(PlaneIntersectionLineEquation, Intersection2) {
     {
         glm::vec3 normal_1 = {1, 0, 0};
         float d_1 = 0;
@@ -42,7 +42,7 @@ TEST(TriangleCollisionPlaneIntersectionLineEquation, Intersection2) {
     }
 }
 
-TEST(TriangleCollisionPlaneIntersectionLineEquation, Intersection3) {
+TEST(PlaneIntersectionLineEquation, Intersection3) {
     {
         glm::vec3 normal_2 = {0, 1, 0};
         float d_1 = 0;

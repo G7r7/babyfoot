@@ -1,30 +1,30 @@
 #include "../../../../../src/engine/physics/collision/triangle/triangle_collision.hpp"
 #include <gtest/gtest.h>
 
-TEST(TriangleCollisionSameSign, AllZeros) {
+TEST(SameSign, AllZeros) {
     ASSERT_TRUE(sameSign(0, 0, 0));
 }
 
-TEST(TriangleCollisionSameSign, AllOnes) {
+TEST(SameSign, AllOnes) {
     ASSERT_TRUE(sameSign(1, 1, 1));
 }
 
-TEST(TriangleCollisionSameSign, AllSamesFloat) {
+TEST(SameSign, AllSamesFloat) {
     ASSERT_TRUE(sameSign(2.5, 2.5, 2.5));
 }
 
-TEST(TriangleCollisionSameSign, AllNegativeDifferentFloats) {
+TEST(SameSign, AllNegativeDifferentFloats) {
     ASSERT_TRUE(sameSign(-0.12, -0.5, -0.6));
 }
 
-TEST(TriangleCollisionSameSign, LastNeg) {
+TEST(SameSign, LastNeg) {
     ASSERT_FALSE(sameSign(1, 1, -1));
 }
 
-TEST(TriangleCollisionSameSign, MiddleNeg) {
+TEST(SameSign, MiddleNeg) {
     ASSERT_FALSE(sameSign(1, -1, 1));
 }
 
-TEST(TriangleCollisionSameSign, FirstNeg) {
+TEST(SameSign, FirstNeg) {
     ASSERT_FALSE(sameSign(-1, 1, 1));
 }

@@ -2,5 +2,6 @@
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
+  ::testing::GTEST_FLAG(filter) = "ScalarProjectionPointOnLine.*";
   return RUN_ALL_TESTS();
 }
