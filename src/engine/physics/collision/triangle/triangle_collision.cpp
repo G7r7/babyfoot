@@ -78,8 +78,60 @@ void planeIntersectionLineEquation(glm::vec3* normal_1, float *d_1, glm::vec3* n
   }
 }
 
-float sclalarProjectionPointOnLine(glm::vec3* point_to_project, glm::vec3* line_direction, glm::vec3* point_of_line) {
-  return glm::dot(*line_direction, (*point_to_project - *point_of_line));
+glm::vec3  projectionPointOnLine(glm::vec3* point_to_project, glm::vec3* line_direction, glm::vec3* point_of_line) {
+  return *point_of_line
+    + glm::dot(*point_to_project - *point_of_line, *line_direction)
+    / glm::dot(*line_direction, *line_direction)
+    * (*line_direction);
+}
+
+
+void scalarInterval(std::vector<glm::vec3>* vertices, float* signed_distances, glm::vec3* line_direction, glm::vec3* point_on_line, float* interval) {
+  
+  // Scalar Projections of the triangle vertices on the line
+  float scalar_projections[3];
+  scalar_projections[0] = glm::dot(*line_direction, (vertices->at(0) - *point_on_line));
+  scalar_projections[1] = glm::dot(*line_direction, (vertices->at(1) - *point_on_line));
+  scalar_projections[2] = glm::dot(*line_direction, (vertices->at(2) - *point_on_line));
+  
+  // Identify vertex that is on the other side than the 2 others
+  int alone_index;
+  if ((signed_distances[0] >= 0 && signed_distances[1] >= 0)
+    || (signed_distances[0] < 0 && signed_distances[1] < 0)) {
+    alone_index = 2;
+  } else if ((signed_distances[1] >= 0 && signed_distances[2] >= 0)
+    || (signed_distances[1] < 0 && signed_distances[2] < 0)) {
+    alone_index = 0;
+  } else {
+    alone_index = 1;
+  }
+  int first_index = (alone_index - 1) % 3;
+  int second_index = (alone_index + 1) % 3;
+  std::cout << "Signed distance 0 : " << signed_distances[0] << std::endl;
+  std::cout << "Signed distance 1 : " << signed_distances[1] << std::endl;
+  std::cout << "Signed distance 2 : " << signed_distances[2] << std::endl;
+  std::cout << "Alone index : " << alone_index << std::endl;
+
+  // Then we want to compute a line parameter value corresponding with the intersection of the triangle and the line
+  float line_param_0 = scalar_projections[first_index]
+    + (scalar_projections[alone_index]
+    - scalar_projections[first_index]) 
+      * signed_distances[first_index]
+      / (signed_distances[first_index]
+    - signed_distances[alone_index]);
+  float line_param_1 = scalar_projections[second_index]
+    + (scalar_projections[alone_index]
+    - scalar_projections[second_index])
+      * signed_distances[second_index]
+      / (signed_distances[second_index]
+    - signed_distances[alone_index]);
+
+  // Intersections points between triangle edges and the line 
+  // glm::vec3 t0_B0 = point_on_line + line_param_0 * D;
+  // glm::vec3 t0_B1 = point_on_line + line_param_1 * D;
+
+  interval[0] = line_param_0;
+  interval[1] = line_param_1;
 }
 
 bool checkForIntersection(glm::vec3 t0_v0, glm::vec3 t0_v1, glm::vec3 t0_v2,
@@ -106,12 +158,15 @@ bool checkForIntersection(glm::vec3 t0_v0, glm::vec3 t0_v1, glm::vec3 t0_v2,
   float t1_v2_plane0 = signedDistanceFromPlane(&t1_v2, &t0_normal, &t0_d);
 
   // If all distances are not 0 and all of same sign => no intersection
+  // For triangle 0 with plane 1
   if (t0_v0_plane1 != 0 && t0_v1_plane1 != 0 && t0_v2_plane1 != 0
-    && sameSign(t0_v0_plane1, t0_v1_plane1, t0_v2_plane1)) { // For triangle 0 with plane 1
-    if (t1_v0_plane0 != 0 && t1_v1_plane0 != 0 && t1_v2_plane0 != 0
-      && sameSign(t1_v0_plane0, t1_v1_plane0, t1_v2_plane0)) { // For triangle 1 with plane 0
-      return false; 
-    }
+    && sameSign(t0_v0_plane1, t0_v1_plane1, t0_v2_plane1)) {
+    return false;
+  }
+   // For triangle 1 with plane 0
+  if (t1_v0_plane0 != 0 && t1_v1_plane0 != 0 && t1_v2_plane0 != 0
+    && sameSign(t1_v0_plane0, t1_v1_plane0, t1_v2_plane0)) {
+    return false; 
   }
 
   // If all distances are 0 => Coplanar triangles
@@ -124,30 +179,13 @@ bool checkForIntersection(glm::vec3 t0_v0, glm::vec3 t0_v1, glm::vec3 t0_v2,
   glm::vec3 point_on_line;
   planeIntersectionLineEquation(&t0_normal, &t0_d, &t1_normal, &t1_d, &D, &point_on_line);
 
-  // Scalar Projections of the triangle vertices on the line
-  float proj_t0_v0 = glm::dot(D, (t0_v0 - point_on_line));
-  float proj_t0_v1 = glm::dot(D, (t0_v1 - point_on_line));
-  float proj_t0_v2 = glm::dot(D, (t0_v2 - point_on_line));
-
-  // Then we want to compute a line parameter value corresponding with the intersection of the triangle and the line
-  float t0_line_param_0 = proj_t0_v0 + (proj_t0_v1 - proj_t0_v0) * t0_v0_plane1 / (t0_v0_plane1 - t0_v1_plane1);
-  float t0_line_param_1 = proj_t0_v2 + (proj_t0_v1 - proj_t0_v2) * t0_v2_plane1 / (t0_v2_plane1 - t0_v1_plane1);
-
-  // Intersections points between triangle edges and the line 
-  // glm::vec3 t0_B0 = point_on_line + t0_line_param_0 * D;
-  // glm::vec3 t0_B1 = point_on_line + t0_line_param_1 * D;
-
-  // Same thing for other triangle
-  float proj_t1_v0 = glm::dot(D, (t1_v0 - point_on_line));
-  float proj_t1_v1 = glm::dot(D, (t1_v1 - point_on_line));
-  float proj_t1_v2 = glm::dot(D, (t1_v2 - point_on_line));
-  float t1_line_param_0 = proj_t1_v0 + (proj_t1_v1 - proj_t1_v0) * t1_v0_plane0 / (t1_v0_plane0 - t1_v1_plane0);
-  float t1_line_param_1 = proj_t1_v2 + (proj_t1_v1 - proj_t1_v2) * t1_v2_plane0 / (t1_v2_plane0 - t1_v1_plane0);
-  // glm::vec3 t1_B0 = point_on_line + t1_line_param_0 * D;
-  // glm::vec3 t1_B1 = point_on_line + t1_line_param_1 * D;
-
-  float interval_0[2] = {t0_line_param_0, t0_line_param_1};
-  float interval_1[2] = {t1_line_param_0, t1_line_param_1};
+  std::vector<glm::vec3> t0_vertices = {t0_v0, t0_v1, t0_v2};
+  std::vector<glm::vec3> t1_vertices = {t1_v0, t1_v1, t1_v2};
+  float t0_signed_distances[3] = {t0_v0_plane1, t0_v1_plane1, t0_v2_plane1};
+  float t1_signed_distances[3] = {t1_v0_plane0, t1_v1_plane0, t1_v2_plane0};
+  float interval_0[2], interval_1[2];
+  scalarInterval(&t0_vertices, t0_signed_distances, &D, &point_on_line, interval_0);
+  scalarInterval(&t1_vertices, t1_signed_distances, &D, &point_on_line, interval_1);
 
   std::cout << "Interval 0 : [" << interval_0[0] << "," << interval_0[1] << "]" << std::endl;
   std::cout << "Interval 1 : [" << interval_1[0] << "," << interval_1[1] << "]" << std::endl;
