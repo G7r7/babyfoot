@@ -5,6 +5,6 @@ Bulb::Bulb() : GameObject([]{
         Model((char*)"ressources/models/lightbulb/lightbulb.obj"),
         Shader((char*)"ressources/shaders/vertex.vs", (char*)"ressources/shaders/fragment.fs")
     );
-    bulb.hitbox = Model((char*)"ressources/models/lightbulb/hitbox.obj");
+    bulb.hitbox = Model((char*)"ressources/models/ball/hitbox.obj");
     return bulb;
 }()) {}

@@ -105,12 +105,17 @@ void scalarInterval(std::vector<glm::vec3>* vertices, float* signed_distances, g
   } else {
     alone_index = 1;
   }
-  int first_index = (alone_index - 1) % 3;
+  int first_index = (alone_index + 2) % 3;
   int second_index = (alone_index + 1) % 3;
+  std::cout << "Scalar projection 0 : " << scalar_projections[0] << std::endl;
+  std::cout << "Scalar projection 1 : " << scalar_projections[1] << std::endl;
+  std::cout << "Scalar projection 2 : " << scalar_projections[2] << std::endl;
   std::cout << "Signed distance 0 : " << signed_distances[0] << std::endl;
   std::cout << "Signed distance 1 : " << signed_distances[1] << std::endl;
   std::cout << "Signed distance 2 : " << signed_distances[2] << std::endl;
   std::cout << "Alone index : " << alone_index << std::endl;
+  std::cout << "First index : " << first_index << std::endl;
+  std::cout << "Second index : " << second_index << std::endl;
 
   // Then we want to compute a line parameter value corresponding with the intersection of the triangle and the line
   float line_param_0 = scalar_projections[first_index]
@@ -136,7 +141,10 @@ void scalarInterval(std::vector<glm::vec3>* vertices, float* signed_distances, g
 
 bool checkForIntersection(glm::vec3 t0_v0, glm::vec3 t0_v1, glm::vec3 t0_v2,
   glm::vec3 t1_v0, glm::vec3 t1_v1, glm::vec3 t1_v2) {
-  
+
+  std::vector<glm::vec3> t0_vertices = {t0_v0, t0_v1, t0_v2};
+  std::vector<glm::vec3> t1_vertices = {t1_v0, t1_v1, t1_v2};
+
   // Triangle 0 plane equation
   glm::vec3 t0_normal;
   float t0_d;
@@ -148,41 +156,65 @@ bool checkForIntersection(glm::vec3 t0_v0, glm::vec3 t0_v1, glm::vec3 t0_v2,
   planeEquation(&t1_v0, &t1_v1, &t1_v2, &t1_normal, &t1_d);
 
   // Signed distances from triangle 0 vertices to plane of triangle 1
-  float t0_v0_plane1 = signedDistanceFromPlane(&t0_v0, &t1_normal, &t1_d);
-  float t0_v1_plane1 = signedDistanceFromPlane(&t0_v1, &t1_normal, &t1_d);
-  float t0_v2_plane1 = signedDistanceFromPlane(&t0_v2, &t1_normal, &t1_d);
+  float t0_signed_distances[3] = {
+    signedDistanceFromPlane(&t0_v0, &t1_normal, &t1_d),
+    signedDistanceFromPlane(&t0_v1, &t1_normal, &t1_d),
+    signedDistanceFromPlane(&t0_v2, &t1_normal, &t1_d)
+  };
 
   // Signed distances from triangle 1 vertices to plane of triangle 0
-  float t1_v0_plane0 = signedDistanceFromPlane(&t1_v0, &t0_normal, &t0_d);
-  float t1_v1_plane0 = signedDistanceFromPlane(&t1_v1, &t0_normal, &t0_d);
-  float t1_v2_plane0 = signedDistanceFromPlane(&t1_v2, &t0_normal, &t0_d);
+  float t1_signed_distances[3] = {
+    signedDistanceFromPlane(&t1_v0, &t0_normal, &t0_d),
+    signedDistanceFromPlane(&t1_v1, &t0_normal, &t0_d),
+    signedDistanceFromPlane(&t1_v2, &t0_normal, &t0_d)
+  };
+
+  // To prevent almost coplanar overlook, we set distance = 0 for distances below epsilon
+  float epsilon = 0.000001;
+  for (size_t i = 0; i < 3; i++)
+  {
+    if(t0_signed_distances[i] < epsilon)
+      t0_signed_distances[i] = 0;
+  }
+  for (size_t i = 0; i < 3; i++)
+  {
+    if(t1_signed_distances[i] < epsilon)
+      t1_signed_distances[i] = 0;
+  }
+  
 
   // If all distances are not 0 and all of same sign => no intersection
   // For triangle 0 with plane 1
-  if (t0_v0_plane1 != 0 && t0_v1_plane1 != 0 && t0_v2_plane1 != 0
-    && sameSign(t0_v0_plane1, t0_v1_plane1, t0_v2_plane1)) {
+  if (t0_signed_distances[0] != 0 && t0_signed_distances[1] != 0 && t0_signed_distances[2] != 0
+    && sameSign(t0_signed_distances[0], t0_signed_distances[1], t0_signed_distances[2])) {
     return false;
   }
    // For triangle 1 with plane 0
-  if (t1_v0_plane0 != 0 && t1_v1_plane0 != 0 && t1_v2_plane0 != 0
-    && sameSign(t1_v0_plane0, t1_v1_plane0, t1_v2_plane0)) {
+  if (t1_signed_distances[0] != 0 && t1_signed_distances[1] != 0 && t1_signed_distances[2] != 0
+    && sameSign(t1_signed_distances[0], t1_signed_distances[1], t1_signed_distances[2])) {
     return false; 
   }
 
   // If all distances are 0 => Coplanar triangles
-  if (t0_v0_plane1 == 0 && t0_v1_plane1 == 0 && t0_v2_plane1 == 0) {
+  if (t0_signed_distances[0] == 0 && t0_signed_distances[1] == 0 && t0_signed_distances[2] == 0) {
     // TO DO
+    // 2D Problem
+    std::cout << "Coplanars triangles." << std::endl;
+    return false;
   }
+
+  std::cout << "Triangle 1 - vertex 1 : (" << t0_v0.x << "," << t0_v0.y << "," << t0_v0.z << ")" << std::endl;
+  std::cout << "Triangle 1 - vertex 2 : (" << t0_v1.x << "," << t0_v1.y << "," << t0_v1.z << ")" << std::endl;
+  std::cout << "Triangle 1 - vertex 3 : (" << t0_v2.x << "," << t0_v2.y << "," << t0_v2.z << ")" << std::endl;
+  std::cout << "Triangle 2 - vertex 1 : (" << t1_v0.x << "," << t1_v0.y << "," << t1_v0.z << ")" << std::endl;
+  std::cout << "Triangle 2 - vertex 2 : (" << t1_v1.x << "," << t1_v1.y << "," << t1_v1.z << ")" << std::endl;
+  std::cout << "Triangle 2 - vertex 3 : (" << t1_v2.x << "," << t1_v2.y << "," << t1_v2.z << ")" << std::endl;
 
   // Equation of the line of intersection between the 2 planes
   glm::vec3 D;
   glm::vec3 point_on_line;
   planeIntersectionLineEquation(&t0_normal, &t0_d, &t1_normal, &t1_d, &D, &point_on_line);
 
-  std::vector<glm::vec3> t0_vertices = {t0_v0, t0_v1, t0_v2};
-  std::vector<glm::vec3> t1_vertices = {t1_v0, t1_v1, t1_v2};
-  float t0_signed_distances[3] = {t0_v0_plane1, t0_v1_plane1, t0_v2_plane1};
-  float t1_signed_distances[3] = {t1_v0_plane0, t1_v1_plane0, t1_v2_plane0};
   float interval_0[2], interval_1[2];
   scalarInterval(&t0_vertices, t0_signed_distances, &D, &point_on_line, interval_0);
   scalarInterval(&t1_vertices, t1_signed_distances, &D, &point_on_line, interval_1);

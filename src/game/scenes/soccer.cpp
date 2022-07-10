@@ -5,7 +5,7 @@
 
 SoccerLevel::SoccerLevel() : Scene([]{
     Bulb bulb;
-    bulb.move(glm::vec3(0, -1.5f, 0));
+    bulb.move(glm::vec3(2.f, -1.5f, 0));
     Ball ball;
     ball.move(glm::vec3(1.f, -1.5f, 0));
     Field field;
@@ -16,7 +16,7 @@ SoccerLevel::SoccerLevel() : Scene([]{
         camera,
         Light(),
         {
-            // bulb,
+            bulb,
             ball,
             field,
         },
