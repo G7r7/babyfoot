@@ -30,9 +30,18 @@ void CollisionProcessor::process(GameObject* object1, GameObject* object2) {
                     glm::vec3 point21 = mesh2.vertices[j].Position + object2->position;
                     glm::vec3 point22 = mesh2.vertices[j+1].Position + object2->position;
                     glm::vec3 point23 = mesh2.vertices[j+2].Position + object2->position;
-                    bool collision = checkForIntersection(point11, point12, point13, point21, point22, point23);
+
+                    glm::vec3 intersection;
+                    bool collision = checkForIntersection(point11, point12, point13, point21, point22, point23, &intersection);
                     if(collision) {
-                        std::cout << "Collision between : " << object1->model.directory << " and " << object2->model.directory << std::endl;
+                        std::cout << "Cosllision between : " << object1->model.directory << " and " << object2->model.directory << std::endl;
+                        std::cout << "Triangle 1 - point 1 : (" << point11.x << ", " << point11.y << ", " << point11.z << ")" << std::endl;
+                        std::cout << "Triangle 1 - point 2 : (" << point12.x << ", " << point12.y << ", " << point12.z << ")" << std::endl;
+                        std::cout << "Triangle 1 - point 3 : (" << point13.x << ", " << point13.y << ", " << point13.z << ")" << std::endl;
+                        std::cout << "Triangle 2 - point 1 : (" << point21.x << ", " << point21.y << ", " << point21.z << ")" << std::endl;
+                        std::cout << "Triangle 2 - point 2 : (" << point22.x << ", " << point22.y << ", " << point22.z << ")" << std::endl;
+                        std::cout << "Triangle 2 - point 3 : (" << point23.x << ", " << point23.y << ", " << point23.z << ")" << std::endl;
+                        std::cout << "Intersection : (" << intersection.x << ", " << intersection.y << ", " << intersection.z << ")" << std::endl;
                         if(object1->fixed == false) {
                             object1->speed = glm::vec3(0, -0.5f,0);
                         }

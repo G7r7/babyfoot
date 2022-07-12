@@ -14,5 +14,6 @@ void Renderer::render(Scene *scene) {
         object.shader.setUniform("light", &scene->light);
         object.shader.setUniform("camera", &scene->camera);
         this->drawer.draw(object.model, object.shader);
+        this->drawer.draw(object.hitbox, object.shader);
     }
 }

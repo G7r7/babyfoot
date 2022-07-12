@@ -12,9 +12,9 @@ TEST(PlaneIntersectionLineEquation, Intersection1) {
         glm::vec3 point;
         planeIntersectionLineEquation(&normal_1, &d_1, &normal_2, &d_2, &direction, &point);
         // direction
-        ASSERT_EQ(direction.x, -5);
-        ASSERT_EQ(direction.y, 10);
-        ASSERT_EQ(direction.z, -5);
+        ASSERT_NEAR(direction.x, -0.408248, 0.0001);
+        ASSERT_NEAR(direction.y, 0.816497, 0.0001);
+        ASSERT_NEAR(direction.z, -0.408248, 0.0001);
         // point
         ASSERT_EQ(point.x, 2);
         ASSERT_EQ(point.y, -3);

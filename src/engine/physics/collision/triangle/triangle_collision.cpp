@@ -42,16 +42,23 @@ bool solveEquations(float x1, float y1, float c1, float x2, float y2, float c2, 
     return true;
 }
 
-bool checkForIntervalOverlap(float* interval_1, float* interval_2) {
-  int n1 = sizeof(interval_1) / sizeof(interval_1[0]);
-  int n2 = sizeof(interval_2) / sizeof(interval_2[0]);
-  std::sort(interval_1, interval_1 + n1);
-  std::sort(interval_2, interval_2 + n2);
-  return interval_1[0] <= interval_2[1] && interval_2[0] <= interval_1[1];
+bool checkForIntervalOverlap(float* interval_1, float* interval_2, float* interval_overlap) {
+  bool overlap = interval_1[0] <= interval_2[1] && interval_2[0] <= interval_1[1];
+  if(overlap) {
+    if(interval_1[0] < interval_2[0])
+      interval_overlap[0] = interval_2[0];
+    else
+      interval_overlap[0] = interval_1[0];
+    if(interval_1[1] < interval_2[1])
+      interval_overlap[1] = interval_1[1];
+    else
+      interval_overlap[1] = interval_2[1];
+  }
+  return overlap;
 }
 
 glm::vec3 planeIntersectionDirection(glm::vec3* normal_1, glm::vec3* normal_2) {
-  return glm::cross(*normal_1, *normal_2);
+  return glm::normalize(glm::cross(*normal_1, *normal_2));
 }
 
 void planeIntersectionLineEquation(glm::vec3* normal_1, float *d_1, glm::vec3* normal_2, float* d_2, glm::vec3* direction, glm::vec3* point) {
@@ -107,15 +114,6 @@ void scalarInterval(std::vector<glm::vec3>* vertices, float* signed_distances, g
   }
   int first_index = (alone_index + 2) % 3;
   int second_index = (alone_index + 1) % 3;
-  std::cout << "Scalar projection 0 : " << scalar_projections[0] << std::endl;
-  std::cout << "Scalar projection 1 : " << scalar_projections[1] << std::endl;
-  std::cout << "Scalar projection 2 : " << scalar_projections[2] << std::endl;
-  std::cout << "Signed distance 0 : " << signed_distances[0] << std::endl;
-  std::cout << "Signed distance 1 : " << signed_distances[1] << std::endl;
-  std::cout << "Signed distance 2 : " << signed_distances[2] << std::endl;
-  std::cout << "Alone index : " << alone_index << std::endl;
-  std::cout << "First index : " << first_index << std::endl;
-  std::cout << "Second index : " << second_index << std::endl;
 
   // Then we want to compute a line parameter value corresponding with the intersection of the triangle and the line
   float line_param_0 = scalar_projections[first_index]
@@ -131,16 +129,17 @@ void scalarInterval(std::vector<glm::vec3>* vertices, float* signed_distances, g
       / (signed_distances[second_index]
     - signed_distances[alone_index]);
 
-  // Intersections points between triangle edges and the line 
-  // glm::vec3 t0_B0 = point_on_line + line_param_0 * D;
-  // glm::vec3 t0_B1 = point_on_line + line_param_1 * D;
-
   interval[0] = line_param_0;
   interval[1] = line_param_1;
+
+  // Sorting the interval
+  int n = sizeof(interval) / sizeof(interval[0]);
+  std::sort(interval, interval + n);
 }
 
 bool checkForIntersection(glm::vec3 t0_v0, glm::vec3 t0_v1, glm::vec3 t0_v2,
-  glm::vec3 t1_v0, glm::vec3 t1_v1, glm::vec3 t1_v2) {
+  glm::vec3 t1_v0, glm::vec3 t1_v1, glm::vec3 t1_v2,
+  glm::vec3* intersection) {
 
   std::vector<glm::vec3> t0_vertices = {t0_v0, t0_v1, t0_v2};
   std::vector<glm::vec3> t1_vertices = {t1_v0, t1_v1, t1_v2};
@@ -173,12 +172,12 @@ bool checkForIntersection(glm::vec3 t0_v0, glm::vec3 t0_v1, glm::vec3 t0_v2,
   float epsilon = 0.000001;
   for (size_t i = 0; i < 3; i++)
   {
-    if(t0_signed_distances[i] < epsilon)
+    if(glm::abs(t0_signed_distances[i]) < epsilon)
       t0_signed_distances[i] = 0;
   }
   for (size_t i = 0; i < 3; i++)
   {
-    if(t1_signed_distances[i] < epsilon)
+    if(glm::abs(t1_signed_distances[i]) < epsilon)
       t1_signed_distances[i] = 0;
   }
   
@@ -199,33 +198,25 @@ bool checkForIntersection(glm::vec3 t0_v0, glm::vec3 t0_v1, glm::vec3 t0_v2,
   if (t0_signed_distances[0] == 0 && t0_signed_distances[1] == 0 && t0_signed_distances[2] == 0) {
     // TO DO
     // 2D Problem
-    std::cout << "Coplanars triangles." << std::endl;
     return false;
   }
-
-  std::cout << "Triangle 1 - vertex 1 : (" << t0_v0.x << "," << t0_v0.y << "," << t0_v0.z << ")" << std::endl;
-  std::cout << "Triangle 1 - vertex 2 : (" << t0_v1.x << "," << t0_v1.y << "," << t0_v1.z << ")" << std::endl;
-  std::cout << "Triangle 1 - vertex 3 : (" << t0_v2.x << "," << t0_v2.y << "," << t0_v2.z << ")" << std::endl;
-  std::cout << "Triangle 2 - vertex 1 : (" << t1_v0.x << "," << t1_v0.y << "," << t1_v0.z << ")" << std::endl;
-  std::cout << "Triangle 2 - vertex 2 : (" << t1_v1.x << "," << t1_v1.y << "," << t1_v1.z << ")" << std::endl;
-  std::cout << "Triangle 2 - vertex 3 : (" << t1_v2.x << "," << t1_v2.y << "," << t1_v2.z << ")" << std::endl;
 
   // Equation of the line of intersection between the 2 planes
   glm::vec3 D;
   glm::vec3 point_on_line;
   planeIntersectionLineEquation(&t0_normal, &t0_d, &t1_normal, &t1_d, &D, &point_on_line);
 
-  float interval_0[2], interval_1[2];
+  float interval_0[2], interval_1[2], interval_overlap[2];
   scalarInterval(&t0_vertices, t0_signed_distances, &D, &point_on_line, interval_0);
   scalarInterval(&t1_vertices, t1_signed_distances, &D, &point_on_line, interval_1);
 
-  std::cout << "Interval 0 : [" << interval_0[0] << "," << interval_0[1] << "]" << std::endl;
-  std::cout << "Interval 1 : [" << interval_1[0] << "," << interval_1[1] << "]" << std::endl;
-  
   // check for overlap in the intervals
-  bool overlap = checkForIntervalOverlap(interval_0, interval_1);
+  bool overlap = checkForIntervalOverlap(interval_0, interval_1, interval_overlap);
 
   if (overlap) {
+    float overlap_average = interval_overlap[0] 
+      + (interval_overlap[1]-interval_overlap[0])/2;
+    *intersection = point_on_line + overlap_average * D;
     return true;
   }
 

@@ -18,6 +18,7 @@ void Drawer::draw(Model &model, Shader &shader)
         
         // draw mesh
         glBindVertexArray(mesh.VAO);
+        // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ); // Wireframe mode
         glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(mesh.indices.size()), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
