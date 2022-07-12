@@ -6,8 +6,10 @@
 SoccerLevel::SoccerLevel() : Scene([]{
     Bulb bulb;
     bulb.move(glm::vec3(2.f, -1.5f, 0));
+    bulb.speed = glm::vec3(-0.1f, 0, 0);
     Ball ball;
     ball.move(glm::vec3(1.f, -1.5f, 0));
+    ball.speed = glm::vec3(0.1f, 0, 0);
     Field field;
     field.fixed = true;
     Camera camera(45.0f, 16.f/9.f, 0.1f, 100.0f);

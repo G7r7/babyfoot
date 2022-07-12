@@ -14,12 +14,13 @@ void CollisionProcessor::process(Scene* scene) {
 }
 
 void CollisionProcessor::process(GameObject* object1, GameObject* object2) {
-    int c = 0;
+    std::vector<glm::vec3> intersections;
+    std::vector<glm::vec3> surface_normals_1;
+    std::vector<glm::vec3> surface_normals_2;
     for (auto &mesh1 : object1->hitbox.meshes) // Every mesh of hitbox 1
     {
         for (auto &mesh2 : object2->hitbox.meshes) // Every mesh of hitbox 2
         {
-            std::cout << mesh1.indices.size() << " <- mesh1 - mesh2 -> " << mesh2.indices.size() << std::endl;
             for (size_t i = 0; i < mesh1.indices.size(); i+=3) // Every triangle of mesh 1
             {
                 glm::vec3 point11 = mesh1.vertices[i].Position + object1->position;
@@ -32,29 +33,62 @@ void CollisionProcessor::process(GameObject* object1, GameObject* object2) {
                     glm::vec3 point23 = mesh2.vertices[j+2].Position + object2->position;
 
                     glm::vec3 intersection;
-                    bool collision = checkForIntersection(point11, point12, point13, point21, point22, point23, &intersection);
+                    glm::vec3 normal1;
+                    glm::vec3 normal2;
+                    bool collision = checkForIntersection(point11, point12, point13, point21, point22, point23,
+                        &intersection, &normal1, &normal2);
                     if(collision) {
-                        std::cout << "Cosllision between : " << object1->model.directory << " and " << object2->model.directory << std::endl;
-                        std::cout << "Triangle 1 - point 1 : (" << point11.x << ", " << point11.y << ", " << point11.z << ")" << std::endl;
-                        std::cout << "Triangle 1 - point 2 : (" << point12.x << ", " << point12.y << ", " << point12.z << ")" << std::endl;
-                        std::cout << "Triangle 1 - point 3 : (" << point13.x << ", " << point13.y << ", " << point13.z << ")" << std::endl;
-                        std::cout << "Triangle 2 - point 1 : (" << point21.x << ", " << point21.y << ", " << point21.z << ")" << std::endl;
-                        std::cout << "Triangle 2 - point 2 : (" << point22.x << ", " << point22.y << ", " << point22.z << ")" << std::endl;
-                        std::cout << "Triangle 2 - point 3 : (" << point23.x << ", " << point23.y << ", " << point23.z << ")" << std::endl;
-                        std::cout << "Intersection : (" << intersection.x << ", " << intersection.y << ", " << intersection.z << ")" << std::endl;
-                        if(object1->fixed == false) {
-                            object1->speed = glm::vec3(0, -0.5f,0);
-                        }
-                        if(object2->fixed == false) {
-                            object2->speed = glm::vec3(0, -0.5f,0);
-
-                        }
+                        intersections.push_back(intersection);
+                        surface_normals_1.push_back(normal1);
+                        surface_normals_2.push_back(normal2);
                     }
-                    c++;
                 }
             
             }
         }
     }
-    std::cout << c << std::endl;
+    if(intersections.size() > 0) {
+        glm::vec3 average_collision_point = [intersections](){
+            glm::vec3 average(0.f);
+            for(glm::vec3 intersection : intersections) {
+                average += intersection;
+            }
+            return average / glm::vec3(intersections.size());
+        }();
+
+        glm::vec3 average_surface_normal_1 = [surface_normals_1](){
+            glm::vec3 average(0.f);
+            for(glm::vec3 normal : surface_normals_1) {
+                average += normal;
+            }
+            return glm::normalize(average / glm::vec3(surface_normals_1.size()));
+        }();
+
+        glm::vec3 average_surface_normal_2 = [surface_normals_2](){
+            glm::vec3 average(0.f);
+            for(glm::vec3 normal : surface_normals_2) {
+                average += normal;
+            }
+            return glm::normalize(average / glm::vec3(surface_normals_2.size()));
+        }();
+        std::cout << "Point d'impact : (" 
+            << average_collision_point.x << ", " 
+            << average_collision_point.y << ", "
+            << average_collision_point.z << ")" << std::endl;
+        std::cout << "Normale 1 : (" 
+            << average_surface_normal_1.x << ", " 
+            << average_surface_normal_1.y << ", "
+            << average_surface_normal_1.z << ")" << std::endl;
+        std::cout << "Normale 2 : (" 
+            << average_surface_normal_2.x << ", " 
+            << average_surface_normal_2.y << ", "
+            << average_surface_normal_2.z << ")" << std::endl;
+        
+        if(object1->fixed == false) {
+            object1->speed = glm::reflect(object1->speed, average_surface_normal_2);
+        }
+        if(object2->fixed == false) {
+            object2->speed = glm::reflect(object2->speed, average_surface_normal_1);
+        }
+    }
 }

@@ -24,6 +24,7 @@ void scalarInterval(std::vector<glm::vec3>* vertices, float* signed_distances, g
 
 bool checkForIntervalOverlap(float* interval_1, float* interval_2, float* overlap_interval);
 
-bool checkForIntersection(glm::vec3 v01, glm::vec3 v02, glm::vec3 v03, glm::vec3 v11, glm::vec3 v12, glm::vec3 v13, glm::vec3* intersection);
+bool checkForIntersection(glm::vec3 v01, glm::vec3 v02, glm::vec3 v03, glm::vec3 v11, glm::vec3 v12, glm::vec3 v13,
+    glm::vec3* intersection, glm::vec3* surface_normal_0, glm::vec3* surface_normal_1);
 
 #endif

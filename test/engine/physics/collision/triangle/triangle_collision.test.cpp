@@ -12,7 +12,10 @@ TEST(CheckForIntersection, Test1) {
         glm::vec3 c2(0,1,0);
         
         glm::vec3 point_of_intersection;
-        bool intersection = checkForIntersection(a1, b1, c1, a2, b2, c2, &point_of_intersection);
+        glm::vec3 surface_normal_0;
+        glm::vec3 surface_normal_1;
+        bool intersection = checkForIntersection(a1, b1, c1, a2, b2, c2,
+            &point_of_intersection, &surface_normal_0, &surface_normal_1);
 
         ASSERT_TRUE(intersection);
         ASSERT_EQ(point_of_intersection.x, 0);
@@ -32,7 +35,10 @@ TEST(CheckForIntersection, Test2) {
         glm::vec3 c2(100,102,50);
 
         glm::vec3 point_of_intersection;
-        bool intersection = checkForIntersection(a1, b1, c1, a2, b2, c2, &point_of_intersection);
+        glm::vec3 surface_normal_0;
+        glm::vec3 surface_normal_1;
+        bool intersection = checkForIntersection(a1, b1, c1, a2, b2, c2,
+            &point_of_intersection, &surface_normal_0, &surface_normal_1);
 
         ASSERT_FALSE(intersection);
     }
@@ -49,7 +55,10 @@ TEST(CheckForIntersection, Test3) {
         glm::vec3 c2(0,1,-1);
         
         glm::vec3 point_of_intersection;
-        bool intersection = checkForIntersection(a1, b1, c1, a2, b2, c2, &point_of_intersection);
+        glm::vec3 surface_normal_0;
+        glm::vec3 surface_normal_1;
+        bool intersection = checkForIntersection(a1, b1, c1, a2, b2, c2,
+            &point_of_intersection, &surface_normal_0, &surface_normal_1);
 
         ASSERT_TRUE(intersection);
         ASSERT_EQ(point_of_intersection.x, 0.25);

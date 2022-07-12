@@ -139,7 +139,7 @@ void scalarInterval(std::vector<glm::vec3>* vertices, float* signed_distances, g
 
 bool checkForIntersection(glm::vec3 t0_v0, glm::vec3 t0_v1, glm::vec3 t0_v2,
   glm::vec3 t1_v0, glm::vec3 t1_v1, glm::vec3 t1_v2,
-  glm::vec3* intersection) {
+  glm::vec3* intersection, glm::vec3* surface_normal_0, glm::vec3* surface_normal_1) {
 
   std::vector<glm::vec3> t0_vertices = {t0_v0, t0_v1, t0_v2};
   std::vector<glm::vec3> t1_vertices = {t1_v0, t1_v1, t1_v2};
@@ -217,6 +217,8 @@ bool checkForIntersection(glm::vec3 t0_v0, glm::vec3 t0_v1, glm::vec3 t0_v2,
     float overlap_average = interval_overlap[0] 
       + (interval_overlap[1]-interval_overlap[0])/2;
     *intersection = point_on_line + overlap_average * D;
+    *surface_normal_0 = t0_normal;
+    *surface_normal_1 = t1_normal;
     return true;
   }
 
