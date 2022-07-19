@@ -1,19 +1,20 @@
 #include "collision_processor.hpp"
 #include "triangle/triangle_collision.hpp"
+#include <omp.h>
 
 
-
-void CollisionProcessor::process(Scene* scene) {
+void CollisionProcessor::process(Scene* scene, float seconds) {
     // Loop over every unordered combination
+    // #pragma omp parallel for
     for (auto first = scene->objects.begin(); first != scene->objects.end(); ++first){
         for (auto second = first + 1; second != scene->objects.end(); ++second){
-            std::cout << first->model.directory << " - vs - " << second->model.directory << std::endl;
-            process(&*first, &*second);
+            // std::cout << first->model.directory << " - vs - " << second->model.directory << std::endl;
+            process(&*first, &*second, seconds);
         }
     }
 }
 
-void CollisionProcessor::process(GameObject* object1, GameObject* object2) {
+void CollisionProcessor::process(GameObject* object1, GameObject* object2, float seconds) {
     std::vector<glm::vec3> intersections;
     std::vector<glm::vec3> surface_normals_1;
     std::vector<glm::vec3> surface_normals_2;
@@ -71,6 +72,7 @@ void CollisionProcessor::process(GameObject* object1, GameObject* object2) {
             }
             return glm::normalize(average / glm::vec3(surface_normals_2.size()));
         }();
+        
         std::cout << "Point d'impact : (" 
             << average_collision_point.x << ", " 
             << average_collision_point.y << ", "
@@ -86,9 +88,13 @@ void CollisionProcessor::process(GameObject* object1, GameObject* object2) {
         
         if(object1->fixed == false) {
             object1->speed = glm::reflect(object1->speed, average_surface_normal_2);
+            glm::vec3 translation = object1->speed*seconds*glm::vec3(2.f);
+            object1->move(translation);
         }
         if(object2->fixed == false) {
             object2->speed = glm::reflect(object2->speed, average_surface_normal_1);
+            glm::vec3 translation = object2->speed*seconds*glm::vec3(2.f);
+            object2->move(translation);
         }
     }
 }

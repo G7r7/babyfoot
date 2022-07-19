@@ -40,6 +40,9 @@ Window::Window() {
         glfwTerminate();
         perror("Failed to initialize GLAD.");
     }
+
+    // Disable V-Sync
+    glfwSwapInterval(0);
 }
     
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {

@@ -16,6 +16,14 @@ else()
     target_link_libraries(babyfoot X11)
     target_link_libraries(babyfoot pthread)
 endif()
+
+# find_package(OpenMP)
+# if (OPENMP_FOUND)
+#     set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+#     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+#     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+# endif()
+
 add_library(glad /tmp/glad-0.1.36/build/src/glad.c)
 target_link_libraries(babyfoot glad)
 
