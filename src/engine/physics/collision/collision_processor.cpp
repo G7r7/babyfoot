@@ -24,14 +24,14 @@ void CollisionProcessor::process(GameObject* object1, GameObject* object2, float
         {
             for (size_t i = 0; i < mesh1.indices.size(); i+=3) // Every triangle of mesh 1
             {
-                glm::vec3 point11 = mesh1.vertices[i].Position + object1->position;
-                glm::vec3 point12 = mesh1.vertices[i+1].Position + object1->position;
-                glm::vec3 point13 = mesh1.vertices[i+2].Position + object1->position;
+                glm::vec3 point11 = mesh1.vertices[mesh1.indices[i]].Position + object1->position;
+                glm::vec3 point12 = mesh1.vertices[mesh1.indices[i+1]].Position + object1->position;
+                glm::vec3 point13 = mesh1.vertices[mesh1.indices[i+2]].Position + object1->position;
                 for (size_t j = 0; j < mesh2.indices.size(); j+=3) // Every triangle of mesh 2
                 {
-                    glm::vec3 point21 = mesh2.vertices[j].Position + object2->position;
-                    glm::vec3 point22 = mesh2.vertices[j+1].Position + object2->position;
-                    glm::vec3 point23 = mesh2.vertices[j+2].Position + object2->position;
+                    glm::vec3 point21 = mesh2.vertices[mesh2.indices[j]].Position + object2->position;
+                    glm::vec3 point22 = mesh2.vertices[mesh2.indices[j+1]].Position + object2->position;
+                    glm::vec3 point23 = mesh2.vertices[mesh2.indices[j+2]].Position + object2->position;
 
                     glm::vec3 intersection;
                     glm::vec3 normal1;
@@ -88,12 +88,12 @@ void CollisionProcessor::process(GameObject* object1, GameObject* object2, float
         
         if(object1->fixed == false) {
             object1->speed = glm::reflect(object1->speed, average_surface_normal_2);
-            glm::vec3 translation = object1->speed*seconds*glm::vec3(2.f);
+            glm::vec3 translation = object1->speed*seconds;
             object1->move(translation);
         }
         if(object2->fixed == false) {
             object2->speed = glm::reflect(object2->speed, average_surface_normal_1);
-            glm::vec3 translation = object2->speed*seconds*glm::vec3(2.f);
+            glm::vec3 translation = object2->speed*seconds;
             object2->move(translation);
         }
     }
