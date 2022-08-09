@@ -18,7 +18,7 @@ bool sameSign(float d1, float d2, float d3)
 {
     return d1 <= 0.f
         ? d2 <= 0.f && d3 <= 0.f
-        : d2 > 0.f && d3 > 0.f;
+        : d2 >= 0.f && d3 >= 0.f;
 }
 
 bool solveEquations(float x1, float y1, float c1, float x2, float y2, float c2, float* x, float* y) {
