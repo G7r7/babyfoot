@@ -2,10 +2,12 @@
 #include "../objects/ball.hpp"
 #include "../objects/field.hpp" 
 #include "../objects/bulb.hpp" 
+#include "../objects/microsoft.hpp"
+#include "../objects/room.hpp"
 
 SoccerLevel::SoccerLevel() : Scene([]{
     Ball ball;
-    ball.move(glm::vec3(-2.0f, -1.5f, 0));
+    ball.move(glm::vec3(-2.0f, -1.5f, 0.f));
     ball.speed = glm::vec3(0.5f, 0, 0);
     Ball ball2;
     ball2.move(glm::vec3(2.0f, -1.5f, 0));
@@ -17,7 +19,9 @@ SoccerLevel::SoccerLevel() : Scene([]{
     ball4.move(glm::vec3(0, -1.5f, 2.0f));
     ball4.speed = glm::vec3(0, 0, -0.5f);
     Field field;
-    field.fixed = true;
+    field.gravitable = false;
+    Room room;
+    room.gravitable = false;
     Camera camera(45.0f, 16.f/9.f, 0.1f, 100.0f);
     camera.position.y += 1.5f;
     return Scene(
@@ -26,9 +30,10 @@ SoccerLevel::SoccerLevel() : Scene([]{
         {
             ball,
             ball2,
-            // ball3,
-            // ball4,
+            ball3,
+            ball4,
             field,
+            // room,
         },
         glm::vec3(0,0.2,0)
     );

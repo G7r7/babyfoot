@@ -198,6 +198,7 @@ bool checkForIntersection(glm::vec3 t0_v0, glm::vec3 t0_v1, glm::vec3 t0_v2,
   if (t0_signed_distances[0] == 0 && t0_signed_distances[1] == 0 && t0_signed_distances[2] == 0) {
     // TO DO
     // 2D Problem
+    // std::cout << "Coplanaire !!!!" << std::endl;
     return false;
   }
 

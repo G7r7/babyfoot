@@ -2,7 +2,7 @@
 
 void GravityProcessor::process(Scene* scene, float seconds) {
     for(auto &object : scene->objects) {
-        if(object.fixed != true) {
+        if(object.gravitable == true) {
             object.speed += scene->gravity*seconds;
             glm::vec3 translation = object.speed*seconds;
             object.move(translation);

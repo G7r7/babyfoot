@@ -6,7 +6,8 @@ model{model}, shader{shader}, hitbox{model} {
     this->up = glm::vec3(0.0f, 1.0f, 0.0f);
     this->front = glm::vec3(0.0f, 0.0f, -1.0f);
     this->speed = glm::vec3(0.0f);
-    this->fixed = false;
+    this->gravitable = true;
+    this->collisionnable = true;
     this->isGlowing = false;
 }
 
