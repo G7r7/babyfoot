@@ -1,20 +1,12 @@
 # Babyfoot
-
-## Requirements
-- Docker
-- Docker-Compose
-
 ## Build
 ```shell
-docker-compose up
+mkdir build && cd build
+cmake .. && make -j
 ```
-## Target Linux (Default)
-Set target in the `.env` file
-```env
-TARGET=LINUX
-```
-## Target Windows
-Set target in the `.env` file
-```env
-TARGET=WINDOWS
+## Cross-compilation
+### On Linux for Windows
+```shell
+mkdir build && cd build
+cmake -DCMAKE_TOOLCHAIN_FILE=../x86_64-w64-mingw32-posix.cmake .. && make -j
 ```
