@@ -4,4 +4,5 @@ headerfiles
 cmake-build-debug
 !.env.sample
 !.gitignore
-coverage/*.html
+coverage/*
+!coverage/*.sh
