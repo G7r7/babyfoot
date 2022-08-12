@@ -8,5 +8,5 @@ cmake .. && make -j
 ### On Linux for Windows
 ```shell
 mkdir build && cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../x86_64-w64-mingw32-posix.cmake .. && make -j
+cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/x86_64-w64-mingw32-posix.cmake .. && make -j
 ```

@@ -132,4 +132,4 @@ if (OPENMP_FOUND)
     target_link_libraries(babyfoot OpenMP::OpenMP_CXX)
 endif()
 
-file(COPY /home/babyfoot/src/ressources/ DESTINATION ./ressources)
+file(COPY ${CMAKE_SOURCE_DIR}/src/ressources/ DESTINATION ./ressources)
