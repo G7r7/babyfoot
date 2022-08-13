@@ -1,8 +1,8 @@
 #include "drawer.hpp"
 
-void Drawer::draw(Model &model, Shader &shader)
+void Drawer::draw(Model const& model, Shader const& shader)
 {   
-    for(Mesh &mesh : model.meshes) {
+    for(Mesh const& mesh : model.meshes) {
         glBindTexture(GL_TEXTURE_2D, 0); // Default texture
 
         int a, s, d = 0;
@@ -18,7 +18,7 @@ void Drawer::draw(Model &model, Shader &shader)
         
         // draw mesh
         glBindVertexArray(mesh.VAO);
-        // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ); // Wireframe mode
+        //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ); // Wireframe mode
         glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(mesh.indices.size()), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 

@@ -8,7 +8,7 @@
 // Tomas M ̈oller
 // https://cis.temple.edu/~lakaemper/courses/cis350_2004/etc/moeller_triangle.pdf
 
-void planeEquation(glm::vec3* v1, glm::vec3* v2, glm::vec3* v3, glm::vec3* normal, float* d);
+void planeEquation(glm::vec3 const& v1, glm::vec3 const& v2, glm::vec3 const& v3, glm::vec3& outNormal, float& outD);
 
 float signedDistanceFromPlane(glm::vec3* v, glm::vec3* normal, float* d);
 

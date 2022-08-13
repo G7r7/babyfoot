@@ -3,12 +3,14 @@
 #include <thread>
 
 
-Engine::Engine(Window* window): window{window}{};
+Engine::Engine(Window* window): 
+    window{window}, physicsProcessor{}, renderer{}
+{}
 
 void Engine::process(Game &game) {
     // In-game time
-    float ticksPerSecond = 100;
-    float tickDeltaTime = 1/ticksPerSecond;
+    float ticksPerSecond = 300.f;
+    float tickDeltaTime = 1.f / ticksPerSecond;
 
     // System time
     float deltaTime;
@@ -34,18 +36,15 @@ void Engine::process(Game &game) {
 
         // We wait to sync the game time to the system time
         if(deltaTime < tickDeltaTime) {
-            int millisecondsEarly = std::round((tickDeltaTime - deltaTime)*1000);
-            std::this_thread::sleep_for(std::chrono::milliseconds(millisecondsEarly));
-            deltaTime += millisecondsEarly/1000;
+            float millisecondsEarly = (tickDeltaTime - deltaTime) * 1000.f;
+            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(millisecondsEarly)));
+            deltaTime += millisecondsEarly / 1000.f;
         }
 
-        if(currentFrameTime - std::floor(currentFrameTime) > 0.99) {
+        if(currentFrameTime - std::floor(currentFrameTime) > 0.99f) {
             std::cout << "Framerate : " << glm::round(1/deltaTime) << " fps" << std::endl;
-            std::cout << "Temps réel : " << glm::round(tickDeltaTime/deltaTime*100) << "%" << std::endl;
+            std::cout << "Temps réel : " << glm::round(tickDeltaTime/deltaTime * 100.f) << "%" << std::endl;
         }
-
-        
-        
     }
     
     window->close();

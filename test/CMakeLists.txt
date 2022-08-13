@@ -31,7 +31,7 @@ include_directories(babyfoot PUBLIC "${glm_SOURCE_DIR}")
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
     target_link_libraries(tests -static-libgcc)
     target_link_libraries(tests -static-libstdc++)
-    file(COPY /usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll DESTINATION .)
+    #file(COPY /usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll DESTINATION .)
 endif()
 
 SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")

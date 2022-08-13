@@ -9,7 +9,7 @@ struct Light : public Uniformable {
     glm::vec3 diffuse = glm::vec3(1.0f);
     glm::vec3 specular = glm::vec3(1.0f);
     float strength = 0.5f;
-    void setShaderUniform(Shader* shader, const std::string& uniform_name);
+    void setShaderUniform(Shader const& shader, const std::string& uniform_name) override;
 };
 
 #endif

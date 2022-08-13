@@ -5,8 +5,8 @@
 
 
 struct Collision {
-    size_t objectIndex1;
-    size_t objectIndex2;
+    int objectIndex1;
+    int objectIndex2;
     glm::vec3 point;
     glm::vec3 surfaceNormal1;
     glm::vec3 surfaceNormal2;
@@ -16,14 +16,16 @@ void CollisionProcessor::process(Scene* scene, float seconds) {
     std::vector<Collision> collisions;
     // Loop over every unique combination
     #pragma omp parallel for
-    for (auto first = scene->objects.begin(); first != scene->objects.end(); ++first){
-        for (auto second = first + 1; second != scene->objects.end(); ++second){
+    for (int i = 0; i < scene->objects.size(); i++) {
+        GameObject & first = scene->objects[i];
+        for (int j = i + 1; j < scene->objects.size(); j++) {
+            GameObject & second = scene->objects[j];
             glm::vec3 collisionPoint, surfaceNormal1, surfaceNormal2;
-            bool collides = process(&*first, &*second, seconds, &collisionPoint, &surfaceNormal1, &surfaceNormal2);
+            bool collides = process(&first, &second, seconds, &collisionPoint, &surfaceNormal1, &surfaceNormal2);
             if (collides) {
                 Collision collision = {
-                    (size_t)(first - scene->objects.begin()),
-                    (size_t)(second - scene->objects.begin()),
+                    i,
+                    j,
                     collisionPoint,
                     surfaceNormal1,
                     surfaceNormal2
@@ -33,15 +35,15 @@ void CollisionProcessor::process(Scene* scene, float seconds) {
         }
     }
 
-    for (Collision collision : collisions) {
-        if(scene->objects[collision.objectIndex1].collisionnable == true) {
-            scene->objects[collision.objectIndex1].speed = glm::reflect(scene->objects[collision.objectIndex1].speed, collision.surfaceNormal2);
-            glm::vec3 translation = scene->objects[collision.objectIndex2].speed*seconds;
+    for (Collision const& collision : collisions) {
+        if(scene->objects[collision.objectIndex1].isCollisionnable() == true) {
+            scene->objects[collision.objectIndex1].setSpeed(glm::reflect(scene->objects[collision.objectIndex1].getSpeed(), collision.surfaceNormal2));
+            glm::vec3 translation = scene->objects[collision.objectIndex2].getSpeed() * seconds;
             scene->objects[collision.objectIndex1].move(translation);
         }
-        if(scene->objects[collision.objectIndex2].collisionnable == true) {
-            scene->objects[collision.objectIndex2].speed = glm::reflect(scene->objects[collision.objectIndex2].speed, collision.surfaceNormal1);
-            glm::vec3 translation = scene->objects[collision.objectIndex2].speed*seconds;
+        if(scene->objects[collision.objectIndex2].isCollisionnable() == true) {
+            scene->objects[collision.objectIndex2].setSpeed(glm::reflect(scene->objects[collision.objectIndex2].getSpeed(), collision.surfaceNormal1));
+            glm::vec3 translation = scene->objects[collision.objectIndex2].getSpeed() * seconds;
             scene->objects[collision.objectIndex2].move(translation);
         }
     }
@@ -52,20 +54,20 @@ bool CollisionProcessor::process(GameObject* object1, GameObject* object2, float
     std::vector<glm::vec3> intersections;
     std::vector<glm::vec3> surfaceNormals1;
     std::vector<glm::vec3> surfaceNormals2;
-    for (auto &mesh1 : object1->hitbox.meshes) // Every mesh of hitbox 1
+    for (auto &mesh1 : object1->getHitbox().meshes) // Every mesh of hitbox 1
     {
-        for (auto &mesh2 : object2->hitbox.meshes) // Every mesh of hitbox 2
+        for (auto &mesh2 : object2->getHitbox().meshes) // Every mesh of hitbox 2
         {
             for (size_t i = 0; i < mesh1.indices.size(); i+=3) // Every triangle of mesh 1
             {
-                glm::vec3 point11 = mesh1.vertices[mesh1.indices[i]].Position + object1->position;
-                glm::vec3 point12 = mesh1.vertices[mesh1.indices[i+1]].Position + object1->position;
-                glm::vec3 point13 = mesh1.vertices[mesh1.indices[i+2]].Position + object1->position;
+                glm::vec3 point11 = mesh1.vertices[mesh1.indices[i+0]].Position + object1->getPosition();
+                glm::vec3 point12 = mesh1.vertices[mesh1.indices[i+1]].Position + object1->getPosition();
+                glm::vec3 point13 = mesh1.vertices[mesh1.indices[i+2]].Position + object1->getPosition();
                 for (size_t j = 0; j < mesh2.indices.size(); j+=3) // Every triangle of mesh 2
                 {
-                    glm::vec3 point21 = mesh2.vertices[mesh2.indices[j]].Position + object2->position;
-                    glm::vec3 point22 = mesh2.vertices[mesh2.indices[j+1]].Position + object2->position;
-                    glm::vec3 point23 = mesh2.vertices[mesh2.indices[j+2]].Position + object2->position;
+                    glm::vec3 point21 = mesh2.vertices[mesh2.indices[j+0]].Position + object2->getPosition();
+                    glm::vec3 point22 = mesh2.vertices[mesh2.indices[j+1]].Position + object2->getPosition();
+                    glm::vec3 point23 = mesh2.vertices[mesh2.indices[j+2]].Position + object2->getPosition();
 
                     glm::vec3 intersection;
                     glm::vec3 normal1;

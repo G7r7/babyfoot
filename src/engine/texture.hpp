@@ -15,7 +15,7 @@ struct Texture : Uniformable {
     std::string getComputedName();
     std::string path;
     std::string directory;
-    void setShaderUniform(Shader* shader, const std::string &uniform_name);
+    void setShaderUniform(Shader const& shader, const std::string &uniform_name) override;
 };
 
 #endif

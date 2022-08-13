@@ -65,15 +65,15 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
     };
     
     // shader Program
-    this->ID = glCreateProgram();
-    glAttachShader(this->ID, vertex);
-    glAttachShader(this->ID, fragment);
-    glLinkProgram(this->ID);
+    this->_id = glCreateProgram();
+    glAttachShader(this->_id, vertex);
+    glAttachShader(this->_id, fragment);
+    glLinkProgram(this->_id);
     // print linking errors if any
-    glGetProgramiv(this->ID, GL_LINK_STATUS, &success);
+    glGetProgramiv(this->_id, GL_LINK_STATUS, &success);
     if(!success)
     {
-        glGetProgramInfoLog(this->ID, 512, NULL, infoLog);
+        glGetProgramInfoLog(this->_id, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
     }
     
@@ -82,40 +82,40 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
     glDeleteShader(fragment);
 }
 
-void Shader::use() 
+void Shader::use() const
 { 
-    glUseProgram(this->ID);
+    glUseProgram(this->_id);
 }  
 
-void Shader::setBool(const std::string &name, bool value)
+void Shader::setBool(const std::string &name, bool value) const
 {         
     this->use();
-    glUniform1i(glGetUniformLocation(this->ID, name.c_str()), (int)value); 
+    glUniform1i(glGetUniformLocation(this->_id, name.c_str()), (int)value); 
 }
-void Shader::setInt(const std::string &name, int value)
+void Shader::setInt(const std::string &name, int value) const
 { 
     this->use();
-    glUniform1i(glGetUniformLocation(this->ID, name.c_str()), value); 
+    glUniform1i(glGetUniformLocation(this->_id, name.c_str()), value); 
 }
-void Shader::setFloat(const std::string &name, float value)
+void Shader::setFloat(const std::string &name, float value) const
 { 
     this->use();
-    glUniform1f(glGetUniformLocation(this->ID, name.c_str()), value); 
+    glUniform1f(glGetUniformLocation(this->_id, name.c_str()), value); 
 }
-void Shader::setMat4f(const std::string &name, glm::mat4 value)
+void Shader::setMat4f(const std::string &name, glm::mat4 value) const
 { 
     this->use();
-    glUniformMatrix4fv(glGetUniformLocation(this->ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value)); 
+    glUniformMatrix4fv(glGetUniformLocation(this->_id, name.c_str()), 1, GL_FALSE, glm::value_ptr(value)); 
 } 
 
-void Shader::setVec3f(const std::string &name, glm::vec3 value)
+void Shader::setVec3f(const std::string &name, glm::vec3 value) const
 { 
     this->use();
-    glUniform3fv(glGetUniformLocation(this->ID, name.c_str()), 1, glm::value_ptr(value));
+    glUniform3fv(glGetUniformLocation(this->_id, name.c_str()), 1, glm::value_ptr(value));
 } 
 
-void Shader::setUniform(const std::string &name, Uniformable* value)
+void Shader::setUniform(const std::string &name, Uniformable* value) const
 {
     this->use();
-    value->setShaderUniform(this, name);
+    value->setShaderUniform(*this, name);
 }
