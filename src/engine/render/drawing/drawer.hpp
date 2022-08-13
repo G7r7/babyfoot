@@ -5,7 +5,7 @@
 #include "../../shader.hpp"
 
 struct Drawer {
-    void draw(Model &model, Shader &shader);
+    void draw(Model const& model, Shader const& shader);
 };
 
 #endif

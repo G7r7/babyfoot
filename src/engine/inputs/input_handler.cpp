@@ -3,17 +3,13 @@
 InputHandler* InputHandler::CallbackWrapper::staticInputHandler;
 
 InputHandler::InputHandler()
-{
-    int width;
-    int height;
-    // glfwGetWindowSize(game->window, &width, &height);
+{ // TODO: Put default member values in the header file
     this->firstMouseInput = true;
-    this->mouseLastX = width/2;
-    this->mouseLastY = height/2;
+    this->mouseLastX = 0;
+    this->mouseLastY = 0;
     this->yaw = -90.0f;
     this->pitch = 0.0f;
     CallbackWrapper::staticInputHandler = this;
-
 }
 
 void InputHandler::process_inputs(Window* window, Game* game, float deltaTime) {
@@ -61,7 +57,7 @@ void InputHandler::key_callback(GLFWwindow* window, int key, int scancode, int a
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if(key == GLFW_KEY_G && action == GLFW_PRESS)
-        game->scene.objects[0].glow();
+        game->scene.objects[0].toggleGlow();
 }
 
 void InputHandler::CallbackWrapper::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -71,15 +67,14 @@ void InputHandler::CallbackWrapper::mouse_callback(GLFWwindow* window, double xp
 void InputHandler::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
     if (firstMouseInput) // initially set to true
     {
-        mouseLastX = xpos;
-        mouseLastY = ypos;
+        mouseLastX = static_cast<float>(xpos);
+        mouseLastY = static_cast<float>(ypos);
         firstMouseInput = false;
     }
-
-    float xOffset = xpos - mouseLastX;
-    float yOffset = mouseLastY - ypos; // reversed since y-coordinates range from bottom to top
-    mouseLastX = xpos;
-    mouseLastY = ypos;
+    float xOffset = static_cast<float>(xpos) - mouseLastX;
+    float yOffset = mouseLastY - static_cast<float>(ypos); // reversed since y-coordinates range from bottom to top
+    mouseLastX = static_cast<float>(xpos);
+    mouseLastY = static_cast<float>(ypos);
 
     const float sensitivity = 0.1f;
     xOffset *= sensitivity;

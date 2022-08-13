@@ -20,11 +20,11 @@ struct Vertex {
 class Mesh {
     public:
         Mesh(aiMesh* mesh, const aiScene* scene, std::string directory);
-
+        // TODO: Refactor (put members in private and create appropriate getters/setter) and forget about 'mutable'
         std::vector<Vertex>       vertices;
         std::vector<unsigned int> indices;
-        std::vector<Texture>      textures;
-        Material                  material;
+        std::vector<Texture> mutable     textures;
+        Material             mutable     material;
 
         std::string               directory;
 

@@ -19,9 +19,9 @@ Material::Material(aiMaterial *mat)
 
 Material::Material() {}
 
-void Material::setShaderUniform(Shader* shader, const std::string &uniform_name) {
-    shader->setFloat(uniform_name + ".shininess", this->shininess);
-    shader->setVec3f(uniform_name + ".ambient", this->ambient);
-    shader->setVec3f(uniform_name + ".diffuse", this->diffuse);
-    shader->setVec3f(uniform_name + ".specular", this->specular);
+void Material::setShaderUniform(Shader const& shader, const std::string &uniform_name) {
+    shader.setFloat(uniform_name + ".shininess", this->shininess);
+    shader.setVec3f(uniform_name + ".ambient", this->ambient);
+    shader.setVec3f(uniform_name + ".diffuse", this->diffuse);
+    shader.setVec3f(uniform_name + ".specular", this->specular);
 }

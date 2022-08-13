@@ -16,7 +16,7 @@ struct Camera : public Uniformable {
         float far_plane;
         glm::mat4 getViewMatrix();
         glm::mat4 getProjectionMatrix();
-        void setShaderUniform(Shader* shader, const std::string &uniform_name);
+        void setShaderUniform(Shader const& shader, const std::string &uniform_name) override;
 };
 
 #endif

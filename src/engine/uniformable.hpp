@@ -5,9 +5,10 @@
 
 class Shader;
 
-struct Uniformable
+class Uniformable
 {
-    virtual void setShaderUniform(Shader* shader, const std::string &uniform_name) = 0;
+public:
+    virtual void setShaderUniform(Shader const& shader, const std::string &uniform_name) = 0;
 };
 
 

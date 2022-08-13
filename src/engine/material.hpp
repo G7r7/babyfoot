@@ -15,7 +15,7 @@ struct Material : public Uniformable
     float shininess;
     Material(aiMaterial *mat);
     Material();
-    void setShaderUniform(Shader* shader, const std::string &uniform_name);
+    void setShaderUniform(Shader const& shader, const std::string &uniform_name) override;
 };
 
 #endif

@@ -10,10 +10,10 @@ void Renderer::render(Scene *scene) {
     glClear(GL_DEPTH_BUFFER_BIT);
 
     for(GameObject &object : scene->objects) {
-        object.shader.setMat4f("transformation", glm::lookAt(object.position, object.position + object.front, object.up));
-        object.shader.setUniform("light", &scene->light);
-        object.shader.setUniform("camera", &scene->camera);
-        // this->drawer.draw(object.model, object.shader);
-        this->drawer.draw(object.hitbox, object.shader);
+        object.getShader().setMat4f("transformation", glm::lookAt(object.getPosition(), object.getPosition() + object.getFront(), object.getUp()));
+        object.getShader().setUniform("light", &scene->light);
+        object.getShader().setUniform("camera", &scene->camera);
+        this->drawer.draw(object.getModel(), object.getShader());
+        //this->drawer.draw(object.getHitbox(), object.getShader());
     }
 }

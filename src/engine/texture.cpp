@@ -42,8 +42,8 @@ Texture::Texture(const char *path, const std::string &directory, aiTextureType t
     this->id = textureID;
 }
 
-void Texture::setShaderUniform(Shader* shader, const std::string &uniform_name) {
-    shader->setInt(uniform_name, this->id);
+void Texture::setShaderUniform(Shader const& shader, const std::string &uniform_name) {
+    shader.setInt(uniform_name, this->id);
 }
 
 std::string Texture::getComputedName() {

@@ -1,21 +1,17 @@
 #include "game_object.hpp"
 
-GameObject::GameObject(Model model, Shader shader) :
-model{model}, shader{shader}, hitbox{model} {
-    this->position = glm::vec3(0.0f);
-    this->up = glm::vec3(0.0f, 1.0f, 0.0f);
-    this->front = glm::vec3(0.0f, 0.0f, -1.0f);
-    this->speed = glm::vec3(0.0f);
-    this->gravitable = true;
-    this->collisionnable = true;
-    this->isGlowing = false;
-}
+GameObject::GameObject(Model model, Shader shader, Model hitbox):
+    _model{model}, _shader{shader}, _hitbox{hitbox} {}
 
-void GameObject::glow() {
-    isGlowing = !isGlowing;
-    shader.setBool("glowing", isGlowing);
+GameObject::GameObject(Model model, Shader shader):
+    GameObject::GameObject(model, shader, model) {}
+
+
+void GameObject::toggleGlow() {
+    _isGlowing = !_isGlowing;
+    _shader.setBool("glowing", _isGlowing);
 }
 
 void GameObject::move(glm::vec3 vector) {
-    position += vector;
+    _position += vector;
 }

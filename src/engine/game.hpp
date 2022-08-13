@@ -3,9 +3,9 @@
 
 #include "scene/scene.hpp"
 
-struct Game
-{
-    public:
+class Game
+{ // TODO: Refactor (put members in private etc.)
+public:
     Game(Scene&& scene);
     Scene scene;
 };

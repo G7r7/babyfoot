@@ -2,11 +2,11 @@
 #include <iostream>
 #include <algorithm>
 
-void planeEquation(glm::vec3* v1, glm::vec3* v2, glm::vec3* v3, glm::vec3* normal, float* d) {
-  glm::vec3 ab = *v2 - *v1;
-  glm::vec3 ac = *v3 - *v1;
-  *normal = glm::cross(ab, ac);
-  *d = -(normal->x * v1->x + normal->y * v1->y + normal->z * v1->z);
+void planeEquation(glm::vec3 const& v1, glm::vec3 const& v2, glm::vec3 const& v3, glm::vec3& outNormal, float& outD) {
+  glm::vec3 ab = v2 - v1;
+  glm::vec3 ac = v3 - v1;
+  outNormal = glm::cross(ab, ac);
+  outD = -(outNormal.x * v1.x + outNormal.y * v1.y + outNormal.z * v1.z);
 };
 
 float signedDistanceFromPlane(glm::vec3* v, glm::vec3* normal, float* d) {
@@ -138,12 +138,12 @@ bool checkForIntersection(glm::vec3 t0_v0, glm::vec3 t0_v1, glm::vec3 t0_v2,
   // Triangle 0 plane equation
   glm::vec3 t0_normal;
   float t0_d;
-  planeEquation(&t0_v0, &t0_v1, &t0_v2, &t0_normal, &t0_d);
+  planeEquation(t0_v0, t0_v1, t0_v2, t0_normal, t0_d);
 
   // Triangle 1 plane equation
   glm::vec3 t1_normal;
   float t1_d;
-  planeEquation(&t1_v0, &t1_v1, &t1_v2, &t1_normal, &t1_d);
+  planeEquation(t1_v0, t1_v1, t1_v2, t1_normal, t1_d);
 
   // Signed distances from triangle 0 vertices to plane of triangle 1
   float t0_signed_distances[3] = {

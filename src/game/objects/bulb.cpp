@@ -1,10 +1,7 @@
 #include "bulb.hpp"
 
-Bulb::Bulb() : GameObject([]{
-    GameObject bulb(
-        Model((char*)"ressources/models/lightbulb/lightbulb.obj"),
-        Shader((char*)"ressources/shaders/vertex.vs", (char*)"ressources/shaders/fragment.fs")
-    );
-    bulb.hitbox = Model((char*)"ressources/models/ball/hitbox.obj");
-    return bulb;
-}()) {}
+Bulb::Bulb() : GameObject(
+	Model("ressources/models/lightbulb/lightbulb.obj"),
+	Shader("ressources/shaders/vertex.vs", "ressources/shaders/fragment.fs"),
+	Model("ressources/models/ball/hitbox.obj")
+){}
