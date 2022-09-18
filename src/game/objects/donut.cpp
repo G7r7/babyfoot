@@ -1,8 +1,7 @@
 #include "donut.hpp"
 
-Donut::Donut() : GameObject([]{
-    return GameObject(
-        Model((char*)"ressources/models/donut/donut.obj"),
-        Shader((char*)"ressources/shaders/vertex.vs", (char*)"ressources/shaders/fragment.fs")
-    );
-}()){}
+Donut::Donut() : GameObject(
+        Model("ressources/models/donut/donut.obj"),
+        Shader("ressources/shaders/vertex.vs", "ressources/shaders/fragment.fs"),
+        Model("ressources/models/ball/hitbox.obj")    
+){}

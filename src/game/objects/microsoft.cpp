@@ -1,7 +1,7 @@
 #include "microsoft.hpp"
 
 Microsoft::Microsoft() : GameObject(
-    Model((char*)"ressources/models/microsoft/microsoft.obj"),
-    Shader((char*)"ressources/shaders/vertex.vs", (char*)"ressources/shaders/fragment.fs"),
-    Model((char*)"ressources/models/microsoft/microsoft.obj")
+    Model("ressources/models/microsoft/microsoft.obj"),
+    Shader("ressources/shaders/vertex.vs", "ressources/shaders/fragment.fs"),
+    Model("ressources/models/microsoft/microsoft.obj")
 ){}

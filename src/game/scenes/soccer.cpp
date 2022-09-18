@@ -4,8 +4,11 @@
 #include "../objects/bulb.hpp" 
 #include "../objects/microsoft.hpp"
 #include "../objects/room.hpp"
+#include "../objects/donut.hpp"
 
 SoccerLevel::SoccerLevel() : Scene([]{
+    Donut donut;
+    donut.move(glm::vec3(-4.0f, -1.5f, 0.f));
     Ball ball;
     ball.move(glm::vec3(-2.0f, -1.5f, 0.f));
     ball.setSpeed(glm::vec3(0.5f, 0, 0));
@@ -28,6 +31,7 @@ SoccerLevel::SoccerLevel() : Scene([]{
         camera,
         Light(),
         {
+            donut,
             ball,
             ball2,
             ball3,
