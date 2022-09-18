@@ -20,6 +20,9 @@ public:
     inline glm::vec3 const& getUp()            const { return _up; }
     inline glm::vec3 const& getFront()         const { return _front; }
     inline glm::vec3 const& getSpeed()         const { return _speed; }
+    inline glm::vec3 const& getRotationSpeed() const { return _rotationSpeed; }
+    inline glm::vec3 const& getCenter()        const { return _center; }
+    inline float     const& getMass()          const { return _mass; }
     inline bool             isGravitable()     const { return _isGravitable; }
     inline bool             isCollisionnable() const { return _isCollisionnable; }
     inline bool             isGlowing()        const { return _isGlowing; }
@@ -37,6 +40,9 @@ private:
     glm::vec3 _up               = glm::vec3(0.0f, 1.0f, 0.0f);
     glm::vec3 _front            = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 _speed            = glm::vec3(0.0f);
+    glm::vec3 _rotationSpeed    = glm::vec3(0.0f);
+    glm::vec3 _center           = glm::vec3(0.0f);
+    float     _mass             = 1.f;
     bool      _isGravitable     = true;
     bool      _isCollisionnable = true;
     bool      _isGlowing        = false;
