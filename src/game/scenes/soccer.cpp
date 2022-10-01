@@ -12,6 +12,7 @@ SoccerLevel::SoccerLevel() : Scene([]{
     Ball ball;
     ball.move(glm::vec3(-2.0f, -1.5f, 0.f));
     ball.setSpeed(glm::vec3(0.5f, 0, 0));
+    ball.setRotationSpeed(glm::vec3(0.005f, 0, 0));
     Ball ball2;
     ball2.move(glm::vec3(2.0f, -1.5f, 0));
     ball2.setSpeed(glm::vec3(-0.5f, 0, 0));

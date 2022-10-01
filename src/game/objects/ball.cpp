@@ -2,6 +2,6 @@
 
 Ball::Ball() : GameObject(
     Model("ressources/models/ball/ball.obj"),
-    Shader("ressources/shaders/vertex.vs", "ressources/shaders/fragment.fs"),
+    Shader("ressources/shaders/vertex.glsl", "ressources/shaders/fragment.glsl"),
     Model("ressources/models/ball/hitbox.obj")
 ){}
