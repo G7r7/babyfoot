@@ -12,7 +12,7 @@ struct Camera {
     mat4 projection;
 };
 uniform Camera camera;
-uniform mat4 transformation;
+uniform mat4 model;
 
 out vec2 TexCoord;
 out vec3 Normal;
@@ -20,8 +20,8 @@ out vec3 FragPos;
 
 void main()
 {
-    gl_Position = camera.projection * camera.view * transformation * vec4(aPos, 1.0);
+    gl_Position = camera.projection * camera.view * model * vec4(aPos, 1.0);
     TexCoord = aTexCoord;
-    Normal = mat3(transpose(inverse(transformation))) * aNormal; 
-    FragPos = vec3(transformation * vec4(aPos, 1.0));
+    Normal = mat3(transpose(inverse(model))) * aNormal; 
+    FragPos = vec3(model * vec4(aPos, 1.0));
 }

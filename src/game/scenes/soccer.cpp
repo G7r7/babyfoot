@@ -8,19 +8,19 @@
 
 SoccerLevel::SoccerLevel() : Scene([]{
     Donut donut;
-    donut.move(glm::vec3(-4.0f, -1.5f, 0.f));
+    donut.move(glm::vec3(-4.0f, 1.5f, 0.f));
     Ball ball;
-    ball.move(glm::vec3(-2.0f, -1.5f, 0.f));
+    ball.move(glm::vec3(-2.0f, 1.5f, 0.f));
     ball.setSpeed(glm::vec3(0.5f, 0, 0));
-    ball.setRotationSpeed(glm::vec3(0.005f, 0, 0));
+    ball.setRotationSpeed(glm::vec3(10, 2, 0));
     Ball ball2;
-    ball2.move(glm::vec3(2.0f, -1.5f, 0));
+    ball2.move(glm::vec3(2.0f, 1.5f, 0));
     ball2.setSpeed(glm::vec3(-0.5f, 0, 0));
     Ball ball3;
-    ball3.move(glm::vec3(0, -1.5f, -2.0f));
+    ball3.move(glm::vec3(0, 1.5f, -2.0f));
     ball3.setSpeed(glm::vec3(0, 0, 0.5f));
     Ball ball4;
-    ball4.move(glm::vec3(0, -1.5f, 2.0f));
+    ball4.move(glm::vec3(0, 1.5f, 2.0f));
     ball4.setSpeed(glm::vec3(0, 0, -0.5f));
     Field field;
     field.setGravitable(false);
@@ -40,7 +40,7 @@ SoccerLevel::SoccerLevel() : Scene([]{
             field,
             // room,
         },
-        glm::vec3(0,0.2,0)
+        glm::vec3(0,-0.2,0)
     );
 }()) {}
 

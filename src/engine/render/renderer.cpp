@@ -1,7 +1,8 @@
 #include "renderer.hpp"
 #include "drawing/drawer.hpp"
 
-void Renderer::render(Scene *scene) {
+void Renderer::render(Scene *scene)
+{
     glEnable(GL_DEPTH_TEST);
 
     // render color
@@ -9,11 +10,13 @@ void Renderer::render(Scene *scene) {
     glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    for(GameObject &object : scene->objects) {
-        object.getShader().setMat4f("transformation", glm::lookAt(object.getPosition(), object.getPosition() + object.getFront(), object.getUp()));
+    for (GameObject &object : scene->objects)
+    {
+
+        object.getShader().setMat4f("model", object.getTransformationMatrix());
         object.getShader().setUniform("light", &scene->light);
         object.getShader().setUniform("camera", &scene->camera);
         this->drawer.draw(object.getModel(), object.getShader());
-        //this->drawer.draw(object.getHitbox(), object.getShader());
+        // this->drawer.draw(object.getHitbox(), object.getShader());
     }
 }
