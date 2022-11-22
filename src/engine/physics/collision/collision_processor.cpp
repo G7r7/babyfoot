@@ -27,7 +27,7 @@ void CollisionProcessor::process(Scene* scene, float seconds) {
     }
 
     for (Collision const& collision : collisions) {
-        this->inertiaProcessor.process(
+        this->collisionResolver.process(
             scene->objects[collision.objectIndex1],
             scene->objects[collision.objectIndex2],
             seconds,

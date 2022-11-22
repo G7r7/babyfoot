@@ -2,10 +2,10 @@
 #define COLL_PROC_H
 
 #include "../../scene/scene.hpp"
-#include "inertia/inertia_processor.hpp"
+#include "resolver/collision_resolver.hpp"
 
 struct CollisionProcessor {
-    InertiaProcessor inertiaProcessor;
+    CollisionResolver collisionResolver;
     void process(Scene* scene, float seconds);
 private:
     bool checkForCollision(GameObject* object1, GameObject* object2, float seconds,

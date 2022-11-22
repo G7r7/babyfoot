@@ -9,6 +9,7 @@ struct Collision {
     glm::vec3 point;
     glm::vec3 surfaceNormal1;
     glm::vec3 surfaceNormal2;
+    Collision getTransformed(glm::mat4 transformationMatrix) const;
 };
 
 #endif
