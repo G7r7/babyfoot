@@ -3,15 +3,6 @@
 #include <tuple>
 #include <omp.h>
 
-
-struct Collision {
-    int objectIndex1;
-    int objectIndex2;
-    glm::vec3 point;
-    glm::vec3 surfaceNormal1;
-    glm::vec3 surfaceNormal2;
-};
-
 void CollisionProcessor::process(Scene* scene, float seconds) {
     std::vector<Collision> collisions;
     // Loop over every unique combination
@@ -21,7 +12,7 @@ void CollisionProcessor::process(Scene* scene, float seconds) {
         for (int j = i + 1; j < scene->objects.size(); j++) {
             GameObject & second = scene->objects[j];
             glm::vec3 collisionPoint, surfaceNormal1, surfaceNormal2;
-            bool collides = process(&first, &second, seconds, &collisionPoint, &surfaceNormal1, &surfaceNormal2);
+            bool collides = checkForCollision(&first, &second, seconds, &collisionPoint, &surfaceNormal1, &surfaceNormal2);
             if (collides) {
                 Collision collision = {
                     i,
@@ -36,20 +27,16 @@ void CollisionProcessor::process(Scene* scene, float seconds) {
     }
 
     for (Collision const& collision : collisions) {
-        if(scene->objects[collision.objectIndex1].isCollisionnable() == true) {
-            scene->objects[collision.objectIndex1].setSpeed(glm::reflect(scene->objects[collision.objectIndex1].getSpeed(), collision.surfaceNormal2));
-            glm::vec3 translation = scene->objects[collision.objectIndex2].getSpeed() * seconds;
-            scene->objects[collision.objectIndex1].move(translation);
-        }
-        if(scene->objects[collision.objectIndex2].isCollisionnable() == true) {
-            scene->objects[collision.objectIndex2].setSpeed(glm::reflect(scene->objects[collision.objectIndex2].getSpeed(), collision.surfaceNormal1));
-            glm::vec3 translation = scene->objects[collision.objectIndex2].getSpeed() * seconds;
-            scene->objects[collision.objectIndex2].move(translation);
-        }
+        this->inertiaProcessor.process(
+            scene->objects[collision.objectIndex1],
+            scene->objects[collision.objectIndex2],
+            seconds,
+            collision
+        );
     }
 }
 
-bool CollisionProcessor::process(GameObject* object1, GameObject* object2, float seconds,
+bool CollisionProcessor::checkForCollision(GameObject* object1, GameObject* object2, float seconds,
         glm::vec3* collisionPoint, glm::vec3* surfaceNormal1, glm::vec3* surfaceNormal2) {
     std::vector<glm::vec3> intersections;
     std::vector<glm::vec3> surfaceNormals1;
