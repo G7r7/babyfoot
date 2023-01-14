@@ -6,4 +6,8 @@ services:
     image: babyfoot
     volumes:
       - ".:/home/babyfoot"
+      - $HOME/.Xauthority:/root/.Xauthority:rw
     command: tail -f /dev/null
+    network_mode: host
+    environment:
+      - DISPLAY

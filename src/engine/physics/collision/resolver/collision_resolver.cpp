@@ -13,7 +13,7 @@ void CollisionResolver::process(GameObject &object1, GameObject &object2, float 
     // }
     Collision localCollision1 = collision.getTransformed(object1.getTransformationMatrix());
     Collision localCollision2 = collision.getTransformed(object2.getTransformationMatrix());
-    glm::vec3 axis1 = glm::normalize(localCollision1.point - object1.getPosition());
-    glm::vec3 axis2 = glm::normalize(localCollision2.point - object2.getPosition());
+    glm::vec3 radius1 = localCollision1.point - object1.getPosition();
+    glm::vec3 raduis2 = localCollision2.point - object2.getPosition();
     // float moment1 = object1.getMomentOfIntertia(axis1, )
 }
