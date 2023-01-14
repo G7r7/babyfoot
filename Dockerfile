@@ -5,7 +5,9 @@ RUN apt-get update && apt-get -y install \
     python3-pip
 
 RUN apt-get -y install xorg-dev
-   
+
+RUN apt-get update && apt-get -y install gdb
+
 #Gcovr
 RUN pip install gcovr
 
