@@ -8,7 +8,7 @@
 
 SoccerLevel::SoccerLevel() : Scene([]{
     Donut donut;
-    donut.move(glm::vec3(-4.0f, 1.5f, 0.f));
+    donut.move(glm::vec3(-2.0f, 1.5f, 0.f));
     Ball ball;
     ball.move(glm::vec3(-2.0f, 1.5f, 0.f));
     ball.setSpeed(glm::vec3(0.5f, 0, 0));
@@ -24,6 +24,7 @@ SoccerLevel::SoccerLevel() : Scene([]{
     ball4.setSpeed(glm::vec3(0, 0, -0.5f));
     Field field;
     field.setGravitable(false);
+    field.setMass(10000000);
     Room room;
     room.setGravitable(false);
     Camera camera(45.0f, 16.f/9.f, 0.1f, 100.0f);
@@ -32,7 +33,7 @@ SoccerLevel::SoccerLevel() : Scene([]{
         camera,
         Light(),
         {
-            donut,
+            // donut,
             ball,
             ball2,
             ball3,

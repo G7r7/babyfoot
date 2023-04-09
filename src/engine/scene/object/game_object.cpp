@@ -26,9 +26,16 @@ glm::mat4 GameObject::getTransformationMatrix() const {
     return model;
 }
 
-float GameObject::getMomentOfInertia(glm::vec3 axis, glm::vec3 point) const {
+glm::mat3 GameObject::getMomentOfInertiaTensor() const {
+    // Here we approximate our object as a solid sphere of radius 1
+    const auto radius = 1.0f;
     // Here we approximate our object as a solid sphere (I = 2/5 * m * r²)
-    return 0.4 * _mass * pow(glm::distance(point, glm::vec3(0.f)), 2);
+    const auto momentOfInertia = 0.4 * _mass * pow(radius, 2);
+    return glm::mat3(
+        {momentOfInertia,0,0},
+        {0,momentOfInertia,0},
+        {0,0,momentOfInertia}
+    );
 }
 
 float GameObject::getKineticEnergy() const {

@@ -25,14 +25,16 @@ public:
     inline bool             isCollisionnable()                   const { return _isCollisionnable; }
     inline bool             isGlowing()                          const { return _isGlowing; }
     glm::mat4               getTransformationMatrix()            const; 
+    glm::mat3               getMomentOfInertiaTensor()           const;
     float                   getKineticEnergy()                   const;
-    float                   getMomentOfInertia(glm::vec3 axis, glm::vec3 point) const;
+
 
     inline void setPosition(glm::vec3 newPos)           { _position = newPos; }
     inline void setSpeed(glm::vec3 newSpeed)            { _speed = newSpeed; }
     inline void setRotationSpeed(glm::vec3 newSpeed)    { _rotationSpeed = newSpeed; }
     inline void setOrientation(glm::quat newOrientation){ _orientation = newOrientation; }
     inline void setGravitable(bool isGravitable)        { _isGravitable = isGravitable; }
+    inline void setMass(float mass)                     { _mass = mass; }
 
 private:
     Model  _model;
