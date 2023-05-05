@@ -4,5 +4,7 @@ headerfiles
 cmake-build-debug
 !.env.sample
 !.gitignore
+!.devcontainer
+!.vscode
 coverage/*
 !coverage/*.sh
