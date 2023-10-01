@@ -3,13 +3,14 @@
 
 #include "../../scene/scene.hpp"
 #include "resolver/collision_resolver.hpp"
+#include <optional>
+#include "triangle/triangle_collision.hpp"
 
 struct CollisionProcessor {
     CollisionResolver collisionResolver;
     void process(Scene* scene, float seconds);
 private:
-    bool checkForCollision(GameObject* object1, GameObject* object2, float seconds,
-        glm::vec3* collisionPoint, glm::vec3* surfaceNormal1, glm::vec3* surfaceNormal2);
+    std::optional<TriangleCollision> checkForCollision(GameObject* object1, GameObject* object2, float seconds);
     glm::vec3 averagePoints(std::vector<glm::vec3>* points);
     glm::vec3 averageNormals(std::vector<glm::vec3>* normals);
 };

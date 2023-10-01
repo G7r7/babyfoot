@@ -11,17 +11,16 @@ void CollisionProcessor::process(Scene* scene, float seconds) {
         GameObject & first = scene->objects[i];
         for (int j = i + 1; j < scene->objects.size(); j++) {
             GameObject & second = scene->objects[j];
-            glm::vec3 collisionPoint, surfaceNormal1, surfaceNormal2;
-            bool collides = checkForCollision(&first, &second, seconds, &collisionPoint, &surfaceNormal1, &surfaceNormal2);
-            if (collides) {
-                Collision collision = {
+            auto collision = checkForCollision(&first, &second, seconds);
+            if (collision.has_value()) {
+                collisions.push_back({
                     i,
                     j,
-                    collisionPoint,
-                    surfaceNormal1,
-                    surfaceNormal2
-                };
-                collisions.push_back(collision);
+                    collision->point,
+                    collision->surfaceNormal1,
+                    collision->surfaceNormal2
+                    
+                });
             }
         }
     }
@@ -36,8 +35,7 @@ void CollisionProcessor::process(Scene* scene, float seconds) {
     }
 }
 
-bool CollisionProcessor::checkForCollision(GameObject* object1, GameObject* object2, float seconds,
-        glm::vec3* collisionPoint, glm::vec3* surfaceNormal1, glm::vec3* surfaceNormal2) {
+std::optional<TriangleCollision> CollisionProcessor::checkForCollision(GameObject* object1, GameObject* object2, float seconds) {
     std::vector<glm::vec3> intersections;
     std::vector<glm::vec3> surfaceNormals1;
     std::vector<glm::vec3> surfaceNormals2;
@@ -59,25 +57,24 @@ bool CollisionProcessor::checkForCollision(GameObject* object1, GameObject* obje
                     glm::vec3 intersection;
                     glm::vec3 normal1;
                     glm::vec3 normal2;
-                    bool collision = checkForIntersection(point11, point12, point13, point21, point22, point23,
-                        &intersection, &normal1, &normal2);
-                    if(collision) {
-                        intersections.push_back(intersection);
-                        surfaceNormals1.push_back(normal1);
-                        surfaceNormals2.push_back(normal2);
+                    std::optional<TriangleCollision> collision = checkForIntersection(point11, point12, point13, point21, point22, point23);
+                    if(collision.has_value()) {
+                        intersections.push_back(collision->point);
+                        surfaceNormals1.push_back(collision->surfaceNormal1);
+                        surfaceNormals2.push_back(collision->surfaceNormal2);
                     }
                 }
             }
         }
     }
     if(intersections.size() > 0) {
-        *collisionPoint = this->averagePoints(&intersections);
-        *surfaceNormal1 = this->averageNormals(&surfaceNormals1);
-        *surfaceNormal2 = this->averageNormals(&surfaceNormals2);
-        return true;
+        auto collisionPoint = this->averagePoints(&intersections);
+        auto surfaceNormal1 = this->averageNormals(&surfaceNormals1);
+        auto surfaceNormal2 = this->averageNormals(&surfaceNormals2);
+        return TriangleCollision{.point = collisionPoint, .surfaceNormal1 = surfaceNormal1, surfaceNormal2 = surfaceNormal2};
     }
 
-    return false;
+    return std::nullopt;
 }
 
 glm::vec3 CollisionProcessor::averagePoints(std::vector<glm::vec3>* points) {

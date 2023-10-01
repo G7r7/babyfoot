@@ -128,9 +128,8 @@ void scalarInterval(std::vector<glm::vec3>* vertices, float* signed_distances, g
   std::sort(interval, interval + n);
 }
 
-bool checkForIntersection(glm::vec3 t0_v0, glm::vec3 t0_v1, glm::vec3 t0_v2,
-  glm::vec3 t1_v0, glm::vec3 t1_v1, glm::vec3 t1_v2,
-  glm::vec3* intersection, glm::vec3* surface_normal_0, glm::vec3* surface_normal_1) {
+std::optional<TriangleCollision> checkForIntersection(glm::vec3 t0_v0, glm::vec3 t0_v1, glm::vec3 t0_v2,
+  glm::vec3 t1_v0, glm::vec3 t1_v1, glm::vec3 t1_v2) {
 
   std::vector<glm::vec3> t0_vertices = {t0_v0, t0_v1, t0_v2};
   std::vector<glm::vec3> t1_vertices = {t1_v0, t1_v1, t1_v2};
@@ -177,12 +176,12 @@ bool checkForIntersection(glm::vec3 t0_v0, glm::vec3 t0_v1, glm::vec3 t0_v2,
   // For triangle 0 with plane 1
   if (t0_signed_distances[0] != 0 && t0_signed_distances[1] != 0 && t0_signed_distances[2] != 0
     && sameSign(t0_signed_distances[0], t0_signed_distances[1], t0_signed_distances[2])) {
-    return false;
+    return {};
   }
    // For triangle 1 with plane 0
   if (t1_signed_distances[0] != 0 && t1_signed_distances[1] != 0 && t1_signed_distances[2] != 0
     && sameSign(t1_signed_distances[0], t1_signed_distances[1], t1_signed_distances[2])) {
-    return false; 
+    return {}; 
   }
 
   // If all distances are 0 => Coplanar triangles
@@ -190,7 +189,7 @@ bool checkForIntersection(glm::vec3 t0_v0, glm::vec3 t0_v1, glm::vec3 t0_v2,
     // TO DO
     // 2D Problem
     // std::cout << "Coplanaire !!!!" << std::endl;
-    return false;
+    return {};
   }
 
   // Equation of the line of intersection between the 2 planes
@@ -208,11 +207,11 @@ bool checkForIntersection(glm::vec3 t0_v0, glm::vec3 t0_v1, glm::vec3 t0_v2,
   if (overlap) {
     float overlap_average = interval_overlap[0] 
       + (interval_overlap[1]-interval_overlap[0])/2;
-    *intersection = point_on_line + overlap_average * D;
-    *surface_normal_0 = t0_normal;
-    *surface_normal_1 = t1_normal;
-    return true;
+    auto intersection = point_on_line + overlap_average * D;
+    auto surface_normal_0 = t0_normal;
+    auto surface_normal_1 = t1_normal;
+    return TriangleCollision{.point = intersection, .surfaceNormal1 = surface_normal_0, .surfaceNormal2 = surface_normal_1};
   }
 
-  return false;
+  return {};
 };

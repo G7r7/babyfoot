@@ -31,7 +31,7 @@ Window::Window() {
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     
     // Mouse inputs
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 
     // glad init : loads all OpenGL functions pointers
