@@ -9,10 +9,10 @@
 struct CollisionProcessor {
     CollisionResolver collisionResolver;
     void process(Scene* scene, float seconds);
+    static std::optional<TriangleCollision> checkForCollision(GameObject* object1, GameObject* object2);
 private:
-    std::optional<TriangleCollision> checkForCollision(GameObject* object1, GameObject* object2, float seconds);
-    glm::vec3 averagePoints(std::vector<glm::vec3>* points);
-    glm::vec3 averageNormals(std::vector<glm::vec3>* normals);
+    static glm::vec3 averagePoints(std::vector<glm::vec3>* points);
+    static glm::vec3 averageNormals(std::vector<glm::vec3>* normals);
 };
 
 #endif

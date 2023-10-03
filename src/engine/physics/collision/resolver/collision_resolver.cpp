@@ -1,6 +1,45 @@
 #include "collision_resolver.hpp"
+#include "../../speed/speed_processor.hpp"
+#include "../../rotation/rotation_processor.hpp"
+#include "../collision_processor.hpp"
+
+float CollisionResolver::smoothCollision(GameObject &object1, GameObject &object2, float seconds)
+{
+    SpeedProcessor::processObject(object1, -seconds);
+    SpeedProcessor::processObject(object2, -seconds);
+    RotationProcessor::processObject(object1, -seconds);
+    RotationProcessor::processObject(object2, -seconds);
+    // Number of tries to get the best precision
+    int tries = 10;
+    float coeff = 0.5f;
+    float bestGuess = seconds;
+    for (size_t i = 0; i < tries; i++)
+    {
+        float deltaGuess = bestGuess * coeff;
+        SpeedProcessor::processObject(object1, deltaGuess);
+        SpeedProcessor::processObject(object2, deltaGuess);
+        RotationProcessor::processObject(object1, deltaGuess);
+        RotationProcessor::processObject(object2, deltaGuess);
+        auto collision = CollisionProcessor::checkForCollision(&object1, &object2);
+        if (collision.has_value()) // We are colliding, we are to close, we must go back
+        {
+            SpeedProcessor::processObject(object1, -deltaGuess);
+            SpeedProcessor::processObject(object2, -deltaGuess);
+            RotationProcessor::processObject(object1, -deltaGuess);
+            RotationProcessor::processObject(object2, -deltaGuess);
+            coeff *= 0.5f;
+        }
+        else
+        { // We are not colliding, we can try to get closer
+            bestGuess -= deltaGuess;
+        }
+    }
+    return bestGuess;
+}
 
 void CollisionResolver::process(GameObject &object1, GameObject &object2, float seconds, const Collision &collision) {
+
+    float secondsAgo = this->smoothCollision(object1, object2, seconds);
 
     glm::vec3 radius1 = collision.point - object1.getPosition();
     glm::vec3 radius2 = collision.point - object2.getPosition();

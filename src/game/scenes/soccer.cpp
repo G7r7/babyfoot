@@ -11,17 +11,17 @@ SoccerLevel::SoccerLevel() : Scene([]{
     donut.move(glm::vec3(-2.0f, 1.5f, 0.f));
     Ball ball;
     ball.move(glm::vec3(-2.0f, 1.5f, 0.f));
-    // ball.setSpeed(glm::vec3(0.5f, 0, 0));
-    // ball.setRotationSpeed(glm::vec3(10, 2, 0));
-    // Ball ball2;
-    // ball2.move(glm::vec3(2.0f, 1.5f, 0));
-    // ball2.setSpeed(glm::vec3(-0.5f, 0, 0));
-    // Ball ball3;
-    // ball3.move(glm::vec3(0, 1.5f, -2.0f));
-    // ball3.setSpeed(glm::vec3(0, 0, 0.5f));
-    // Ball ball4;
-    // ball4.move(glm::vec3(0, 1.5f, 2.0f));
-    // ball4.setSpeed(glm::vec3(0, 0, -0.5f));
+    ball.setSpeed(glm::vec3(0.5f, 0, 0));
+    ball.setRotationSpeed(glm::vec3(10, 2, 0));
+    Ball ball2;
+    ball2.move(glm::vec3(2.0f, 1.5f, 0));
+    ball2.setSpeed(glm::vec3(-0.5f, 0, 0));
+    Ball ball3;
+    ball3.move(glm::vec3(0, 1.5f, -2.0f));
+    ball3.setSpeed(glm::vec3(0, 0, 0.5f));
+    Ball ball4;
+    ball4.move(glm::vec3(0, 1.5f, 2.0f));
+    ball4.setSpeed(glm::vec3(0, 0, -0.5f));
     Field field;
     field.setGravitable(false);
     field.setMass(10000000);
@@ -35,9 +35,9 @@ SoccerLevel::SoccerLevel() : Scene([]{
         {
             // donut,
             ball,
-            // ball2,
-            // ball3,
-            // ball4,
+            ball2,
+            ball3,
+            ball4,
             field,
             // room,
         },

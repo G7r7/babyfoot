@@ -9,6 +9,7 @@
 struct CollisionResolver {
     void process(GameObject &object1, GameObject &object2, float seconds, const Collision &collision);
 private:
+    float smoothCollision(GameObject &object1, GameObject &object2, float seconds);
 };
 
 #endif

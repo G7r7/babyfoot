@@ -11,7 +11,7 @@ void CollisionProcessor::process(Scene* scene, float seconds) {
         GameObject & first = scene->objects[i];
         for (int j = i + 1; j < scene->objects.size(); j++) {
             GameObject & second = scene->objects[j];
-            auto collision = checkForCollision(&first, &second, seconds);
+            auto collision = checkForCollision(&first, &second);
             if (collision.has_value()) {
                 collisions.push_back({
                     i,
@@ -26,7 +26,7 @@ void CollisionProcessor::process(Scene* scene, float seconds) {
     }
 
     for (Collision const& collision : collisions) {
-        this->collisionResolver.process(
+        CollisionProcessor::collisionResolver.process(
             scene->objects[collision.objectIndex1],
             scene->objects[collision.objectIndex2],
             seconds,
@@ -35,7 +35,7 @@ void CollisionProcessor::process(Scene* scene, float seconds) {
     }
 }
 
-std::optional<TriangleCollision> CollisionProcessor::checkForCollision(GameObject* object1, GameObject* object2, float seconds) {
+std::optional<TriangleCollision> CollisionProcessor::checkForCollision(GameObject* object1, GameObject* object2) {
     std::vector<glm::vec3> intersections;
     std::vector<glm::vec3> surfaceNormals1;
     std::vector<glm::vec3> surfaceNormals2;
@@ -68,10 +68,10 @@ std::optional<TriangleCollision> CollisionProcessor::checkForCollision(GameObjec
         }
     }
     if(intersections.size() > 0) {
-        auto collisionPoint = this->averagePoints(&intersections);
-        auto surfaceNormal1 = this->averageNormals(&surfaceNormals1);
-        auto surfaceNormal2 = this->averageNormals(&surfaceNormals2);
-        return TriangleCollision{.point = collisionPoint, .surfaceNormal1 = surfaceNormal1, surfaceNormal2 = surfaceNormal2};
+        auto collisionPoint = CollisionProcessor::averagePoints(&intersections);
+        auto surfaceNormal1 = CollisionProcessor::averageNormals(&surfaceNormals1);
+        auto surfaceNormal2 = CollisionProcessor::averageNormals(&surfaceNormals2);
+        return TriangleCollision{.point = collisionPoint, .surfaceNormal1 = surfaceNormal1, .surfaceNormal2 = surfaceNormal2};
     }
 
     return std::nullopt;

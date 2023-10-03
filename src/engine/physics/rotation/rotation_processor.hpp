@@ -5,6 +5,7 @@
 
 struct RotationProcessor {
     void process(Scene* scene, float seconds);
+    static void processObject(GameObject &object, float seconds);
 };
 
 #endif
