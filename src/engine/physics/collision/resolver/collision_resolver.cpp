@@ -90,8 +90,8 @@ void CollisionResolver::process(GameObject &object1, GameObject &object2, float 
     object2.setRotationSpeed(newA2);
 
     // We make the objects travel a bit to avoid infinite collision loop
-    glm::vec3 translation1 = object1.getSpeed() * seconds;
-    glm::vec3 translation2 = object2.getSpeed() * seconds;
-    object1.move(translation1);
-    object2.move(translation2);
+    // glm::vec3 translation1 = object1.getSpeed() * seconds;
+    // glm::vec3 translation2 = object2.getSpeed() * seconds;
+    // object1.move(translation1);
+    // object2.move(translation2);
 }

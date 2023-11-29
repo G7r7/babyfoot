@@ -18,7 +18,11 @@ void Drawer::draw(Model const& model, Shader const& shader)
         
         // draw mesh
         glBindVertexArray(mesh.VAO);
-        // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ); // Wireframe mode
+        if(mesh.directory == "ressources/models/ball") {
+            glPolygonMode( GL_FRONT_AND_BACK, GL_LINE); // Wireframe mode
+        } else {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // Wireframe mode
+        }
         glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(mesh.indices.size()), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 

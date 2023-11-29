@@ -28,7 +28,10 @@ SoccerLevel::SoccerLevel() : Scene([]{
     Room room;
     room.setGravitable(false);
     Camera camera(45.0f, 16.f/9.f, 0.1f, 100.0f);
-    camera.position.y += 1.5f;
+    camera.position.y += 1.2f;
+    // camera.position.y = 1.005f;
+    // camera.position.z = 0.35f;
+
     return Scene(
         camera,
         Light(),
@@ -36,8 +39,8 @@ SoccerLevel::SoccerLevel() : Scene([]{
             // donut,
             ball,
             ball2,
-            ball3,
-            ball4,
+            // ball3,
+            // ball4,
             field,
             // room,
         },
